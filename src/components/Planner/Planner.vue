@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import axios from 'axios';  
 export default {
     data () {
       return {
@@ -99,7 +100,7 @@ export default {
         },
     },
     methods: {
-        addPlace() {
+        async addPlace() {
             this.list.push({
                 time: this.time,
                 name: this.place,
@@ -107,6 +108,16 @@ export default {
                 completed: false,
             })
             this.timeDuration = ''
+
+            try {
+                let body = {
+                    place: this.list[this.list.length - 1].name,
+                };
+                let response = await axios.post('http://localhost:8000/search/', body);
+                console.log(response.data);
+            } catch (error) {
+                console.log(error);
+            }
         },
     },
 }
