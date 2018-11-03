@@ -78,6 +78,7 @@ export default {
       return {
         place: '',
         duration: '',
+
         headers: [
           {
             text: 'Time',
@@ -90,6 +91,7 @@ export default {
         list: [
           
         ],
+        totalTime : '24',
       }
     },
     computed:{
@@ -100,24 +102,47 @@ export default {
         },
     },
     methods: {
+
         async addPlace() {
+
             this.list.push({
                 time: this.time,
                 name: this.place,
                 timeDuration: this.duration,
                 completed: false,
             })
-            this.timeDuration = ''
+            let size = this.list.length - 1;
+            // this.timeDuration = ''
 
+            //Time remaining !!
             try {
-                let body = {
-                    place: this.list[this.list.length - 1].name,
+                let bodyTime = {
+                    duration: this.list[size].timeDuration,
+                    remaining: this.totalTime,
                 };
-                let response = await axios.post('http://localhost:8000/search/', body);
-                console.log(response.data);
+                let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
+                this.totalTime = timeResponse.data;
+
+            // dont forget condition if totalTime < 0, (wanning)
+                
+                console.log(timeResponse.data);
             } catch (error) {
                 console.log(error);
             }
+            
+            //place name 
+            // try{
+            //     let bodyPlace = {
+            //         place: this.list[size].name,
+            //     };
+
+            //     let placeResponse = await axios.post('http://localhost:8000/search/', bodyPlace);
+            //     console.log(placeResponse.data);
+            // } catch (error){
+            //     console.log(error);
+            // }
+
+            
         },
     },
 }
