@@ -97,24 +97,6 @@ export default {
       }
     },
     
-    // auto-complete
-//       mounted() {
-//     this.autocomplete = new google.maps.places.Autocomplete(
-//       (this.$refs.autocomplete),
-//       {types: ['geocode']}
-//     );
-
-//     this.autocomplete.addListener('place_changed', () => {
-//       let place = this.autocomplete.getPlace();
-//       let ac = place.address_components;
-//       let lat = place.geometry.location.lat();
-//       let lon = place.geometry.location.lng();
-//       let city = ac[0]["short_name"];
-//     // this.place = city
-//       console.log(`The user picked ${city} with the coordinates ${lat}, ${lon}`);
-//     });
-//   },
-
     computed:{
         formIsValid () {
             return this.time !== '' &&
