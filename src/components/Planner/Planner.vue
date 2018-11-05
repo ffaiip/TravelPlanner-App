@@ -20,12 +20,23 @@
                             </v-flex>
                         </v-layout>
                         <v-layout row class="mb-6">
-                            <v-flex xs4 offset-xs3 offset-md2 offset-lg2>
-                                    <input ref="autocomplete" 
-                                    placeholder="Search" 
-                                    class="search-location"
-                                    onfocus="value = ''" 
-                                    type="text" />
+                            <v-flex xs4 offset-xs2 offset-md2 offset-lg2>
+                                <vuetify-google-autocomplete
+                                id="address"
+                                append-icon="search"
+                                ref="address"
+                                :clearable="clearable"
+                                :country="country"
+                                :disabled=false
+                                :enable-="enableGeolocation"
+                                label="Search Place"
+                                prepend-icon="place"
+                                required=true
+                                types="establishment"
+                                onfocus="value = ''" 
+                                v-on:placechanged="getAddressData"
+                                v-on:no-results-found="noResultsFound"
+                                ></vuetify-google-autocomplete>
                             </v-flex>
                             <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
                                 <v-text-field
@@ -76,8 +87,13 @@ export default {
 
     data () {
       return {
+        autocompleteModel: 'Some Default Location...',
+        vueGoogleAutocompleteLink: 'https://github.com/olefirenko/vue-google-autocomplete',
         autocomplete: '',
         duration: '',
+        address: {},
+        clearable: true,
+        enableGeolocation: false,
 
         headers: [
           {
@@ -88,38 +104,39 @@ export default {
           { text: 'Places', value: 'name', },
           { text: 'Duration', value: 'timeDuration', },
         ],
-        list: [
-          
-        ],
+        list: [],
         totalTime : '24',
       }
     },
     
-    // auto-complete
-      mounted() {
-    this.autocomplete = new google.maps.places.Autocomplete(
-      (this.$refs.autocomplete),
-      {types: ['geocode']}
-    );
-
-    this.autocomplete.addListener('place_changed', () => {
-      let place = this.autocomplete.getPlace();
-      let ac = place.address_components;
-      let lat = place.geometry.location.lat();
-      let lon = place.geometry.location.lng();
-      let city = ac[0]["short_name"];
-
-      console.log(`The user picked ${city} with the coordinates ${lat}, ${lon}`);
-    });
-  },
 
     computed:{
         formIsValid () {
             return this.time !== '' &&
-            this.autocomplete !== '' &&
+            this. autocomplete!== '' &&
             this.duration != ''
         },
+
+        outputJsData() {
+            return `
+                ${JSON.stringify(this.address)}
+            `;
+        },
+
+        outputJsCallback() {
+            return `methods: {
+                ${this.callbackFunction}: function (addressData, placeResultData) {
+                this.address = addressData;
+                }
+            }`;
+        },
+
+        outputJs() {
+            return `${this.outputJsData},
+            ${this.outputJsCallback}`;
+        },
     },
+
     methods: {
 
         async addPlace() {
@@ -163,6 +180,21 @@ export default {
             this.place = '';
             this.duration = '';
             
+        },
+       
+        /**
+        * Callback method when the location is found.
+        *
+        * @param {Object} addressData Data of the found location
+        * @param {Object} placeResultData PlaceResult object
+        * @param {String} id Input container ID
+        */
+        getAddressData(addressData) {
+            this.address = addressData;
+            var addressStringify = JSON.stringify(this.address);
+            var addressObj= JSON.parse(addressStringify)
+            // edok name tong nee
+            console.log(addressObj['name']);
         },
     },
 }

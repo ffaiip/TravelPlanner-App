@@ -1,6 +1,13 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router/index';
+
+import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
+
+Vue.use(VuetifyGoogleAutocomplete, {
+  apiKey: 'AIzaSyBENVTYtp6UnlTVs8gmLomS1NNlJqK7-ww', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
+});
+
 import {
   Vuetify,
   VApp,
@@ -21,6 +28,7 @@ import {
   VMenu,
   VDataTable,
   VTimeline,
+  VAutocomplete,
 } from 'vuetify';
 
 Vue.use(Vuetify, {
@@ -43,6 +51,7 @@ Vue.use(Vuetify, {
     VMenu,
     VDataTable,
     VTimeline,
+    VAutocomplete,
   },
   theme: {
     primary: '#FFAB00',
