@@ -20,6 +20,7 @@
                             </v-flex>
                         </v-layout>
                         <v-layout row class="mb-6">
+
                             <v-flex xs4 offset-xs2 offset-md2 offset-lg2>
                                 <vuetify-google-autocomplete
                                 id="address"
@@ -37,6 +38,7 @@
                                 v-on:placechanged="getAddressData"
                                 v-on:no-results-found="noResultsFound"
                                 ></vuetify-google-autocomplete>
+                                
                             </v-flex>
                             <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
                                 <v-text-field
@@ -87,9 +89,13 @@ export default {
 
     data () {
       return {
+
         autocompleteModel: 'Some Default Location...',
         vueGoogleAutocompleteLink: 'https://github.com/olefirenko/vue-google-autocomplete',
         autocomplete: '',
+
+        place: '',
+
         duration: '',
         address: {},
         clearable: true,
@@ -106,10 +112,16 @@ export default {
         ],
         list: [],
         totalTime : '24',
+
         addressName : '',
       }
     },
     
+        placeData : '0',
+      }
+    },
+    
+
 
     computed:{
         formIsValid () {
@@ -164,28 +176,37 @@ export default {
             })
             let size = this.list.length - 1;
             // this.timeDuration = ''
+ 
+            // place name 
+            try{
+                let bodyPlace = {
+                    place: this.list[size].name,
+                };
+
+                let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace)
+                this.placeData = placeResponse.data
+                console.log(placeResponse.data);
+            } catch (error){
+                console.log(error);
+            }
 
             //Time remaining !!
             try {
                 let bodyTime = {
                     duration: this.list[size].timeDuration,
                     remaining: this.totalTime,
+                    road: this.placeData,
                 };
                 let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
                 this.totalTime = timeResponse.data;
 
-            // dont forget condition if totalTime < 0, (wanning)
+            // dont forget condition if totalTime < 0, (warnning)
                 
                 console.log(timeResponse.data);
             } catch (error) {
                 console.log(error);
             }
-            
-            //place name 
-            // try{
-            //     let bodyPlace = {
-            //         place: this.list[size].name,
-            //     };
+
 
             //     let placeResponse = await axios.post('http://localhost:8000/search/', bodyPlace);
             //     console.log(placeResponse.data);
@@ -193,6 +214,9 @@ export default {
             //     console.log(error);
             // }
             this.addressName = '';
+
+            this.place = '';
+
             this.duration = '';
             
         },
