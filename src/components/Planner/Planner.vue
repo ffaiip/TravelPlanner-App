@@ -21,12 +21,11 @@
                         </v-layout>
                         <v-layout row class="mb-6">
                             <v-flex xs4 offset-xs3 offset-md2 offset-lg2>
-                                <v-text-field
-                                name="place"
-                                label="Place"
-                                id="place"
-                                v-model="place"
-                                required></v-text-field>
+                                    <input ref="autocomplete" 
+                                    placeholder="Search" 
+                                    class="search-location"
+                                    onfocus="value = ''" 
+                                    type="text" />
                             </v-flex>
                             <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
                                 <v-text-field
@@ -74,9 +73,10 @@
 <script>
 import axios from 'axios';  
 export default {
+
     data () {
       return {
-        place: '',
+        autocomplete: '',
         duration: '',
 
         headers: [
@@ -94,10 +94,29 @@ export default {
         totalTime : '24',
       }
     },
+    
+    // auto-complete
+      mounted() {
+    this.autocomplete = new google.maps.places.Autocomplete(
+      (this.$refs.autocomplete),
+      {types: ['geocode']}
+    );
+
+    this.autocomplete.addListener('place_changed', () => {
+      let place = this.autocomplete.getPlace();
+      let ac = place.address_components;
+      let lat = place.geometry.location.lat();
+      let lon = place.geometry.location.lng();
+      let city = ac[0]["short_name"];
+
+      console.log(`The user picked ${city} with the coordinates ${lat}, ${lon}`);
+    });
+  },
+
     computed:{
         formIsValid () {
             return this.time !== '' &&
-            this.place !== '' &&
+            this.autocomplete !== '' &&
             this.duration != ''
         },
     },
@@ -141,7 +160,8 @@ export default {
             // } catch (error){
             //     console.log(error);
             // }
-
+            this.place = '';
+            this.duration = '';
             
         },
     },
