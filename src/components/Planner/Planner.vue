@@ -21,12 +21,11 @@
                         </v-layout>
                         <v-layout row class="mb-6">
                             <v-flex xs4 offset-xs3 offset-md2 offset-lg2>
-                                <v-text-field
-                                name="place"
-                                label="Place"
-                                id="place"
-                                v-model="place"
-                                required></v-text-field>
+                                    <input ref="autocomplete" 
+                                    placeholder="Search" 
+                                    class="search-location"
+                                    onfocus="value = ''" 
+                                    type="text" />
                             </v-flex>
                             <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
                                 <v-text-field
@@ -72,11 +71,14 @@
 </template>
 
 <script>
+import axios from 'axios';  
 export default {
+
     data () {
       return {
-        place: '',
+        autocomplete: '',
         duration: '',
+
         headers: [
           {
             text: 'Time',
@@ -89,24 +91,78 @@ export default {
         list: [
           
         ],
+        totalTime : '24',
       }
     },
+    
+    // auto-complete
+      mounted() {
+    this.autocomplete = new google.maps.places.Autocomplete(
+      (this.$refs.autocomplete),
+      {types: ['geocode']}
+    );
+
+    this.autocomplete.addListener('place_changed', () => {
+      let place = this.autocomplete.getPlace();
+      let ac = place.address_components;
+      let lat = place.geometry.location.lat();
+      let lon = place.geometry.location.lng();
+      let city = ac[0]["short_name"];
+
+      console.log(`The user picked ${city} with the coordinates ${lat}, ${lon}`);
+    });
+  },
+
     computed:{
         formIsValid () {
             return this.time !== '' &&
-            this.place !== '' &&
+            this.autocomplete !== '' &&
             this.duration != ''
         },
     },
     methods: {
-        addPlace() {
+
+        async addPlace() {
+
             this.list.push({
                 time: this.time,
                 name: this.place,
                 timeDuration: this.duration,
                 completed: false,
             })
-            this.timeDuration = ''
+            let size = this.list.length - 1;
+            // this.timeDuration = ''
+
+            //Time remaining !!
+            try {
+                let bodyTime = {
+                    duration: this.list[size].timeDuration,
+                    remaining: this.totalTime,
+                };
+                let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
+                this.totalTime = timeResponse.data;
+
+            // dont forget condition if totalTime < 0, (wanning)
+                
+                console.log(timeResponse.data);
+            } catch (error) {
+                console.log(error);
+            }
+            
+            //place name 
+            // try{
+            //     let bodyPlace = {
+            //         place: this.list[size].name,
+            //     };
+
+            //     let placeResponse = await axios.post('http://localhost:8000/search/', bodyPlace);
+            //     console.log(placeResponse.data);
+            // } catch (error){
+            //     console.log(error);
+            // }
+            this.place = '';
+            this.duration = '';
+            
         },
     },
 }
