@@ -114,15 +114,10 @@ export default {
         totalTime : '24',
 
         addressName : '',
-      }
-    },
-    
         placeData : '0',
       }
     },
     
-
-
     computed:{
         formIsValid () {
             return
@@ -150,8 +145,6 @@ export default {
     },
 
     methods: {
-        
-
         /**
         * Callback method when the location is found.
         *
@@ -175,8 +168,6 @@ export default {
                 completed: false,
             })
             let size = this.list.length - 1;
-            // this.timeDuration = ''
- 
             // place name 
             try{
                 let bodyPlace = {
@@ -185,6 +176,7 @@ export default {
 
                 let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace)
                 this.placeData = placeResponse.data
+                // time duration between place
                 console.log(placeResponse.data);
             } catch (error){
                 console.log(error);
@@ -206,13 +198,6 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-
-
-            //     let placeResponse = await axios.post('http://localhost:8000/search/', bodyPlace);
-            //     console.log(placeResponse.data);
-            // } catch (error){
-            //     console.log(error);
-            // }
             this.addressName = '';
 
             this.place = '';
