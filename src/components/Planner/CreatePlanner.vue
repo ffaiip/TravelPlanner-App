@@ -83,46 +83,46 @@
 <script>
 export default {
     data() {
-        return {
-            topic: '',
-            imageURL: '',
-            date: null,
-            dateFormatted: null,
-            menu: false,
-            picker: null,
-            landscape: false,
-        }
+      return {
+          topic: '',
+          imageURL: '',
+          date: null,
+          dateFormatted: null,
+          menu: false,
+          picker: null,
+          landscape: false,
+        };
     },
-    computed: {
-        formIsValid () {
-            return this.topic !== '' &&
-            this.imageURL !== ''
+  computed: {
+      formIsValid () {
+          return this.topic !== '' &&
+          this.imageURL !== '';
         },
-        computedDateFormatted () {
-            return this.formatDate(this.date)
-        }
+      computedDateFormatted() {
+          return this.formatDate(this.date);
+        },
     },
-    watch: {
-      date (val) {
-        this.dateFormatted = this.formatDate(this.date)
-      }
-    },
-
-    methods: {
-      formatDate (date) {
-        if (!date) return null
-
-        const [year, month, day] = date.split('-')
-        return `${month}/${day}/${year}`
+  watch: {
+      date(val) {
+        this.dateFormatted = this.formatDate(this.date);
       },
-      parseDate (date) {
-        if (!date) return null
+    },
 
-        const [month, day, year] = date.split('/')
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-      }
-    }
-}
+  methods: {
+      formatDate(date) {
+        if (!date) return null;
+
+        const [year, month, day] = date.split('-');
+        return `${month}/${day}/${year}`;
+      },
+      parseDate(date) {
+        if (!date) return null;
+
+        const [month, day, year] = date.split('/');
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      },
+    },
+};
 </script>
 
 
