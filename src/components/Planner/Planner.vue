@@ -52,7 +52,7 @@
                         <v-spacer></v-spacer>
                         <v-btn 
                         class="primary"
-                        :disabled="!formIsValid"
+                        
                         @click="addPlace"
                         >Add place</v-btn>
                     </v-card-actions>
@@ -106,14 +106,14 @@ export default {
         ],
         list: [],
         totalTime : '24',
+        addressName : '',
       }
     },
     
 
     computed:{
         formIsValid () {
-            return this.time !== '' &&
-            this. autocomplete!== '' &&
+            return
             this.duration != ''
         },
 
@@ -139,11 +139,25 @@ export default {
 
     methods: {
 
+        /**
+        * Callback method when the location is found.
+        *
+        * @param {Object} addressData Data of the found location
+        */
+        getAddressData(addressData) {
+            this.address = addressData;
+            var addressStringify = JSON.stringify(this.address);
+            var addressObj= JSON.parse(addressStringify)
+            this.addressName = addressObj['name']
+            // edok name tong nee
+            console.log(this.addressName);
+        },
+
         async addPlace() {
 
             this.list.push({
                 time: this.time,
-                name: this.place,
+                name: this.addressName,
                 timeDuration: this.duration,
                 completed: false,
             })
@@ -177,25 +191,11 @@ export default {
             // } catch (error){
             //     console.log(error);
             // }
-            this.place = '';
+            this.addressName = '';
             this.duration = '';
             
         },
        
-        /**
-        * Callback method when the location is found.
-        *
-        * @param {Object} addressData Data of the found location
-        * @param {Object} placeResultData PlaceResult object
-        * @param {String} id Input container ID
-        */
-        getAddressData(addressData) {
-            this.address = addressData;
-            var addressStringify = JSON.stringify(this.address);
-            var addressObj= JSON.parse(addressStringify)
-            // edok name tong nee
-            console.log(addressObj['name']);
-        },
     },
 }
 </script>
