@@ -21,11 +21,12 @@
                         </v-layout>
                         <v-layout row class="mb-6">
                             <v-flex xs4 offset-xs3 offset-md2 offset-lg2>
-                                    <input ref="autocomplete" 
-                                    placeholder="Search" 
-                                    class="search-location"
-                                    onfocus="value = ''" 
-                                    type="text" />
+                                <v-text-field
+                                name="place"
+                                label="Place"
+                                id="place"
+                                v-model="place"
+                                required></v-text-field>
                             </v-flex>
                             <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
                                 <v-text-field
@@ -76,7 +77,7 @@ export default {
 
     data () {
       return {
-        autocomplete: '',
+        place: '',
         duration: '',
 
         headers: [
@@ -92,26 +93,27 @@ export default {
           
         ],
         totalTime : '24',
+        placeData : '0',
       }
     },
     
     // auto-complete
-      mounted() {
-    this.autocomplete = new google.maps.places.Autocomplete(
-      (this.$refs.autocomplete),
-      {types: ['geocode']}
-    );
+//       mounted() {
+//     this.autocomplete = new google.maps.places.Autocomplete(
+//       (this.$refs.autocomplete),
+//       {types: ['geocode']}
+//     );
 
-    this.autocomplete.addListener('place_changed', () => {
-      let place = this.autocomplete.getPlace();
-      let ac = place.address_components;
-      let lat = place.geometry.location.lat();
-      let lon = place.geometry.location.lng();
-      let city = ac[0]["short_name"];
-
-      console.log(`The user picked ${city} with the coordinates ${lat}, ${lon}`);
-    });
-  },
+//     this.autocomplete.addListener('place_changed', () => {
+//       let place = this.autocomplete.getPlace();
+//       let ac = place.address_components;
+//       let lat = place.geometry.location.lat();
+//       let lon = place.geometry.location.lng();
+//       let city = ac[0]["short_name"];
+//     // this.place = city
+//       console.log(`The user picked ${city} with the coordinates ${lat}, ${lon}`);
+//     });
+//   },
 
     computed:{
         formIsValid () {
@@ -132,34 +134,37 @@ export default {
             })
             let size = this.list.length - 1;
             // this.timeDuration = ''
+ 
+            // place name 
+            try{
+                let bodyPlace = {
+                    place: this.list[size].name,
+                };
+
+                let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace)
+                this.placeData = placeResponse.data
+                console.log(placeResponse.data);
+            } catch (error){
+                console.log(error);
+            }
 
             //Time remaining !!
             try {
                 let bodyTime = {
                     duration: this.list[size].timeDuration,
                     remaining: this.totalTime,
+                    road: this.placeData,
                 };
                 let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
                 this.totalTime = timeResponse.data;
 
-            // dont forget condition if totalTime < 0, (wanning)
+            // dont forget condition if totalTime < 0, (warnning)
                 
                 console.log(timeResponse.data);
             } catch (error) {
                 console.log(error);
             }
-            
-            //place name 
-            // try{
-            //     let bodyPlace = {
-            //         place: this.list[size].name,
-            //     };
 
-            //     let placeResponse = await axios.post('http://localhost:8000/search/', bodyPlace);
-            //     console.log(placeResponse.data);
-            // } catch (error){
-            //     console.log(error);
-            // }
             this.place = '';
             this.duration = '';
             
