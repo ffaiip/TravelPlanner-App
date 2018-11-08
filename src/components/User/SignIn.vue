@@ -1,103 +1,44 @@
 <template>
-  <v-layout row>
-    <v-flex xs12>
+  <v-layout>
+    <v-flex xs12 sm6 offset-sm3>
       <v-card>
         <v-card-media
-            src="https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg"
-            height="300px"
-        >
-          <v-layout
-            column
-            fill-height
-          >
-            <v-card-title>
-              <v-btn dark icon>
-                <v-icon>chevron_left</v-icon>
-              </v-btn>
+          src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
+          aspect-ratio="2.75"
+        ></v-card-media>
 
-              <v-spacer></v-spacer>
-
-              <v-btn dark icon class="mr-3">
-                <v-icon>edit</v-icon>
-              </v-btn>
-
-              <v-btn dark icon>
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-            </v-card-title>
-
-            <v-spacer></v-spacer>
-
-            <v-card-title class="white--text pl-5 pt-5">
-              <div class="display-1 pl-5 pt-5">Ali Conners</div>
-            </v-card-title>
+        <v-card-title primary-title>
+          <div>
+            <h1 class="headline mb-0">Sign in</h1>
+          </div>
+        </v-card-title>
+        <v-layout row>
+          <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+            <v-card-media
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png"
+              aspect-ratio="1"
+              height="50px"
+              width="50px"
+              ></v-card-media>
+          </v-flex>
+          <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+            <v-card-media
+                src="https://i0.wp.com/www.inferencelab.com/wp-content/uploads/github-bb449e0ffbacbcb7f9c703db85b1cf0b.png?fit=1125%2C417"
+                height="50px"
+                width="150px"
+              ></v-card-media>
+          </v-flex>
+        </v-layout>
+        <v-card-actions >
+          <v-layout row>
+            <v-flex>
+              <v-btn class="primary">Sign in with Google account </v-btn>
+            </v-flex>
+            <v-flex>
+              <v-btn class="primary">Sign in with Github account</v-btn>
+            </v-flex>
           </v-layout>
-        </v-card-media>
-
-        <v-list two-line>
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon color="indigo">phone</v-icon>
-            </v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>(650) 555-1234</v-list-tile-title>
-              <v-list-tile-sub-title>Mobile</v-list-tile-sub-title>
-            </v-list-tile-content>
-
-            <v-list-tile-action>
-              <v-icon>chat</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-
-          <v-list-tile>
-            <v-list-tile-action></v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>(323) 555-6789</v-list-tile-title>
-              <v-list-tile-sub-title>Work</v-list-tile-sub-title>
-            </v-list-tile-content>
-
-            <v-list-tile-action>
-              <v-icon>chat</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-
-          <v-divider inset></v-divider>
-
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon color="indigo">mail</v-icon>
-            </v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>aliconnors@example.com</v-list-tile-title>
-              <v-list-tile-sub-title>Personal</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-
-          <v-list-tile>
-            <v-list-tile-action></v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>ali_connors@example.com</v-list-tile-title>
-              <v-list-tile-sub-title>Work</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-
-          <v-divider inset></v-divider>
-
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon color="indigo">location_on</v-icon>
-            </v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>1400 Main Street</v-list-tile-title>
-              <v-list-tile-sub-title>Orlando, FL 79938</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
+        </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>
