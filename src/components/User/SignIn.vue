@@ -1,104 +1,77 @@
 <template>
-  <v-layout row>
-    <v-flex xs12>
-      <v-card>
-        <v-card-media
-            src="https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg"
-            height="300px"
-        >
-          <v-layout
-            column
-            fill-height
-          >
-            <v-card-title>
-              <v-btn dark icon>
-                <v-icon>chevron_left</v-icon>
-              </v-btn>
-
-              <v-spacer></v-spacer>
-
-              <v-btn dark icon class="mr-3">
-                <v-icon>edit</v-icon>
-              </v-btn>
-
-              <v-btn dark icon>
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-            </v-card-title>
-
+  <v-container>
+    <v-layout row>
+      <v-flex xs12>
+        <v-card>
+          <v-form>
+            <v-layout row class="mb-6">
+              <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
+                <v-text-field
+                  name="spendtime"
+                  label="Spend time"
+                  id="spendtime"
+                  v-model="spendtime"
+                  required></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-form>
+          <v-card-actions>
             <v-spacer></v-spacer>
+              <v-btn 
+              class="primary"
+              @click="addPlace"
+              >Add place</v-btn>
+          </v-card-actions>
+          <v-list two-line>
+            <template v-for="(item, index) in items">
+              <v-divider
+                v-if="item.divider"
+                :inset="item.inset"
+                :key="index"
+              ></v-divider>
 
-            <v-card-title class="white--text pl-5 pt-5">
-              <div class="display-1 pl-5 pt-5">Ali Conners</div>
-            </v-card-title>
-          </v-layout>
-        </v-card-media>
+              <v-list-tile
+                v-else
+                :key="item.title"
+                avatar
+              >
+                <v-list-tile-avatar>
+                  <img :src="item.avatar">
+                </v-list-tile-avatar>
 
-        <v-list two-line>
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon color="indigo">phone</v-icon>
-            </v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>(650) 555-1234</v-list-tile-title>
-              <v-list-tile-sub-title>Mobile</v-list-tile-sub-title>
-            </v-list-tile-content>
-
-            <v-list-tile-action>
-              <v-icon>chat</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-
-          <v-list-tile>
-            <v-list-tile-action></v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>(323) 555-6789</v-list-tile-title>
-              <v-list-tile-sub-title>Work</v-list-tile-sub-title>
-            </v-list-tile-content>
-
-            <v-list-tile-action>
-              <v-icon>chat</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-
-          <v-divider inset></v-divider>
-
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon color="indigo">mail</v-icon>
-            </v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>aliconnors@example.com</v-list-tile-title>
-              <v-list-tile-sub-title>Personal</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-
-          <v-list-tile>
-            <v-list-tile-action></v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>ali_connors@example.com</v-list-tile-title>
-              <v-list-tile-sub-title>Work</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-
-          <v-divider inset></v-divider>
-
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon color="indigo">location_on</v-icon>
-            </v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>1400 Main Street</v-list-tile-title>
-              <v-list-tile-sub-title>Orlando, FL 79938</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-card>
-    </v-flex>
-  </v-layout>
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="item.title"></v-list-tile-title>
+                  <v-list-tile-sub-title v-html="item.spendtime"></v-list-tile-sub-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+          </v-list>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
+
+<script>
+  export default {
+    data () {
+      return {
+        spendtime: '',
+        items: [],
+      }
+    },
+
+    methods: {
+      addPlace () {
+        this.items.push({
+          avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+          title: 'Brunch this weekend?',
+          spendtime: this.spendtime,
+          completed: false,
+        },
+        { divider: true, inset: true },),
+        this.spendtime = ''
+      },
+    },
+  }
+</script>

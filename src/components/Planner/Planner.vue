@@ -16,7 +16,7 @@
                     <v-form>
                         <v-layout align-center justify-center row class="pb-6">
                             <v-flex xs4>
-                                <v-time-picker v-model="time" :landscape="landscape"></v-time-picker>
+                                <v-time-picker v-model="time"></v-time-picker>
                             </v-flex>
                         </v-layout>
                         <v-layout row class="mb-6">
@@ -40,10 +40,10 @@
                             </v-flex>
                             <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
                                 <v-text-field
-                                name="duration"
-                                label="Duration"
-                                id="duration"
-                                v-model="duration"
+                                name="spendtime"
+                                label="Spend time"
+                                id="spendtime"
+                                v-model="spendtime"
                                 required></v-text-field>
                             </v-flex>
                         </v-layout>
@@ -52,7 +52,7 @@
                         <v-spacer></v-spacer>
                         <v-btn 
                         class="primary"
-                        
+                        :disabled="!formIsValid"
                         @click="addPlace"
                         >Add place</v-btn>
                     </v-card-actions>
@@ -61,21 +61,49 @@
         </v-layout>
         <v-layout row>
             <v-flex xs12>
-                <v-data-table
-                    :headers="headers"
-                    :items="list"
-                    hide-actions
-                    class="elevation-1"
-                >
-                    <template slot="items" slot-scope="props">
-                        <td>{{ props.item.time }}</td>
-                        <td class="text-xs2">{{ props.item.name }}</td>
-                        <td class="text-xs2">{{ props.item.timeDuration }}</td>
-                    </template>
-                    <template slot="no-data">
-
-                    </template>
-                </v-data-table>
+                <v-card>
+                    <v-list two-line>
+                        <template v-for="(item, index) in list">
+                            <v-divider
+                                v-if="item.divider"
+                                :inset="item.inset"
+                                :key="index"
+                            ></v-divider>
+                            <v-list-tile
+                                v-else-if="item.duration"
+                                :key="item.duration"
+                                avatar
+                            >   
+                                <v-layout justify-center>
+                                    <v-list-action>
+                                        <v-icon>directions_car</v-icon>
+                                    </v-list-action>
+                                    <v-list-tile-content>
+                                        <v-list-tile-title>: {{ item.duration }}</v-list-tile-title>
+                                    </v-list-tile-content>
+                                </v-layout>
+                                
+                            </v-list-tile>
+                            <v-list-tile
+                                v-else
+                                :key="item.name"
+                                avatar
+                            >
+                                <v-list-tile-avatar>
+                                    <img :src="item.avatar">
+                                </v-list-tile-avatar>
+                                <v-list-tile-content>
+                                    <v-list-tile-title v-html="item.name"></v-list-tile-title>
+                                    <v-list-tile-sub-title>Spend time: {{ item.spendtime }} hours</v-list-tile-sub-title>
+                                </v-list-tile-content>
+                                <v-list-tile-action>
+                                    <v-list-tile-action-text>Time: {{ item.time }}</v-list-tile-action-text>
+                                </v-list-tile-action>
+                
+                            </v-list-tile>
+                        </template>
+                    </v-list>
+                </v-card>
             </v-flex>
         </v-layout>
     </v-container>
@@ -90,31 +118,22 @@ export default {
         autocompleteModel: 'Some Default Location...',
         vueGoogleAutocompleteLink: 'https://github.com/olefirenko/vue-google-autocomplete',
         autocomplete: '',
-        duration: '',
+        spendtime: '',
         address: {},
         clearable: true,
         enableGeolocation: false,
-
-        headers: [
-          {
-            text: 'Time',
-            align: 'left',
-            value: 'time',
-          },
-          { text: 'Places', value: 'name', },
-          { text: 'Duration', value: 'timeDuration', },
-        ],
         list: [],
         totalTime : '24',
         addressName : '',
+        placeData: '0',
       }
     },
     
 
     computed:{
         formIsValid () {
-            return
-            this.duration != ''
+            return this.addressName != '' &&
+            this.spendtime != ''
         },
 
         outputJsData() {
@@ -138,7 +157,7 @@ export default {
     },
 
     methods: {
-        
+
 
         /**
         * Callback method when the location is found.
@@ -156,20 +175,70 @@ export default {
 
         async addPlace() {
 
-            this.list.push({
+
+
+            
+            if(this.list.length >= 1){
+                
+            try{
+                let bodyPlace = {
+                place: this.addressName,
+                };
+                console.log(this.addressName);
+                console.log("เข้า");
+
+                let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
+                this.placeData = placeResponse.data;
+                console.log(placeResponse.data);
+            } catch (error){
+                console.log(error);
+            }
+
+            this.list.push({ divider: true, inset: true },
+                {duration: this.placeData},
+                { divider: true, inset: true },{
+                    avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
                 time: this.time,
                 name: this.addressName,
-                timeDuration: this.duration,
+                spendtime: this.spendtime,
                 completed: false,
-            })
+            }) 
+
+            }
+            else{
+            this.list.push({
+                avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+                time: this.time,
+                name: this.addressName,
+                spendtime: this.spendtime,
+                completed: false,
+            }) 
+                        // place name 
+            try{
+                let bodyPlace = {
+                place: this.list[size].name,
+                };
+                let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
+                this.placeData = placeResponse.data;
+                console.log(placeResponse.data);
+            } catch (error){
+                console.log(error);
+                }
+            }
+
             let size = this.list.length - 1;
-            // this.timeDuration = ''
+
+
+            // if(this.placeData !== '0'){
+            //     this.list.push({duration: this.placeData})
+            // }
 
             //Time remaining !!
             try {
                 let bodyTime = {
-                    duration: this.list[size].timeDuration,
+                    spendtime: this.list[size].spendtime,
                     remaining: this.totalTime,
+                    road: this.placeData,
                 };
                 let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
                 this.totalTime = timeResponse.data;
@@ -180,20 +249,9 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-            
-            //place name 
-            // try{
-            //     let bodyPlace = {
-            //         place: this.list[size].name,
-            //     };
 
-            //     let placeResponse = await axios.post('http://localhost:8000/search/', bodyPlace);
-            //     console.log(placeResponse.data);
-            // } catch (error){
-            //     console.log(error);
-            // }
             this.addressName = '';
-            this.duration = '';
+            this.spendtime = '';
             
         },
        

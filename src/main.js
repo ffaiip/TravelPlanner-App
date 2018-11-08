@@ -29,6 +29,7 @@ import {
   VDataTable,
   VTimeline,
   VAutocomplete,
+  VDivider,
 } from 'vuetify';
 
 Vue.use(Vuetify, {
@@ -52,6 +53,7 @@ Vue.use(Vuetify, {
     VDataTable,
     VTimeline,
     VAutocomplete,
+    VDivider,
   },
   theme: {
     primary: '#FFAB00',
