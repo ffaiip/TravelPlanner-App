@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router/index';
-
 import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
-
 import GSignInButton from 'vue-google-signin-button'
+import FBSignInButton from 'vue-facebook-signin-button'
+
+Vue.use(FBSignInButton)
 
 Vue.use(GSignInButton)
 
