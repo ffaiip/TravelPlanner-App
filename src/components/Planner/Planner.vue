@@ -108,6 +108,16 @@
                 </v-card>
             </v-flex>
         </v-layout>
+        <v-layout row>
+            <v-flex xs12>
+                <v-card>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <div>Time remaining: {{ this.totalTime }}</div>
+                    </v-card-actions>
+                </v-card>
+            </v-flex>
+        </v-layout>
     </v-container>
 </template>
 
@@ -177,10 +187,7 @@ export default {
         },
 
         async addPlace() {
-
-
-
-            
+  
             if(this.list.length >= 1){
                 
             try{
@@ -188,8 +195,6 @@ export default {
                 place: this.addressName,
                 };
                 console.log(this.addressName);
-                console.log("เข้า");
-
                 let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
                 this.placeData = placeResponse.data;
                 console.log(placeResponse.data);
@@ -209,6 +214,18 @@ export default {
 
             }
             else{
+            
+             // place name 
+            try{
+                let bodyPlace = {
+                place: this.addressName,
+                };
+                let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
+                console.log(placeResponse.data);
+            } catch (error){
+                console.log(error);
+                }
+
             this.list.push({
                 avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
                 time: this.time,
@@ -216,25 +233,10 @@ export default {
                 spendtime: this.spendtime,
                 completed: false,
             }) 
-                        // place name 
-            try{
-                let bodyPlace = {
-                place: this.list[size].name,
-                };
-                let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
-                this.placeData = placeResponse.data;
-                console.log(placeResponse.data);
-            } catch (error){
-                console.log(error);
-                }
+
             }
 
             let size = this.list.length - 1;
-
-
-            // if(this.placeData !== '0'){
-            //     this.list.push({duration: this.placeData})
-            // }
 
             //Time remaining !!
             try {
@@ -254,6 +256,7 @@ export default {
             }
 
             this.addressName = '';
+            this.address = '';
             this.spendtime = '';
             
         },
