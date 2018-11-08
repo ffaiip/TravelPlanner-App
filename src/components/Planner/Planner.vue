@@ -20,6 +20,7 @@
                             </v-flex>
                         </v-layout>
                         <v-layout row class="mb-6">
+
                             <v-flex xs4 offset-xs2 offset-md2 offset-lg2>
                                 <vuetify-google-autocomplete
                                 id="address"
@@ -37,6 +38,7 @@
                                 v-on:placechanged="getAddressData"
                                 v-on:no-results-found="noResultsFound"
                                 ></vuetify-google-autocomplete>
+                                
                             </v-flex>
                             <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
                                 <v-text-field
@@ -115,6 +117,7 @@ export default {
 
     data () {
       return {
+
         autocompleteModel: 'Some Default Location...',
         vueGoogleAutocompleteLink: 'https://github.com/olefirenko/vue-google-autocomplete',
         autocomplete: '',
@@ -124,12 +127,12 @@ export default {
         enableGeolocation: false,
         list: [],
         totalTime : '24',
+
         addressName : '',
         placeData: '0',
       }
     },
     
-
     computed:{
         formIsValid () {
             return this.addressName != '' &&
@@ -243,7 +246,7 @@ export default {
                 let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
                 this.totalTime = timeResponse.data;
 
-            // dont forget condition if totalTime < 0, (wanning)
+            // dont forget condition if totalTime < 0, (warnning)
                 
                 console.log(timeResponse.data);
             } catch (error) {
