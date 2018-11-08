@@ -34,17 +34,19 @@
             <v-flex>
               <g-signin-button
                 :params="googleSignInParams"
-                @success="onSignInSuccess"
-                @error="onSignInError"
+                @success="onSignInSuccessGoogle"
+                @error="onSignInErrorGoogle"
                 @click="signIn">
                 Sign in with Google account
               </g-signin-button>
             </v-flex>
             <v-flex>
-              <v-btn 
-              class="primary"
-              @click="signIn"
-              >Sign in with Github account</v-btn>
+              <fb-signin-button
+                :params="fbSignInParams"
+                @success="onSignInSuccessFB"
+                @error="onSignInErrorFB">
+                Sign in with Facebook
+              </fb-signin-button>
             </v-flex>
           </v-layout>
         </v-card-actions>
@@ -65,6 +67,10 @@ export default {
        */
       googleSignInParams: {
         client_id: '464916650517-c62c52q1j7jhvbuksr8a16i48d62au4t.apps.googleusercontent.com'
+      },
+      fbSignInParams: {
+        scope: 'email,user_likes',
+        return_scopes: true
       }
     }
   },
@@ -72,15 +78,23 @@ export default {
     signIn () {
       alert('sign in')
     },
-    onSignInSuccess (googleUser) {
+    onSignInSuccessGoogle (googleUser) {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
       // See https://developers.google.com/identity/sign-in/web/reference#users
       const profile = googleUser.getBasicProfile() // etc etc
     },
-    onSignInError (error) {
+    onSignInErrorGoogle (error) {
       // `error` contains any error occurred.
       console.log('OH NOES', error)
-    }
+    },
+    onSignInSuccess (response) {
+      FB.api('/me', dude => {
+        console.log(`Good to see you, ${dude.name}.`)
+      })
+    },
+    onSignInError (error) {
+      console.log('OH NOES', error)
+    },
   }
 }
 </script>
@@ -94,5 +108,13 @@ export default {
   background-color: #3c82f7;
   color: #fff;
   box-shadow: 0 3px 0 #0f69ff;
+}
+.fb-signin-button {
+  /* This is where you control how the button looks. Be creative! */
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background-color: #4267b2;
+  color: #fff;
 }
 </style>
