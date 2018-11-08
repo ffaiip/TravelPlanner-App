@@ -237,7 +237,6 @@ export default {
 
             let size = this.list.length - 1;
 
-            
             //Time remaining !!
             try {
                 let bodyTime = {
