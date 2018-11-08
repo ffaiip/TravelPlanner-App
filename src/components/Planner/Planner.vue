@@ -140,6 +140,7 @@ export default {
 
         addressName : '',
         placeData: '0',
+        placeList: [],
       }
     },
     
@@ -187,16 +188,25 @@ export default {
         },
 
         async addPlace() {
-  
+
+            this.placeList.push({placeName: this.addressName});
+            console.log(this.placeList);
+
             if(this.list.length >= 1){
+
+            let placeOrigin = this.placeList.length-2;
+            let placeDestination = this.placeList.length-1;
                 
             try{
                 let bodyPlace = {
-                place: this.addressName,
+                place: this.placeList[placeDestination].placeName,
+                origin: this.placeList[placeOrigin].placeName,
                 };
                 console.log(this.addressName);
-                let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
+
+                let placeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/place/', bodyPlace);
                 this.placeData = placeResponse.data;
+
                 console.log(placeResponse.data);
             } catch (error){
                 console.log(error);
@@ -214,17 +224,6 @@ export default {
 
             }
             else{
-            
-             // place name 
-            try{
-                let bodyPlace = {
-                place: this.addressName,
-                };
-                let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
-                console.log(placeResponse.data);
-            } catch (error){
-                console.log(error);
-                }
 
             this.list.push({
                 avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
@@ -245,7 +244,7 @@ export default {
                     remaining: this.totalTime,
                     road: this.placeData,
                 };
-                let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
+                let timeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/time-remain/', bodyTime);
                 this.totalTime = timeResponse.data;
 
             // dont forget condition if totalTime < 0, (warnning)
