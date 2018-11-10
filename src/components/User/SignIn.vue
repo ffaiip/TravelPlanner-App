@@ -81,7 +81,12 @@ export default {
     onSignInSuccessGoogle (googleUser) {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
       // See https://developers.google.com/identity/sign-in/web/reference#users
-      const profile = googleUser.getBasicProfile() // etc etc
+      var profile = googleUser.getBasicProfile(); // etc etc
+      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail()); 
+      // This is null if the 'email' scope is not present.
     },
     onSignInErrorGoogle (error) {
       // `error` contains any error occurred.
@@ -95,6 +100,7 @@ export default {
     onSignInError (error) {
       console.log('OH NOES', error)
     },
+    
   }
 }
 </script>
@@ -107,7 +113,7 @@ export default {
   border-radius: 3px;
   background-color: #3c82f7;
   color: #fff;
-  box-shadow: 0 3px 0 #0f69ff;
+  /* box-shadow: 0 3px 0 #0f69ff; */
 }
 .fb-signin-button {
   /* This is where you control how the button looks. Be creative! */
@@ -117,4 +123,6 @@ export default {
   background-color: #4267b2;
   color: #fff;
 }
+
 </style>
+

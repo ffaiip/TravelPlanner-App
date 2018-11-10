@@ -10,7 +10,7 @@ Vue.use(FBSignInButton)
 Vue.use(GSignInButton)
 
 Vue.use(VuetifyGoogleAutocomplete, {
-  apiKey: 'AIzaSyBENVTYtp6UnlTVs8gmLomS1NNlJqK7-ww', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
+  apiKey: 'G2nkMSQX_sKXya0cKY-GYvFY', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
 });
 
 import {
