@@ -6,7 +6,6 @@
           src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
           aspect-ratio="2.75"
         ></v-card-media>
-
         <v-card-title primary-title>
           <div>
             <h1 class="headline mb-0">Sign in</h1>
@@ -21,17 +20,7 @@
               width="50px"
               ></v-card-media>
           </v-flex>
-          <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
-            <v-card-media
-                src="https://i0.wp.com/www.inferencelab.com/wp-content/uploads/github-bb449e0ffbacbcb7f9c703db85b1cf0b.png?fit=1125%2C417"
-                height="50px"
-                width="150px"
-              ></v-card-media>
-          </v-flex>
-        </v-layout>
-        <v-card-actions >
-          <v-layout row>
-            <v-flex>
+          <v-flex offset-xs3 offset-lg1>
               <g-signin-button
                 :params="googleSignInParams"
                 @success="onSignInSuccessGoogle"
@@ -40,7 +29,17 @@
                 Sign in with Google account
               </g-signin-button>
             </v-flex>
-            <v-flex>
+        </v-layout>
+        <v-card-actions >
+          <v-layout row>
+            <v-flex xs1 offset-xs3 offset-md2 offset-lg1>
+              <v-card-media
+                src="https://i0.wp.com/www.inferencelab.com/wp-content/uploads/github-bb449e0ffbacbcb7f9c703db85b1cf0b.png?fit=1125%2C417"
+                height="50px"
+                width="150px"
+              ></v-card-media>
+            </v-flex>
+            <v-flex offset-xs3 offset-lg2>
               <fb-signin-button
                 :params="fbSignInParams"
                 @success="onSignInSuccessFB"
@@ -87,12 +86,12 @@ export default {
       // `error` contains any error occurred.
       console.log('OH NOES', error)
     },
-    onSignInSuccess (response) {
+    onSignInSuccessFB (response) {
       FB.api('/me', dude => {
         console.log(`Good to see you, ${dude.name}.`)
       })
     },
-    onSignInError (error) {
+    onSignInErrorFB (error) {
       console.log('OH NOES', error)
     },
   }
