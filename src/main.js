@@ -30,6 +30,7 @@ import {
   VTimeline,
   VAutocomplete,
   VDivider,
+  VCombobox,
 } from 'vuetify';
 
 Vue.use(Vuetify, {
@@ -54,6 +55,7 @@ Vue.use(Vuetify, {
     VTimeline,
     VAutocomplete,
     VDivider,
+    VCombobox,
   },
   theme: {
     primary: '#FFAB00',

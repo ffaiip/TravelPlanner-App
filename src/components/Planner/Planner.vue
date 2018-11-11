@@ -15,10 +15,47 @@
                     </v-card-text>
                     <v-form>
                         <v-layout align-center justify-center row class="pb-6">
-                            <v-flex xs4>
-                                <v-time-picker v-model="time"></v-time-picker>
+                        <v-flex xs2><h4>Start Time</h4></v-flex>
+                            <v-flex xs1>
+                                <v-combobox
+                                    v-model="selectStartTimeHour"
+                                    :items="hourList"
+                                    :disabled = this.disabled
+                                ></v-combobox>
+                            </v-flex>
+                            <v-flex xs1>
+                                <h3>:</h3>
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-combobox
+                                    v-model="selectStartTimeMin"
+                                    :items="minList"
+                                    :disabled = this.disabled
+                                ></v-combobox>
                             </v-flex>
                         </v-layout>
+
+                        <v-layout align-center justify-center row class="pb-6">
+                        <v-flex xs2><h4>End Time </h4></v-flex>
+                            <v-flex xs1>
+                                <v-combobox
+                                    v-model="selectEndTimeHour"
+                                    :items="hourList"
+                                    :disabled = this.disabled
+                                ></v-combobox>
+                            </v-flex>
+                            <v-flex xs1>
+                                <h3>:</h3>
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-combobox
+                                    v-model="selectEndTimeMin"
+                                    :items="minList"
+                                    :disabled = this.disabled
+                                ></v-combobox>
+                            </v-flex>
+                        </v-layout>
+
                         <v-layout row class="mb-6">
 
                             <v-flex xs4 offset-xs2 offset-md2 offset-lg2>
@@ -127,20 +164,48 @@ export default {
 
     data () {
       return {
-
+        //auto-complete
         autocompleteModel: 'Some Default Location...',
         vueGoogleAutocompleteLink: 'https://github.com/olefirenko/vue-google-autocomplete',
         autocomplete: '',
-        spendtime: '',
         address: {},
         clearable: true,
         enableGeolocation: false,
-        list: [],
-        totalTime : '24',
 
+        //data of place
+        list: [],
         addressName : '',
         placeData: '0',
         placeList: [],
+
+        //time data
+        selectStartTimeHour: '00',
+        selectStartTimeMin: '00',
+
+        selectEndTimeHour: '00',
+        selectEndTimeMin: '00',
+
+        hourList: [
+          '00', '01', '02', '03', '04',
+          '05', '06', '07', '08', '09',
+          '10', '11', '12', '13', '14',
+          '15', '16', '17', '18', '19',
+          '20', '21', '22', '23'],
+        minList: [
+          '00', '01', '02', '03', '04', '05', '06', '07', '08', '09',
+          '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
+          '20', '21', '22', '23', '24', '25', '26', '27', '28', '29',
+          '30', '31', '32', '33', '34', '35', '36', '37', '38', '39',
+          '40', '41', '42', '43', '44', '45', '46', '47', '48', '49',
+          '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'],
+        
+        timePicker: '',
+        totalTime : '',
+        spendtime: '',
+        totalmin: '',
+        totalhour: '',
+        disabled: false,
+
       }
     },
     
@@ -186,80 +251,117 @@ export default {
             // edok name tong nee
             console.log(this.addressName);
         },
+        
 
         async addPlace() {
 
-            this.placeList.push({placeName: this.addressName});
-            console.log(this.placeList);
-
-            if(this.list.length >= 1){
-
-            let placeOrigin = this.placeList.length-2;
-            let placeDestination = this.placeList.length-1;
-                
-            try{
-                let bodyPlace = {
-                place: this.placeList[placeDestination].placeName,
-                origin: this.placeList[placeOrigin].placeName,
-                };
-                console.log(this.addressName);
-
-                let placeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/place/', bodyPlace);
-                this.placeData = placeResponse.data;
-
-                console.log(placeResponse.data);
-            } catch (error){
-                console.log(error);
-            }
-
-            this.list.push({ divider: true, inset: true },
-                {duration: this.placeData},
-                { divider: true, inset: true },{
-                    avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
-                time: this.time,
-                name: this.addressName,
-                spendtime: this.spendtime,
-                completed: false,
-            }) 
-
-            }
-            else{
-
-            this.list.push({
-                avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
-                time: this.time,
-                name: this.addressName,
-                spendtime: this.spendtime,
-                completed: false,
-            }) 
-
-            }
-
-            let size = this.list.length - 1;
-
-            //Time remaining !!
-            try {
-                let bodyTime = {
-                    spendtime: this.list[size].spendtime,
-                    remaining: this.totalTime,
-                    road: this.placeData,
-                };
-                let timeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/time-remain/', bodyTime);
-                this.totalTime = timeResponse.data;
-
-            // dont forget condition if totalTime < 0, (warnning)
-                
-                console.log(timeResponse.data);
-            } catch (error) {
-                console.log(error);
-            }
-
-            this.addressName = '';
-            this.address = '';
-            this.spendtime = '';
+            //set time table
+            this.setStartTime = this.selectStartTimeHour + ":" + this.selectStartTimeMin;
             
+            //collect first place list
+            this.placeList.push({placeName: this.addressName});
+
+            /** Show real total minute */
+            let minDigit = function(totalmin){
+                if(totalmin < 10) return '0'+totalmin;
+                else return totalmin;
+            }
+            let timeTable = function(selectEndTimeHour,selectEndTimeMin,selectStartTimeHour,selectStartTimeMin){
+                var totalhour = 0;
+                var totalmin = 0;
+                if (selectEndTimeHour > selectStartTimeHour && selectEndTimeMin >= selectStartTimeMin || selectEndTimeHour == selectStartTimeHour && selectEndTimeMin > selectStartTimeMin ){
+                    totalhour = parseInt(selectEndTimeHour, 10) - parseInt(selectStartTimeHour, 10);
+                    totalmin = parseInt(selectEndTimeMin, 10) - parseInt(selectStartTimeMin, 10);
+                }
+                else if (selectEndTimeHour > selectStartTimeHour && selectEndTimeMin < selectStartTimeMin){
+                    totalhour = (parseInt(selectEndTimeHour, 10) - 1) - (parseInt(selectStartTimeHour, 10));
+                    totalmin = (parseInt(selectEndTimeMin, 10) + 60) - (parseInt(selectStartTimeMin, 10));
+                }
+                else if (selectEndTimeHour === '00' && selectEndTimeMin > selectStartTimeMin){
+                    totalhour = 24 - parseInt(selectStartTimeHour, 10);
+                    totalmin = parseInt(selectEndTimeMin, 10) - parseInt(selectStartTimeMin, 10);
+                }
+                else if (selectEndTimeHour === '00' && selectEndTimeMin <= selectStartTimeMin){
+                    totalhour = 24 - parseInt(selectStartTimeHour, 10);
+                    totalmin = (parseInt(selectEndTimeMin, 10) + 60) - parseInt(selectStartTimeMin, 10);
+                }
+                else if (selectStartTimeHour > selectEndTimeHour && selectStartTimeMin >= selectEndTimeMin || selectStartTimeHour == selectEndTimeHour && selectStartTimeMin > selectEndTimeMin){
+                    totalhour = parseInt(selectStartTimeHour, 10) - parseInt(selectEndTimeHour, 10);
+                    totalmin = parseInt(selectStartTimeMin, 10) - parseInt(selectEndTimeMin, 10);
+                }
+                else if (selectStartTimeHour > selectEndTimeHour && selectStartTimeMin < selectEndTimeMin){
+                    totalhour = (parseInt(selectStartTimeHour, 10) - 1) - parseInt(selectEndTimeHour, 10);
+                    totalmin = (parseInt(selectStartTimeMin, 10) + 60) - parseInt(selectEndTimeMin, 10);
+                }
+                else {
+                    return '24';
+                }
+                return totalhour + '.' + minDigit(totalmin);
+            }
+
+            if (this.list.length >= 1){
+
+                let placeOrigin = this.placeList.length-2;
+                let placeDestination = this.placeList.length-1;
+                
+                try{
+                    let bodyPlace = {
+                    place: this.placeList[placeDestination].placeName,
+                    origin: this.placeList[placeOrigin].placeName,
+                    };
+                    console.log(this.addressName);
+
+                    let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
+                    this.placeData = placeResponse.data;
+
+                    console.log(placeResponse.data);
+                } catch (error){
+                    console.log(error);
+                }
+
+                this.list.push({ divider: true, inset: true },
+                    {duration: this.placeData},
+                    { divider: true, inset: true },{
+                        avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+                    time: this.timePicker,
+                    name: this.addressName,
+                    spendtime: this.spendtime,
+                    completed: false,
+                })
+            }
+            else {
+                this.totalTime = timeTable(this.selectEndTimeHour,this.selectEndTimeMin,this.selectStartTimeHour,this.selectStartTimeMin);
+
+                this.list.push ({
+                    avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+                    time: this.setStartTime,
+                    name: this.addressName,
+                    spendtime: this.spendtime,
+                    completed: false,
+                }) 
+                this.disabled = true;
+            }
+
+          let size = this.list.length - 1;
+          // Time remaining !!
+          try {
+                let bodyTime = {
+                 spendtime: this.list[size].spendtime,
+                 remaining: this.totalTime,
+                 road: this.placeData,
+                };
+              let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
+              this.totalTime = timeResponse.data;
+            // dont forget condition if totalTime < 0, (warnning)                
+              console.log(timeResponse.data);
+            } catch (error) {
+              console.log(error);
+            }
+
+          this.addressName = '';
+          this.address = '';
+          this.spendtime = '';
         },
-       
     },
 }
 </script>
