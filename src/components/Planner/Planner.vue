@@ -205,6 +205,9 @@ export default {
         totalmin: '',
         totalhour: '',
         disabled: false,
+        numStartHour:'',
+        numStartMin:'',
+
 
       }
     },
@@ -246,8 +249,8 @@ export default {
         getAddressData(addressData) {
             this.address = addressData;
             var addressStringify = JSON.stringify(this.address);
-            var addressObj= JSON.parse(addressStringify)
-            this.addressName = addressObj['name']
+            var addressObj= JSON.parse(addressStringify);
+            this.addressName = addressObj['name'];
             // edok name tong nee
             console.log(this.addressName);
         },
@@ -255,109 +258,158 @@ export default {
 
         async addPlace() {
 
-            //set time table
+            // set time table
             this.setStartTime = this.selectStartTimeHour + ":" + this.selectStartTimeMin;
-            
-            //collect first place list
-            this.placeList.push({placeName: this.addressName});
+            // collect first place list
+            this.placeList.push({ placeName: this.addressName });
 
             /** Show real total minute */
-            let minDigit = function(totalmin){
-                if(totalmin < 10) return '0'+totalmin;
-                else return totalmin;
+            let minDigit = function (totalmin) {
+             if(totalmin < 10) return '0' + totalmin;
+             else return totalmin;
             }
-            let timeTable = function(selectEndTimeHour,selectEndTimeMin,selectStartTimeHour,selectStartTimeMin){
+
+            let tenMin = function (totalmin) {
+             if (totalmin.length == 1) return totalmin + '0';
+             else return totalmin;
+            }
+
+            /** seperate hour and minute */
+            let splitTimeTable = function (totalTime) {
+             var splitTime  = totalTime.split('.');
+             return { hour: splitTime[0], min:splitTime[1] };
+            }
+
+            let plusTime = function (startHour,startMin,endHour,endMin) {
+              var min = 0;
+              var hour = 0;
+              if((startMin+endMin) > 60){
+                  min = (startMin + endMin) -60;
+                  hour = startHour + endHour + 1;
+              }else{
+                  min = (startMin + endMin);
+                  hour = startHour + endHour;
+              }
+             return { hour: minDigit(hour), min: minDigit(min) };
+          };
+
+            /** Compute time table */
+            let timeTable = function (selectEndTimeHour,selectEndTimeMin,selectStartTimeHour,selectStartTimeMin) {
                 var totalhour = 0;
                 var totalmin = 0;
-                if (selectEndTimeHour > selectStartTimeHour && selectEndTimeMin >= selectStartTimeMin || selectEndTimeHour == selectStartTimeHour && selectEndTimeMin > selectStartTimeMin ){
-                    totalhour = parseInt(selectEndTimeHour, 10) - parseInt(selectStartTimeHour, 10);
-                    totalmin = parseInt(selectEndTimeMin, 10) - parseInt(selectStartTimeMin, 10);
+                if (selectEndTimeHour === '00' && selectEndTimeMin === '00') {
+                 selectEndTimeHour = '24';
+                 selectEndTimeMin = '00';
                 }
-                else if (selectEndTimeHour > selectStartTimeHour && selectEndTimeMin < selectStartTimeMin){
-                    totalhour = (parseInt(selectEndTimeHour, 10) - 1) - (parseInt(selectStartTimeHour, 10));
-                    totalmin = (parseInt(selectEndTimeMin, 10) + 60) - (parseInt(selectStartTimeMin, 10));
+                if (selectStartTimeHour === '00' && selectStartTimeMin == '00') {
+                 selectStartTimeHour = '24';
+                 selectEndTimeMin = '00';
                 }
-                else if (selectEndTimeHour === '00' && selectEndTimeMin > selectStartTimeMin){
-                    totalhour = 24 - parseInt(selectStartTimeHour, 10);
-                    totalmin = parseInt(selectEndTimeMin, 10) - parseInt(selectStartTimeMin, 10);
+                if (selectEndTimeHour > selectStartTimeHour && selectEndTimeMin >= selectStartTimeMin || selectEndTimeHour == selectStartTimeHour && selectEndTimeMin > selectStartTimeMin ) {
+                 totalhour = parseInt(selectEndTimeHour, 10) - parseInt(selectStartTimeHour, 10);
+                 totalmin = parseInt(selectEndTimeMin, 10) - parseInt(selectStartTimeMin, 10);
                 }
-                else if (selectEndTimeHour === '00' && selectEndTimeMin <= selectStartTimeMin){
-                    totalhour = 24 - parseInt(selectStartTimeHour, 10);
-                    totalmin = (parseInt(selectEndTimeMin, 10) + 60) - parseInt(selectStartTimeMin, 10);
+                else if (selectEndTimeHour > selectStartTimeHour && selectEndTimeMin < selectStartTimeMin) {
+                 totalhour = (parseInt(selectEndTimeHour, 10) - 1) - (parseInt(selectStartTimeHour, 10));
+                 totalmin = (parseInt(selectEndTimeMin, 10) + 60) - (parseInt(selectStartTimeMin, 10));
                 }
-                else if (selectStartTimeHour > selectEndTimeHour && selectStartTimeMin >= selectEndTimeMin || selectStartTimeHour == selectEndTimeHour && selectStartTimeMin > selectEndTimeMin){
-                    totalhour = parseInt(selectStartTimeHour, 10) - parseInt(selectEndTimeHour, 10);
-                    totalmin = parseInt(selectStartTimeMin, 10) - parseInt(selectEndTimeMin, 10);
+                else if (selectEndTimeHour === '00' && selectEndTimeMin > selectStartTimeMin) {
+                 totalhour = 24 - parseInt(selectStartTimeHour, 10);
+                 totalmin = parseInt(selectEndTimeMin, 10) - parseInt(selectStartTimeMin, 10);
                 }
-                else if (selectStartTimeHour > selectEndTimeHour && selectStartTimeMin < selectEndTimeMin){
-                    totalhour = (parseInt(selectStartTimeHour, 10) - 1) - parseInt(selectEndTimeHour, 10);
-                    totalmin = (parseInt(selectStartTimeMin, 10) + 60) - parseInt(selectEndTimeMin, 10);
+                else if (selectEndTimeHour === '00' && selectEndTimeMin <= selectStartTimeMin) {
+                 totalhour = 24 - parseInt(selectStartTimeHour, 10);
+                 totalmin = (parseInt(selectEndTimeMin, 10) + 60) - parseInt(selectStartTimeMin, 10);
                 }
-                else {
-                    return '24';
+                else if (selectStartTimeHour > selectEndTimeHour && selectStartTimeMin >= selectEndTimeMin || selectStartTimeHour == selectEndTimeHour && selectStartTimeMin > selectEndTimeMin) {
+                 totalhour = parseInt(selectStartTimeHour, 10) - parseInt(selectEndTimeHour, 10);
+                 totalmin = parseInt(selectStartTimeMin, 10) - parseInt(selectEndTimeMin, 10);
                 }
-                return totalhour + '.' + minDigit(totalmin);
-            }
+                else if (selectStartTimeHour > selectEndTimeHour && selectStartTimeMin < selectEndTimeMin) {
+                 totalhour = (parseInt(selectStartTimeHour, 10) - 1) - parseInt(selectEndTimeHour, 10);
+                 totalmin = (parseInt(selectStartTimeMin, 10) + 60) - parseInt(selectEndTimeMin, 10);
+                }
+             else {
+                 return { totalhour: '24', totalmin: '00' };
+                }
+             return { totalhour: totalhour, totalmin: minDigit(totalmin) };
+            };
 
-            if (this.list.length >= 1){
+         let splitTimeDuration = function (placeData) {
+             var splitDuration = placeData.split(' ');
+                if (splitDuration[1] === 'hour' || splitDuration[1] === 'hours' && splitDuration[3] === 'mins' || splitDuration[3] === 'min') {
+                 return { hour: parseInt(splitDuration[0],10), min: parseInt(splitDuration[2],10) };
+                } else if (splitDuration[1] === 'hour' || splitDuration[1] === 'hours') {
+                 return { hour: parseInt(splitDuration[0],10), min: 0 };
+                } else if (splitDuration[1] === 'mins' || splitDuration[1] === 'min') {
+                 return { hour: 0, min: parseInt(splitDuration[0],10) };
+                }
+          return { hour: 0, min: 0 };
+        };
 
-                let placeOrigin = this.placeList.length-2;
-                let placeDestination = this.placeList.length-1;
+
+         if (this.list.length >= 1) {
+
+          let placeOrigin = this.placeList.length - 2;
+          let placeDestination = this.placeList.length - 1;
                 
-                try{
-                    let bodyPlace = {
-                    place: this.placeList[placeDestination].placeName,
-                    origin: this.placeList[placeOrigin].placeName,
-                    };
-                    console.log(this.addressName);
+              try {
+                 let bodyPlace = {
+                  place: this.placeList[placeDestination].placeName,
+                  origin: this.placeList[placeOrigin].placeName,
+                };
 
-                    let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
-                    this.placeData = placeResponse.data;
+                 let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
+                 this.placeData = placeResponse.data;
 
-                    console.log(placeResponse.data);
-                } catch (error){
-                    console.log(error);
-                }
+                 console.log(placeResponse.data);
+              } catch (error) {
+                 console.log(error);
+              }
+                // plus time table
+          let num = plusTime(parseInt(this.numStartHour, 10), parseInt(this.numStartMin, 10), splitTimeDuration(this.placeData).hour, splitTimeDuration(this.placeData).min);
+          let num1 = plusTime(parseInt(num.hour, 10), parseInt(num.min, 10), parseInt(this.spendtime, 10), 0);
+          this.numStartHour = num1.hour;
+          this.numStartMin = num1.min;
+          this.timePicker = this.numStartHour + ':' + this.numStartMin;
 
-                this.list.push({ divider: true, inset: true },
-                    {duration: this.placeData},
-                    { divider: true, inset: true },{
-                        avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
-                    time: this.timePicker,
-                    name: this.addressName,
-                    spendtime: this.spendtime,
-                    completed: false,
-                })
-            }
-            else {
-                this.totalTime = timeTable(this.selectEndTimeHour,this.selectEndTimeMin,this.selectStartTimeHour,this.selectStartTimeMin);
+          this.list.push({ divider: true, inset: true },
+                    { duration: this.placeData },
+                    { divider: true, inset: true }, {
+                      avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+                      time: this.timePicker,
+                      name: this.addressName,
+                      spendtime: this.spendtime,
+                      completed: false,
+                    });
+        }else {
+          this.numStartHour = this.selectStartTimeHour;
+          this.numStartMin = this.selectStartTimeMin;
 
-                this.list.push ({
-                    avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
-                    time: this.setStartTime,
-                    name: this.addressName,
-                    spendtime: this.spendtime,
-                    completed: false,
-                }) 
-                this.disabled = true;
-            }
+          this.totalTime = timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalhour + "." + timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalmin;
+          this.list.push ({
+               avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+               time: this.setStartTime,
+               name: this.addressName,
+               spendtime: this.spendtime,
+               completed: false });
+          this.disabled = true;
+        }
 
           let size = this.list.length - 1;
-          // Time remaining !!
           try {
-                let bodyTime = {
-                 spendtime: this.list[size].spendtime,
-                 remaining: this.totalTime,
-                 road: this.placeData,
-                };
-              let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
-              this.totalTime = timeResponse.data;
-            // dont forget condition if totalTime < 0, (warnning)                
-              console.log(timeResponse.data);
-            } catch (error) {
-              console.log(error);
-            }
+           let bodyTime = {
+              spendtime: this.list[size].spendtime,
+              remaining: this.totalTime,
+              road: this.placeData,
+            };
+           let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
+           this.totalTime = timeResponse.data;
 
+           console.log(timeResponse.data);
+         } catch (error) {
+           console.log(error);
+         }
           this.addressName = '';
           this.address = '';
           this.spendtime = '';
