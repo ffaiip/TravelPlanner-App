@@ -359,7 +359,7 @@ export default {
                   origin: this.placeList[placeOrigin].placeName,
                 };
 
-                 let placeResponse = await axios.post('http://localhost:8000/place/', bodyPlace);
+                 let placeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/place/', bodyPlace);
                  this.placeData = placeResponse.data;
 
                  console.log(placeResponse.data);
@@ -403,7 +403,7 @@ export default {
               remaining: this.totalTime,
               road: this.placeData,
             };
-           let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
+           let timeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/time-remain/', bodyTime);
            this.totalTime = timeResponse.data;
 
            console.log(timeResponse.data);
