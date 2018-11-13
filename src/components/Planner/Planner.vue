@@ -409,7 +409,6 @@ export default {
          } catch (error) {
            console.log(error);
          }
-         
           this.addressName = '';
           this.address = '';
           this.spendtime = '';
