@@ -405,11 +405,11 @@ export default {
             };
            let timeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/time-remain/', bodyTime);
            this.totalTime = timeResponse.data;
-
            console.log(timeResponse.data);
          } catch (error) {
            console.log(error);
          }
+         
           this.addressName = '';
           this.address = '';
           this.spendtime = '';
