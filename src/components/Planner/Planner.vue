@@ -374,7 +374,6 @@ export default {
           this.numStartMin = num1.min;
           this.numSpendtime = this.spendtime;
           this.timePicker = this.numStartHour + ':' + this.numStartMin;
-
           this.list.push({ divider: true, inset: true },
                     { duration: this.placeData },
                     { divider: true, inset: true }, {
