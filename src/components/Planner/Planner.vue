@@ -202,6 +202,7 @@ export default {
         timePicker: '',
         totalTime : '',
         spendtime: '',
+        numSpendtime: '',
         totalmin: '',
         totalhour: '',
         disabled: false,
@@ -368,9 +369,10 @@ export default {
               }
                 // plus time table
           let num = plusTime(parseInt(this.numStartHour, 10), parseInt(this.numStartMin, 10), splitTimeDuration(this.placeData).hour, splitTimeDuration(this.placeData).min);
-          let num1 = plusTime(parseInt(num.hour, 10), parseInt(num.min, 10), parseInt(this.spendtime, 10), 0);
+          let num1 = plusTime(parseInt(num.hour, 10), parseInt(num.min, 10), parseInt(this.numSpendtime, 10), 0);
           this.numStartHour = num1.hour;
           this.numStartMin = num1.min;
+          this.numSpendtime = this.spendtime;
           this.timePicker = this.numStartHour + ':' + this.numStartMin;
 
           this.list.push({ divider: true, inset: true },
@@ -385,6 +387,7 @@ export default {
         }else {
           this.numStartHour = this.selectStartTimeHour;
           this.numStartMin = this.selectStartTimeMin;
+          this.numSpendtime = this.spendtime;
 
           this.totalTime = timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalhour + "." + timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalmin;
           this.list.push ({
