@@ -44,12 +44,12 @@ export default {
     return {
       sideNav: false,
       menuItems: [
-          { icon: 'supervisor_account', title: 'View Planners', link: '/planners'},
-          { icon: 'room', title: 'Organize Planner', link: '/planner/new'},
-          { icon: 'person', title: 'Profile', link: '/profile'},
-          { icon: 'lock_open', title: 'Sign in', link: '/signin'}
-        ],
-    }
+          { icon: 'supervisor_account', title: 'View Planners', link: '/planners' },
+          { icon: 'room', title: 'Organize Planner', link: '/planner/new' },
+          { icon: 'person', title: 'Profile', link: '/profile' },
+          { icon: 'lock_open', title: 'Account', link: '/account' },
+      ],
+    };
   },
 };
 </script>

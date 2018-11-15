@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
   
 export const store = new Vuex.Store({
     state: {
@@ -18,13 +18,19 @@ export const store = new Vuex.Store({
             },
         ],
         user: {
-            id: 'aajkbd',
-            registeredPlanner: ['1']
-        }
+           username: ' ',
+           email: ' ',
+        },
     },
     mutations: {
         createPlanner (state , payload) {
             state.loadedPlanners.push(payload)
+        },
+        setUsername(state, name){
+            state.user.username = name
+        },
+        setEmail(state, email){
+            state.user.email = email
         }
     },
     actions: {
@@ -38,6 +44,12 @@ export const store = new Vuex.Store({
 
             //Reach out to database and store it
             commit('createPlanner', planner)
+        },
+        username(state, name){
+            state.commit('setUsername', name)
+        },
+        email(state, email){
+            state.commit('setEmail', email)
         }
     },
     getters: {
@@ -55,7 +67,9 @@ export const store = new Vuex.Store({
                     return planner.id === plannerId
                 })
             }
-        }
+        },
+        getUsername: state => state.user.username,
+        getEmail: state => state.user.email
     }
 
-})
+});

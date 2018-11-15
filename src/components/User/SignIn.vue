@@ -1,77 +1,165 @@
 <template>
+
+ <div v-if="usname == ' '">
   <v-container>
-    <v-layout row>
-      <v-flex xs12>
-        <v-card>
-          <v-form>
-            <v-layout row class="mb-6">
-              <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
-                <v-text-field
-                  name="spendtime"
-                  label="Spend time"
-                  id="spendtime"
-                  v-model="spendtime"
-                  required></v-text-field>
-              </v-flex>
-            </v-layout>
-          </v-form>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-              <v-btn 
-              class="primary"
-              @click="addPlace"
-              >Add place</v-btn>
-          </v-card-actions>
-          <v-list two-line>
-            <template v-for="(item, index) in items">
-              <v-divider
-                v-if="item.divider"
-                :inset="item.inset"
-                :key="index"
-              ></v-divider>
-
-              <v-list-tile
-                v-else
-                :key="item.title"
-                avatar
-              >
-                <v-list-tile-avatar>
-                  <img :src="item.avatar">
-                </v-list-tile-avatar>
-
-                <v-list-tile-content>
-                  <v-list-tile-title v-html="item.title"></v-list-tile-title>
-                  <v-list-tile-sub-title v-html="item.spendtime"></v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </template>
-          </v-list>
-        </v-card>
-      </v-flex>
-    </v-layout>
+   <v-layout row>
+    <v-flex xs12 sm6 offset-sm3>    
+       <!-- layout for signin -->
+      <v-card>
+         <v-card-media
+          src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
+          aspect-ratio="2.75"
+        ></v-card-media>
+        <v-card-title primary-title>
+          <div>
+            <h1 class="headline mb-0">Sign in</h1>
+          </div>
+        </v-card-title>
+        <v-layout row>
+          <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+            <v-card-media
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2000px-Google_%22G%22_Logo.svg.png"
+              aspect-ratio="1"
+              height="50px"
+              width="50px"
+              ></v-card-media>
+          </v-flex>
+          <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+            <v-card-media
+                src="https://i0.wp.com/www.inferencelab.com/wp-content/uploads/github-bb449e0ffbacbcb7f9c703db85b1cf0b.png?fit=1125%2C417"
+                height="50px"
+                width="150px"
+              ></v-card-media>
+          </v-flex>
+        </v-layout>
+        <v-card-actions >
+          <v-layout row>
+            <v-flex s1 offset-xs3 >
+               <v-btn @click="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
+            </v-flex>
+          </v-layout>
+        </v-card-actions> 
+      </v-card>
+    </v-flex>
+   </v-layout>
   </v-container>
+</div>
+
+<div v-else>
+ <v-container>
+  <v-layout row>
+    <v-flex xs12 sm6 offset-sm3>   
+ <!-- sign out -->
+      <v-card>
+        <v-card-media
+          src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
+          aspect-ratio="2.75"
+        ></v-card-media>
+         <v-card-title primary-title>
+          <div>
+            <h1 class="headline mb-0">Account</h1>
+          </div>
+        </v-card-title>
+        <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+          <h2> name: {{usname}} </h2>
+          <h2> email: {{email}}</h2>
+        </v-flex>  
+        <v-card-actions >
+          <v-layout row>
+            <v-flex s1 offset-xs3 >
+               <v-btn @click="signOut" :disabled="!isLoaded" class="secondary">sign out</v-btn>
+            </v-flex>
+          </v-layout>
+        </v-card-actions> 
+      </v-card>
+     </v-flex>
+   </v-layout>
+  </v-container>
+</div>
 </template>
 
-<script>
-  export default {
-    data () {
-      return {
-        spendtime: '',
-        items: [],
-      }
-    },
 
-    methods: {
-      addPlace () {
-        this.items.push({
-          avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
-          title: 'Brunch this weekend?',
-          spendtime: this.spendtime,
-          completed: false,
-        },
-        { divider: true, inset: true },),
-        this.spendtime = ''
-      },
+<script>
+
+import { store } from '../../store';
+
+export default {
+  name: "SignIn",
+  nameUser: true,
+  store,
+  data() {
+    return {
+      isLoaded: false,
+      user: {
+        username: " ",
+        email: " "
+      }
+    };
+  },
+  computed: {
+    usname() {
+      return this.$store.getters.getUsername;
     },
+    email() {
+      return this.$store.getters.getEmail;
+    }
+  },
+  methods: {
+    signIn() {
+      this.$gAuth
+        .signIn()
+        .then(user => {
+          this.$store.commit('setUsername', user["w3"]["ig"]);
+          this.$store.commit('setEmail', user["w3"]["U3"]);
+
+          console.log("user", user);
+          console.log("usname", usname);
+        })
+        .catch(error => {
+          console.log("cannot login");
+        });
+    },
+    signOut() {
+      this.$gAuth
+        .signOut()
+        .then(user => {
+          this.$store.commit("setUsername", " ");
+          this.$store.commit("setEmail", " ");
+          console.log("sign out");
+        })
+        .catch(error => {
+          // things to do when sign-out fails
+        });
+    }
+  },
+  mounted() {
+    const that = this;
+    const checkGauthLoad = setInterval(() => {
+      that.isLoaded = that.$gAuth.isLoaded();
+      if (that.isLoaded) clearInterval(checkGauthLoad);
+    }, 1000);
   }
+};
 </script>
+
+<style>
+.g-signin-button {
+  /* This is where you control how the button looks. Be creative! */
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background-color: #3c82f7;
+  color: #fff;
+  /* box-shadow: 0 3px 0 #0f69ff; */
+}
+.fb-signin-button {
+  /* This is where you control how the button looks. Be creative! */
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background-color: #4267b2;
+  color: #fff;
+}
+</style>
+
+

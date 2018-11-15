@@ -26,15 +26,16 @@
 
 <script>
 export default {
-    computed: {
+   computed: {
         planners () {
             return this.$store.getters.featuredPlanners
         }
-    },
-    methods: {
+   },
+
+   method: {
         onLoadPlanner (id) {
             this.$router.push('/planners/' + id)
         }
-    }
+   },
 }
 </script>
