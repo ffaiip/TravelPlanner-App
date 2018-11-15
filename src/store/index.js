@@ -8,12 +8,12 @@ export const store = new Vuex.Store({
         loadedPlanners: [
             { imageUrl: 'https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg', 
                 id: '1', 
-                title:"Planner in Bangkok",
+                topic:"Planner in Bangkok",
                 date: '2018-10-31'
             },
             { imageUrl: 'https://www.viagemegastronomia.com.br/wp-content/uploads/2015/12/chiang-mai.jpg', 
                 id: '1234', 
-                title:"Planner in Chiang mai",
+                topic:"Planner in Chiang mai",
                 date: '2018-11-10'
             },
         ],
@@ -22,8 +22,24 @@ export const store = new Vuex.Store({
             registeredPlanner: ['1']
         }
     },
-    mutations: {},
-    actions: {},
+    mutations: {
+        createPlanner (state , payload) {
+            state.loadedPlanners.push(payload)
+        }
+    },
+    actions: {
+        createPlanner ({commit}, payload) {
+            const planner = {
+                 topic: payload.topic,
+                 imageUrl: payload.imageUrl,
+                 date: payload.date,
+                 id: 'vkgupn'
+            }
+
+            //Reach out to database and store it
+            commit('createPlanner', planner)
+        }
+    },
     getters: {
         loadedPlanners (state) {
             return state.loadedPlanners.sort((plannerA, plannerB) => {

@@ -16,7 +16,7 @@
                 :src="planner.imageUrl"
                 @click="onLoadPlanner(planner.id)">
                 <div class="title">
-                    {{ planner.title }}
+                    {{ planner.topic }}
                 </div>
                 </v-carousel-item>
                 </v-carousel>
@@ -28,11 +28,11 @@
 export default {
     computed: {
         planners () {
-            return this.$store.getters.loadedPlanners
+            return this.$store.getters.featuredPlanners
         }
     },
     methods: {
-        onLoadPlanner() {
+        onLoadPlanner (id) {
             this.$router.push('/planners/' + id)
         }
     }
