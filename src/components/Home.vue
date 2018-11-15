@@ -16,7 +16,7 @@
                 :src="planner.imageUrl"
                 @click="onLoadPlanner(planner.id)">
                 <div class="title">
-                    {{ planner.title }}
+                    {{ planner.topic }}
                 </div>
                 </v-carousel-item>
                 </v-carousel>
@@ -26,22 +26,16 @@
 
 <script>
 export default {
-  data() {
-    return {
-      planners: [
-        { imageUrl: 'https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg',
-          id: '1',
-          title: 'Planner in Bangkok' },
-        { imageUrl: 'https://www.viagemegastronomia.com.br/wp-content/uploads/2015/12/chiang-mai.jpg',
-          id: '1234',
-          title: 'Planner in Chiang mai' },
-      ],
-    };
-  },
-  method: {
-    onLoadPlanner() {
-      this.$router.push(`/planners/${id}`);
-    },
-  },
-};
+   computed: {
+        planners () {
+            return this.$store.getters.featuredPlanners
+        }
+   },
+
+   method: {
+        onLoadPlanner (id) {
+            this.$router.push('/planners/' + id)
+        }
+   },
+}
 </script>

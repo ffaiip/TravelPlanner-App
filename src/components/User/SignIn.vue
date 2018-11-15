@@ -1,4 +1,5 @@
 <template>
+
  <div v-if="usname == ' '">
   <v-container>
    <v-layout row>
@@ -160,4 +161,5 @@ export default {
   color: #fff;
 }
 </style>
+
 
