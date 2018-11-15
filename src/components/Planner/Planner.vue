@@ -294,46 +294,28 @@ export default {
           };
 
             /** Compute time table */
-            let timeTable = function (selectEndTimeHour,selectEndTimeMin,selectStartTimeHour,selectStartTimeMin) {
-                var totalhour = 0;
-                var totalmin = 0;
-                if (selectEndTimeHour === '00' && selectEndTimeMin === '00') {
-                 selectEndTimeHour = '24';
-                 selectEndTimeMin = '00';
-                }
-                if (selectStartTimeHour === '00' && selectStartTimeMin == '00') {
-                 selectStartTimeHour = '24';
-                 selectEndTimeMin = '00';
-                }
-                if (selectEndTimeHour > selectStartTimeHour && selectEndTimeMin >= selectStartTimeMin || selectEndTimeHour == selectStartTimeHour && selectEndTimeMin > selectStartTimeMin ) {
-                 totalhour = parseInt(selectEndTimeHour, 10) - parseInt(selectStartTimeHour, 10);
-                 totalmin = parseInt(selectEndTimeMin, 10) - parseInt(selectStartTimeMin, 10);
-                }
-                else if (selectEndTimeHour > selectStartTimeHour && selectEndTimeMin < selectStartTimeMin) {
-                 totalhour = (parseInt(selectEndTimeHour, 10) - 1) - (parseInt(selectStartTimeHour, 10));
-                 totalmin = (parseInt(selectEndTimeMin, 10) + 60) - (parseInt(selectStartTimeMin, 10));
-                }
-                else if (selectEndTimeHour === '00' && selectEndTimeMin > selectStartTimeMin) {
-                 totalhour = 24 - parseInt(selectStartTimeHour, 10);
-                 totalmin = parseInt(selectEndTimeMin, 10) - parseInt(selectStartTimeMin, 10);
-                }
-                else if (selectEndTimeHour === '00' && selectEndTimeMin <= selectStartTimeMin) {
-                 totalhour = 24 - parseInt(selectStartTimeHour, 10);
-                 totalmin = (parseInt(selectEndTimeMin, 10) + 60) - parseInt(selectStartTimeMin, 10);
-                }
-                else if (selectStartTimeHour > selectEndTimeHour && selectStartTimeMin >= selectEndTimeMin || selectStartTimeHour == selectEndTimeHour && selectStartTimeMin > selectEndTimeMin) {
-                 totalhour = parseInt(selectStartTimeHour, 10) - parseInt(selectEndTimeHour, 10);
-                 totalmin = parseInt(selectStartTimeMin, 10) - parseInt(selectEndTimeMin, 10);
-                }
-                else if (selectStartTimeHour > selectEndTimeHour && selectStartTimeMin < selectEndTimeMin) {
-                 totalhour = (parseInt(selectStartTimeHour, 10) - 1) - parseInt(selectEndTimeHour, 10);
-                 totalmin = (parseInt(selectStartTimeMin, 10) + 60) - parseInt(selectEndTimeMin, 10);
-                }
-             else {
-                 return { totalhour: '24', totalmin: '00' };
-                }
-             return { totalhour: totalhour, totalmin: minDigit(totalmin) };
-            };
+        let timeTable = function (selectEndTimeHour,selectEndTimeMin,selectStartTimeHour,selectStartTimeMin){
+            var startTimefirst = new Date( "Jan 1, 2018 "+selectStartTimeHour+":"+selectStartTimeMin+":00" );
+            var endTimefirst = new Date( "Jan 1, 2018 "+selectEndTimeHour+":"+selectEndTimeMin+":00" );
+
+            var date1, date2;  
+            if (selectStartTimeHour <= selectEndTimeHour ) {
+                date1 = startTimefirst;
+                date2 = endTimefirst;
+            }
+            else{
+                // alert น้าา
+                return {totalhour: 0, totalmin: 0}
+            }
+            var res = Math.abs(date1 - date2) / 1000;       
+            // get hours        
+            var hours = Math.floor(res / 3600) % 24;        
+            // console.log(hours);
+            // get minutes
+            var minutes = Math.floor(res / 60) % 60;
+
+            return {totalhour: hours, totalmin: minDigit(minutes)}
+        };
 
          let splitTimeDuration = function (placeData) {
              var splitDuration = placeData.split(' ');
@@ -405,7 +387,6 @@ export default {
             };
            let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
            this.totalTime = timeResponse.data;
-
            console.log(timeResponse.data);
          } catch (error) {
            console.log(error);
