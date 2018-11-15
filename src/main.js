@@ -1,12 +1,4 @@
-import Vue from 'vue';
-import App from './App';
-import router from './router/index';
-
 import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
-
-Vue.use(VuetifyGoogleAutocomplete, {
-  apiKey: 'AIzaSyBENVTYtp6UnlTVs8gmLomS1NNlJqK7-ww', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
-});
 
 import {
   Vuetify,
@@ -32,6 +24,18 @@ import {
   VDivider,
   VCombobox,
 } from 'vuetify';
+
+import Vue from 'vue';
+import App from './App';
+import Vuex from 'vuex'
+import router from './router/index';
+import { store } from './store/index'
+
+Vue.use(VuetifyGoogleAutocomplete, {
+  apiKey: 'AIzaSyBENVTYtp6UnlTVs8gmLomS1NNlJqK7-ww', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
+});
+
+Vue.use(Vuex)
 
 Vue.use(Vuetify, {
   components: {
@@ -73,6 +77,7 @@ Vue.config.productionTip = false;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   render: h => h(App),
 });

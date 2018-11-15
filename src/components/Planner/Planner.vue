@@ -4,14 +4,14 @@
             <v-flex xs12>
                 <v-card>
                     <v-card-title>
-                        <h1 class="primary--text">My planner</h1>
+                        <h1 class="primary--text">{{ planner.title }}</h1>
                     </v-card-title>
                     <v-card-media
-                                src="https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg"
+                                :src="planner.imageUrl"
                                 height="400px"
                     ></v-card-media>
                     <v-card-text>
-                        <div class="info--text">22 Oct 2018</div>
+                        <div class="info--text">{{ planner.date }}</div>
                     </v-card-text>
                     <v-form>
                         <v-layout align-center justify-center row class="pb-6">
@@ -159,7 +159,10 @@
 </template>
 
 <script>
+
 import axios from 'axios';  
+import { store } from '../../store';
+
 export default {
 
     data () {
@@ -213,7 +216,13 @@ export default {
       }
     },
     
+    props: ['id'],
+
     computed:{
+        planner () {
+            return this.$store.getters.loadedPlanner(this.id)
+        },
+
         formIsValid () {
             return this.addressName != '' &&
             this.spendtime != ''
