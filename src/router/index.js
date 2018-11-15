@@ -31,6 +31,7 @@ export default new Router({
     {
       path: '/planners/:id',
       name: 'Planner',
+      props: true,
       component: Planner,
     },
     {
