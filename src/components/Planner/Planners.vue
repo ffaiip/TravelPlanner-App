@@ -15,7 +15,7 @@
                             <v-flex xs7 sm8 md9>
                                 <v-card-title primary-title>
                                     <div>
-                                        <h2 class="white--text">{{ planner.title }}</h2>
+                                        <h2 class="white--text">{{ planner.topic}}</h2>
                                         <div>{{ planner.date }}</div>
                                     </div>
                                 </v-card-title>
