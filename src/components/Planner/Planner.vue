@@ -71,85 +71,85 @@
 </template>
 
 <script>
-import axios from 'axios';  
+import axios from 'axios';
+
 export default {
 
-    data () {
-      return {
-        autocomplete: '',
-        duration: '',
+  data() {
+    return {
+      autocomplete: '',
+      duration: '',
 
-        headers: [
-          {
-            text: 'Time',
-            align: 'left',
-            value: 'time',
-          },
-          { text: 'Places', value: 'name', },
-          { text: 'Duration', value: 'timeDuration', },
-        ],
-        list: [
-          
-        ],
-        totalTime : '24',
-      }
-    },
-    
+      headers: [
+        {
+          text: 'Time',
+          align: 'left',
+          value: 'time',
+        },
+          { text: 'Places', value: 'name' },
+          { text: 'Duration', value: 'timeDuration' },
+      ],
+      list: [
+
+      ],
+      totalTime: '24',
+    };
+  },
+
     // auto-complete
-      mounted() {
+  mounted() {
     this.autocomplete = new google.maps.places.Autocomplete(
       (this.$refs.autocomplete),
-      {types: ['geocode']}
+      { types: ['geocode'] },
     );
 
     this.autocomplete.addListener('place_changed', () => {
-      let place = this.autocomplete.getPlace();
-      let ac = place.address_components;
-      let lat = place.geometry.location.lat();
-      let lon = place.geometry.location.lng();
-      let city = ac[0]["short_name"];
+      const place = this.autocomplete.getPlace();
+      const ac = place.address_components;
+      const lat = place.geometry.location.lat();
+      const lon = place.geometry.location.lng();
+      const city = ac[0].short_name;
 
       console.log(`The user picked ${city} with the coordinates ${lat}, ${lon}`);
     });
   },
 
-    computed:{
-        formIsValid () {
-            return this.time !== '' &&
+  computed: {
+    formIsValid() {
+      return this.time !== '' &&
             this.autocomplete !== '' &&
-            this.duration != ''
-        },
+            this.duration !== '';
     },
-    methods: {
+  },
+  methods: {
 
-        async addPlace() {
-
-            this.list.push({
-                time: this.time,
-                name: this.place,
-                timeDuration: this.duration,
-                completed: false,
-            })
-            let size = this.list.length - 1;
+    async addPlace() {
+      this.list.push({
+        time: this.time,
+        name: this.place,
+        timeDuration: this.duration,
+        completed: false,
+      });
+      const size = this.list.length - 1;
             // this.timeDuration = ''
 
-            //Time remaining !!
-            try {
-                let bodyTime = {
-                    duration: this.list[size].timeDuration,
-                    remaining: this.totalTime,
-                };
-                let timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
-                this.totalTime = timeResponse.data;
+            // Time remaining !!
+      try {
+        const bodyTime = {
+          duration: this.list[size].timeDuration,
+          remaining: this.totalTime,
+        };
+        const timeResponse = await axios.post('http://localhost:8000/time-remain/', bodyTime);
+        this.totalTime = timeResponse.data;
 
             // dont forget condition if totalTime < 0, (wanning)
-                
-                console.log(timeResponse.data);
-            } catch (error) {
-                console.log(error);
-            }
-            
-            //place name 
+
+        console.log(timeResponse.data);
+      } catch (error) {
+        console.log(error);
+      }
+
+            // place name
             // try{
             //     let bodyPlace = {
             //         place: this.list[size].name,
@@ -160,11 +160,10 @@ export default {
             // } catch (error){
             //     console.log(error);
             // }
-            this.place = '';
-            this.duration = '';
-            
-        },
+      this.place = '';
+      this.duration = '';
     },
-}
+  },
+};
 </script>
 

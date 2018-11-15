@@ -26,20 +26,22 @@
 
 <script>
 export default {
-    data () {
-        return {
-            planners: [
-                { imageUrl: 'https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg', 
-                id: '1', title:"Planner in Bangkok"},
-                { imageUrl: 'https://www.viagemegastronomia.com.br/wp-content/uploads/2015/12/chiang-mai.jpg', 
-                id: '1234', title:"Planner in Chiang mai"},
-            ]
-        }
+  data() {
+    return {
+      planners: [
+        { imageUrl: 'https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg',
+          id: '1',
+          title: 'Planner in Bangkok' },
+        { imageUrl: 'https://www.viagemegastronomia.com.br/wp-content/uploads/2015/12/chiang-mai.jpg',
+          id: '1234',
+          title: 'Planner in Chiang mai' },
+      ],
+    };
+  },
+  method: {
+    onLoadPlanner() {
+      this.$router.push(`/planners/${id}`);
     },
-    method: {
-        onLoadPlanner() {
-            this.$router.push('/planners/' + id)
-        }
-    }
-}
+  },
+};
 </script>

@@ -1,21 +1,35 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export const store = new Vuex.Store({
-    state: {
-        loadedPlanners: [
-            { imageUrl: 'https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg', 
-                id: '1', title:"Planner in Bangkok"},
-        ],
-        user: {
-            id: 'ugufkjh',
-            registeredPlanner: ['kvjhfuch']
-        }
+  state: {
+    user: {
+      username: ' ',
+      email: ' ',
     },
-    mutations: {},
-    actions: {},
-    getters: {}
+  },
+  mutations:{
+    setUsername(state, name){
+        state.user.username = name
+    },
+    setEmail(state, email){
+        state.user.email = email
+    }
 
-})
+  },
+  actions: {
+    username(state, name){
+      state.commit('setUsername', name)
+    },
+    email(state, email){
+      state.commit('setEmail', email)
+    }
+  },  
+  getters: {
+    getUsername: state => state.user.username,
+    getEmail: state => state.user.email
+  },
+
+});

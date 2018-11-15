@@ -1,8 +1,11 @@
 <template>
-  <v-layout>
-    <v-flex xs12 sm6 offset-sm3>
+ <div v-if="usname == ' '">
+  <v-container>
+   <v-layout row>
+    <v-flex xs12 sm6 offset-sm3>    
+       <!-- layout for signin -->
       <v-card>
-        <v-card-media
+         <v-card-media
           src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
           aspect-ratio="2.75"
         ></v-card-media>
@@ -20,88 +23,122 @@
               width="50px"
               ></v-card-media>
           </v-flex>
-          <v-flex offset-xs3 offset-lg1>
-              <g-signin-button
-                :params="googleSignInParams"
-                @success="onSignInSuccessGoogle"
-                @error="onSignInErrorGoogle"
-                @click="signIn">
-                Sign in with Google account
-              </g-signin-button>
-            </v-flex>
-        </v-layout>
-        <v-card-actions >
-          <v-layout row>
-            <v-flex xs1 offset-xs3 offset-md2 offset-lg1>
-              <v-card-media
+          <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+            <v-card-media
                 src="https://i0.wp.com/www.inferencelab.com/wp-content/uploads/github-bb449e0ffbacbcb7f9c703db85b1cf0b.png?fit=1125%2C417"
                 height="50px"
                 width="150px"
               ></v-card-media>
-            </v-flex>
-            <v-flex offset-xs3 offset-lg2>
-              <fb-signin-button
-                :params="fbSignInParams"
-                @success="onSignInSuccessFB"
-                @error="onSignInErrorFB">
-                Sign in with Facebook
-              </fb-signin-button>
+          </v-flex>
+        </v-layout>
+        <v-card-actions >
+          <v-layout row>
+            <v-flex s1 offset-xs3 >
+               <v-btn @click="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
             </v-flex>
           </v-layout>
-        </v-card-actions>
+        </v-card-actions> 
       </v-card>
     </v-flex>
-  </v-layout>
+   </v-layout>
+  </v-container>
+</div>
+
+<div v-else>
+ <v-container>
+  <v-layout row>
+    <v-flex xs12 sm6 offset-sm3>   
+ <!-- sign out -->
+      <v-card>
+        <v-card-media
+          src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
+          aspect-ratio="2.75"
+        ></v-card-media>
+         <v-card-title primary-title>
+          <div>
+            <h1 class="headline mb-0">Account</h1>
+          </div>
+        </v-card-title>
+        <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+          <h2> name: {{usname}} </h2>
+          <h2> email: {{email}}</h2>
+        </v-flex>  
+        <v-card-actions >
+          <v-layout row>
+            <v-flex s1 offset-xs3 >
+               <v-btn @click="signOut" :disabled="!isLoaded" class="secondary">sign out</v-btn>
+            </v-flex>
+          </v-layout>
+        </v-card-actions> 
+      </v-card>
+     </v-flex>
+   </v-layout>
+  </v-container>
+</div>
 </template>
 
+
 <script>
+
+import { store } from '../../store';
+
 export default {
-  data () {
+  name: "SignIn",
+  nameUser: true,
+  store,
+  data() {
     return {
-      /**
-       * The Auth2 parameters, as seen on
-       * https://developers.google.com/identity/sign-in/web/reference#gapiauth2initparams.
-       * As the very least, a valid client_id must present.
-       * @type {Object}
-       */
-      googleSignInParams: {
-        client_id: '464916650517-c62c52q1j7jhvbuksr8a16i48d62au4t.apps.googleusercontent.com'
-      },
-      fbSignInParams: {
-        scope: 'email,user_likes',
-        return_scopes: true
+      isLoaded: false,
+      user: {
+        username: " ",
+        email: " "
       }
+    };
+  },
+  computed: {
+    usname() {
+      return this.$store.getters.getUsername;
+    },
+    email() {
+      return this.$store.getters.getEmail;
     }
   },
   methods: {
-    signIn () {
-      alert('sign in')
+    signIn() {
+      this.$gAuth
+        .signIn()
+        .then(user => {
+          this.$store.commit('setUsername', user["w3"]["ig"]);
+          this.$store.commit('setEmail', user["w3"]["U3"]);
+
+          console.log("user", user);
+          console.log("usname", usname);
+        })
+        .catch(error => {
+          console.log("cannot login");
+        });
     },
-    onSignInSuccessGoogle (googleUser) {
-      // `googleUser` is the GoogleUser object that represents the just-signed-in user.
-      // See https://developers.google.com/identity/sign-in/web/reference#users
-      var profile = googleUser.getBasicProfile(); // etc etc
-      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-      console.log('Name: ' + profile.getName());
-      console.log('Image URL: ' + profile.getImageUrl());
-      console.log('Email: ' + profile.getEmail()); 
-      // This is null if the 'email' scope is not present.
-    },
-    onSignInErrorGoogle (error) {
-      // `error` contains any error occurred.
-      console.log('OH NOES', error)
-    },
-    onSignInSuccessFB (response) {
-      FB.api('/me', dude => {
-        console.log(`Good to see you, ${dude.name}.`)
-      })
-    },
-    onSignInErrorFB (error) {
-      console.log('OH NOES', error)
-    },
-    
+    signOut() {
+      this.$gAuth
+        .signOut()
+        .then(user => {
+          this.$store.commit("setUsername", " ");
+          this.$store.commit("setEmail", " ");
+          console.log("sign out");
+        })
+        .catch(error => {
+          // things to do when sign-out fails
+        });
+    }
+  },
+  mounted() {
+    const that = this;
+    const checkGauthLoad = setInterval(() => {
+      that.isLoaded = that.$gAuth.isLoaded();
+      if (that.isLoaded) clearInterval(checkGauthLoad);
+    }, 1000);
   }
-}
+};
 </script>
 
 <style>
@@ -122,6 +159,5 @@ export default {
   background-color: #4267b2;
   color: #fff;
 }
-
 </style>
 
