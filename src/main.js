@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router/index';
+import { store } from './store'
 
 import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 import GSignInButton from 'vue-google-signin-button';
@@ -82,6 +83,7 @@ Vue.config.productionTip = false;
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(App),
 });
 

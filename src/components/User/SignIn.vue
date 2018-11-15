@@ -1,14 +1,5 @@
 <template>
- <div v-if="false">
-  <v-container>
-   <v-layout row>
-    <h1>Title</h1>
-    <p>Paragraph 1</p>
-   </v-layout>
-  </v-container>
- </div>
-
- <div v-else-if="usname">
+ <div v-if="usname == ' '">
   <v-container>
    <v-layout row>
     <v-flex xs12 sm6 offset-sm3>    
@@ -56,8 +47,6 @@
 <div v-else>
  <v-container>
   <v-layout row>
-    <h1 v-if="true">Yes</h1>
-    <h1 v-else>No</h1>
     <v-flex xs12 sm6 offset-sm3>   
  <!-- sign out -->
       <v-card>
@@ -71,9 +60,8 @@
           </div>
         </v-card-title>
         <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
-          <!-- <p>{{usname}}</p> -->
-            <!-- <p>NAME : {{name}}</p>
-            <P>EMAIL : {{email}}</P> -->
+          <h2> name: {{usname}} </h2>
+          <h2> email: {{email}}</h2>
         </v-flex>  
         <v-card-actions >
           <v-layout row>
@@ -92,7 +80,7 @@
 
 <script>
 
-import {store} from '../../store';
+import { store } from '../../store';
 
 export default {
   name: "SignIn",
@@ -120,8 +108,8 @@ export default {
       this.$gAuth
         .signIn()
         .then(user => {
-          this.$store.commit("setUsername", user["w3"]["ig"]);
-          this.$store.commit("setEmail", user["w3"]["U3"]);
+          this.$store.commit('setUsername', user["w3"]["ig"]);
+          this.$store.commit('setEmail', user["w3"]["U3"]);
 
           console.log("user", user);
           console.log("usname", usname);
@@ -134,8 +122,8 @@ export default {
       this.$gAuth
         .signOut()
         .then(user => {
-          this.$store.commit("setUsername", "");
-          this.$store.commit("setEmail", "");
+          this.$store.commit("setUsername", " ");
+          this.$store.commit("setEmail", " ");
           console.log("sign out");
         })
         .catch(error => {
