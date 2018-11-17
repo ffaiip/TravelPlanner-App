@@ -32,6 +32,7 @@ import {
   VAutocomplete,
   VDivider,
   VCombobox,
+  VAlert,
 
 } from 'vuetify';
 
@@ -71,6 +72,7 @@ Vue.use(Vuetify, {
     VAutocomplete,
     VDivider,
     VCombobox,
+    VAlert,
   },
   theme: {
     primary: '#FFAB00',
