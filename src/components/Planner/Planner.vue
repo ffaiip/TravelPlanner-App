@@ -56,7 +56,7 @@
                             </v-flex>
                         </v-layout>
 
-                        <v-layout row class="mb-6">
+                        <v-layout align-center justify-center row class="pb-6">
 
                             <v-flex xs4 offset-xs2 offset-md2 offset-lg2>
                                 <vuetify-google-autocomplete
@@ -77,14 +77,33 @@
                                 ></vuetify-google-autocomplete>
                                 
                             </v-flex>
-                            <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
+                        </v-layout>    
+                        <v-layout align-center row class="pb-6">
+                            <v-flex xs3 offset-xs3 offset-md2>
+                                <h4>Spend time</h4>
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-combobox
+                                    v-model="spendTimeHour"
+                                    :items="hourList"
+                                ></v-combobox>
+                            </v-flex>
+                            <v-flex xs2><h4>Hour(s)</h4></v-flex>
+                            <v-flex xs1 offset-xs3 offset-md1>
+                                <v-combobox
+                                    v-model="spendTimeMin"
+                                    :items="minList"
+                                ></v-combobox>
+                            </v-flex>
+                            <v-flex xs2><h4>Minute(s)</h4></v-flex>
+                            <!-- <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
                                 <v-text-field
                                 name="spendtime"
                                 label="Spend time"
                                 id="spendtime"
                                 v-model="spendtime"
                                 required></v-text-field>
-                            </v-flex>
+                            </v-flex> -->
                         </v-layout>
                     </v-form>
                     <v-card-actions>
@@ -145,26 +164,38 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-layout row>
+        <v-layout row wrap>
             <v-flex xs12>
                 <v-card>
-                    <v-layout row>
-                        <v-flex xs2>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <div>Time remaining: {{ this.totalTime }}</div>
-                            </v-card-actions>
-                        </v-flex>
-                        <v-flex xs2>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn 
-                                class="primary"
-                                @click.once="savePlanner"
-                                >Save</v-btn>
-                            </v-card-actions>
-                        </v-flex>
-                    </v-layout>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <h2>Time remaining: {{ this.totalTime }} hours</h2>
+                    </v-card-actions>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn 
+                        class="primary"
+                        @click="alert = !alert"
+                        :disabled="!plannerIsValid"
+                        >Save</v-btn>
+                    </v-card-actions>
+                    <v-card-actions>
+                        <v-alert
+                        :value="alert"
+                        type="success"
+                        transition="scale-transition"
+                        >
+                            Do you want to save this planner?
+                            <v-btn
+                            @click.once="savePlanner" 
+                            class="info"
+                            >OK</v-btn>
+                            <v-btn
+                            @click="alert = !alert"
+                            class="error"
+                            >Close</v-btn>
+                        </v-alert>
+                    </v-card-actions>
                 </v-card>
             </v-flex>
         </v-layout>
@@ -210,13 +241,15 @@ export default {
         
         timePicker: '',
         totalTime : '',
-        spendtime: '',
+        spendTimeHour: '00',
+        spendTimeMin: '00',
         numSpendtime: '',
         totalmin: '',
         totalhour: '',
         disabled: false,
         numStartHour:'',
         numStartMin:'',
+        alert: false,
       }
     },
     
@@ -225,9 +258,13 @@ export default {
         planner () {
             return this.$store.getters.loadedPlanner(this.id)
         },
+        plannerIsValid () {
+            return this.list.length != 0
+        },
         formIsValid () {
             return this.addressName != '' &&
-            this.spendtime != ''
+            (this.spendTimeHour != '00' || this.spendTimeMin != '00')
+            
         },
         outputJsData() {
             return `
@@ -302,7 +339,7 @@ export default {
                 date2 = endTimefirst;
             }
             else{
-                // alert น้าา
+                alert('Please select new Time')
                 return {totalhour: 0, totalmin: 0}
             }
             var res = Math.abs(date1 - date2) / 1000;       
@@ -333,7 +370,7 @@ export default {
                   place: this.placeList[placeDestination].placeName,
                   origin: this.placeList[placeOrigin].placeName,
                 };
-                 let placeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/place/', bodyPlace);
+                 let placeResponse = await axios.post('http://127.0.0.1:8000/place/', bodyPlace);
                  this.placeData = placeResponse.data;
                  console.log(placeResponse.data);
               } catch (error) {
@@ -341,10 +378,12 @@ export default {
               }
                 // plus time table
           let num = plusTime(parseInt(this.numStartHour, 10), parseInt(this.numStartMin, 10), splitTimeDuration(this.placeData).hour, splitTimeDuration(this.placeData).min);
-          let num1 = plusTime(parseInt(num.hour, 10), parseInt(num.min, 10), parseInt(this.numSpendtime, 10), 0);
+          let num1 = plusTime(parseInt(num.hour, 10), parseInt(num.min, 10), parseInt(this.numSpendtimeHour, 10),parseInt(this.numSpendtimeMin, 10));
           this.numStartHour = num1.hour;
           this.numStartMin = num1.min;
-          this.numSpendtime = this.spendtime;
+          this.numSpendtimeHour = this.spendTimeHour;
+          this.numSpendtimeMin = this.spendTimeMin;
+          this.spendtime = parseInt(this.spendTimeHour, 10) + '.' + this.spendTimeMin;
           this.timePicker = this.numStartHour + ':' + this.numStartMin;
           this.list.push({ divider: true, inset: true },
                     { duration: this.placeData },
@@ -358,7 +397,9 @@ export default {
         }else {
           this.numStartHour = this.selectStartTimeHour;
           this.numStartMin = this.selectStartTimeMin;
-          this.numSpendtime = this.spendtime;
+          this.numSpendtimeHour = this.spendTimeHour;
+          this.numSpendtimeMin = this.spendTimeMin;
+          this.spendtime = parseInt(this.spendTimeHour, 10) + '.' + this.spendTimeMin;
           this.totalTime = timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalhour + "." + timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalmin;
           this.list.push ({
                avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
@@ -375,7 +416,7 @@ export default {
               remaining: this.totalTime,
               road: this.placeData,
             };
-           let timeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/time-remain/', bodyTime);
+           let timeResponse = await axios.post('http://127.0.0.1:8000/time-remain/', bodyTime);
            this.totalTime = timeResponse.data;
            console.log(timeResponse.data);
          } catch (error) {
