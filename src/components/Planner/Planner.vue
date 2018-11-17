@@ -148,10 +148,23 @@
         <v-layout row>
             <v-flex xs12>
                 <v-card>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <div>Time remaining: {{ this.totalTime }}</div>
-                    </v-card-actions>
+                    <v-layout row>
+                        <v-flex xs2>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <div>Time remaining: {{ this.totalTime }}</div>
+                            </v-card-actions>
+                        </v-flex>
+                        <v-flex xs2>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn 
+                                class="primary"
+                                @click.once="savePlanner"
+                                >Save</v-btn>
+                            </v-card-actions>
+                        </v-flex>
+                    </v-layout>
                 </v-card>
             </v-flex>
         </v-layout>
@@ -159,12 +172,9 @@
 </template>
 
 <script>
-
 import axios from 'axios';  
 import { store } from '../../store';
-
 export default {
-
     data () {
       return {
         //auto-complete
@@ -174,20 +184,16 @@ export default {
         address: {},
         clearable: true,
         enableGeolocation: false,
-
         //data of place
         list: [],
         addressName : '',
         placeData: '0',
         placeList: [],
-
         //time data
         selectStartTimeHour: '00',
         selectStartTimeMin: '00',
-
         selectEndTimeHour: '00',
         selectEndTimeMin: '00',
-
         hourList: [
           '00', '01', '02', '03', '04',
           '05', '06', '07', '08', '09',
@@ -211,29 +217,23 @@ export default {
         disabled: false,
         numStartHour:'',
         numStartMin:'',
-
-
       }
     },
     
     props: ['id'],
-
     computed:{
         planner () {
             return this.$store.getters.loadedPlanner(this.id)
         },
-
         formIsValid () {
             return this.addressName != '' &&
             this.spendtime != ''
         },
-
         outputJsData() {
             return `
                 ${JSON.stringify(this.address)}
             `;
         },
-
         outputJsCallback() {
             return `methods: {
                 ${this.callbackFunction}: function (addressData, placeResultData) {
@@ -241,16 +241,12 @@ export default {
                 }
             }`;
         },
-
         outputJs() {
             return `${this.outputJsData},
             ${this.outputJsCallback}`;
         },
     },
-
     methods: {
-
-
         /**
         * Callback method when the location is found.
         *
@@ -265,31 +261,25 @@ export default {
             console.log(this.addressName);
         },
         
-
         async addPlace() {
-
             // set time table
             this.setStartTime = this.selectStartTimeHour + ":" + this.selectStartTimeMin;
             // collect first place list
             this.placeList.push({ placeName: this.addressName });
-
             /** Show real total minute */
             let minDigit = function (totalmin) {
              if(totalmin < 10) return '0' + totalmin;
              else return totalmin;
             }
-
             let tenMin = function (totalmin) {
              if (totalmin.length == 1) return totalmin + '0';
              else return totalmin;
             }
-
             /** seperate hour and minute */
             let splitTimeTable = function (totalTime) {
              var splitTime  = totalTime.split('.');
              return { hour: splitTime[0], min:splitTime[1] };
             }
-
             let plusTime = function (startHour,startMin,endHour,endMin) {
               var min = 0;
               var hour = 0;
@@ -302,12 +292,10 @@ export default {
               }
              return { hour: minDigit(hour), min: minDigit(min) };
           };
-
             /** Compute time table */
         let timeTable = function (selectEndTimeHour,selectEndTimeMin,selectStartTimeHour,selectStartTimeMin){
             var startTimefirst = new Date( "Jan 1, 2018 "+selectStartTimeHour+":"+selectStartTimeMin+":00" );
             var endTimefirst = new Date( "Jan 1, 2018 "+selectEndTimeHour+":"+selectEndTimeMin+":00" );
-
             var date1, date2;  
             if (selectStartTimeHour <= selectEndTimeHour ) {
                 date1 = startTimefirst;
@@ -323,10 +311,8 @@ export default {
             // console.log(hours);
             // get minutes
             var minutes = Math.floor(res / 60) % 60;
-
             return {totalhour: hours, totalmin: minDigit(minutes)}
         };
-
          let splitTimeDuration = function (placeData) {
              var splitDuration = placeData.split(' ');
                 if (splitDuration[1] === 'hour' || splitDuration[1] === 'hours' && splitDuration[3] === 'mins' || splitDuration[3] === 'min') {
@@ -338,10 +324,7 @@ export default {
                 }
           return { hour: 0, min: 0 };
         };
-
-
          if (this.list.length >= 1) {
-
           let placeOrigin = this.placeList.length - 2;
           let placeDestination = this.placeList.length - 1;
                 
@@ -350,10 +333,8 @@ export default {
                   place: this.placeList[placeDestination].placeName,
                   origin: this.placeList[placeOrigin].placeName,
                 };
-
                  let placeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/place/', bodyPlace);
                  this.placeData = placeResponse.data;
-
                  console.log(placeResponse.data);
               } catch (error) {
                  console.log(error);
@@ -378,7 +359,6 @@ export default {
           this.numStartHour = this.selectStartTimeHour;
           this.numStartMin = this.selectStartTimeMin;
           this.numSpendtime = this.spendtime;
-
           this.totalTime = timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalhour + "." + timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalmin;
           this.list.push ({
                avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
@@ -388,7 +368,6 @@ export default {
                completed: false });
           this.disabled = true;
         }
-
           let size = this.list.length - 1;
           try {
            let bodyTime = {
@@ -406,8 +385,10 @@ export default {
           this.address = '';
           this.spendtime = '';
         },
-    },
-  },
-};
-</script>
 
+        savePlanner () {
+            alert('save planner')
+        },
+    },
+}
+</script>

@@ -7,7 +7,7 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 import GSignInButton from 'vue-google-signin-button';
 import FBSignInButton from 'vue-facebook-signin-button';
 import GAuth from 'vue-google-oauth2';
-import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
+import Vuex from 'vuex';
 
 import {
   Vuetify,
@@ -88,7 +88,6 @@ Vue.config.productionTip = false;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  store,
   router,
   store,
   render: h => h(App),

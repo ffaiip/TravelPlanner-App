@@ -32,7 +32,7 @@ export default {
         }
    },
 
-   method: {
+   methods: {
         onLoadPlanner (id) {
             this.$router.push('/planners/' + id)
         }
