@@ -22,7 +22,7 @@
     <main>
       <router-view></router-view>
     </main>
-    <v-navigation-drawer temporary v-model="sideNav">
+    <v-navigation-drawer v-model="sideNav">
       <v-list>
         <v-list-tile
           v-for="item in menuItems"

@@ -31,6 +31,7 @@ export default new Router({
     {
       path: '/planners/:id',
       name: 'Planner',
+      props: true,
       component: Planner,
     },
     {
@@ -45,5 +46,7 @@ export default new Router({
     },
     
   ],
-  mode: 'history',
+
+  mode: 'hash'
+
 });

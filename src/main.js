@@ -7,6 +7,7 @@ import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 import GSignInButton from 'vue-google-signin-button';
 import FBSignInButton from 'vue-facebook-signin-button';
 import GAuth from 'vue-google-oauth2';
+import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 
 import {
   Vuetify,
@@ -30,6 +31,8 @@ import {
   VTimeline,
   VAutocomplete,
   VDivider,
+  VCombobox,
+
 } from 'vuetify';
 
 
@@ -40,8 +43,10 @@ Vue.use(FBSignInButton);
 Vue.use(GSignInButton);
 
 Vue.use(VuetifyGoogleAutocomplete, {
-  apiKey: 'G2nkMSQX_sKXya0cKY-GYvFY', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
+  apiKey: 'AIzaSyBENVTYtp6UnlTVs8gmLomS1NNlJqK7-ww', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
 });
+
+Vue.use(Vuex)
 
 Vue.use(Vuetify, {
   components: {
@@ -65,6 +70,7 @@ Vue.use(Vuetify, {
     VTimeline,
     VAutocomplete,
     VDivider,
+    VCombobox,
   },
   theme: {
     primary: '#FFAB00',
@@ -82,6 +88,7 @@ Vue.config.productionTip = false;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   store,
   render: h => h(App),
