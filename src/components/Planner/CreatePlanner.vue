@@ -65,14 +65,13 @@
                                     ></v-text-field>
                                     <v-date-picker v-model="date" no-title @input="menu = false"></v-date-picker>
                                 </v-menu>
-                                <p>Date in ISO format: <strong>{{ date }}</strong></p>
                             </v-flex>
                         </v-layout>
                         <v-layout align-center justify-center row>
                             <v-flex xs1 class="mb-6">
                                 <v-btn 
                                 class="primary" 
-                                :disabled="!formIsValid"
+                                
                                 type="submit">Create planner</v-btn>
                             </v-flex>
                         </v-layout>
@@ -84,12 +83,16 @@
 </template>
 
 <script>
+import axios from 'axios';  
+import { store } from '../../store';
+
+
 export default {
     data() {
         return {
             topic: '',
             imageUrl: '',
-            date: null,
+            date: '',
             dateFormatted: null,
             menu: false,
             picker: null,
@@ -103,7 +106,7 @@ export default {
         },
         computedDateFormatted () {
             return this.formatDate(this.date)
-        }
+        },
     },
     watch: {
       date (val) {
@@ -113,17 +116,37 @@ export default {
 
   
     methods: {
-        onCreatePlanner () {
-            if (!this.formIsValid){
-                return
+        async onCreatePlanner () {
+            // if (!this.formIsValid){
+            //     return
+            // }
+            // const plannerData = {
+            //     topic: this.topic,
+            //     imageUrl: this.imageUrl,
+            //     date: this.date
+            // }
+            // this.$store.dispatch('createPlanner', plannerData)
+            // this.$router.push('/planners')
+
+            let bodyUser = {
+                email: "mmintttt@gmail.com"
+            };
+            try{
+                let userDate = await axios.post('http://127.0.0.1:8000/user_data/', bodyUser);
+                console.log(userDate.data[0])
+            const UserData = {
+                topic: 'Planner',
+                imageUrl: 'https://d3r8gwkgo0io6y.cloudfront.net/upload/New_York_City.jpg',
+                date: userDate.data[0],
+                id: '2'
             }
-            const plannerData = {
-                topic: this.topic,
-                imageUrl: this.imageUrl,
-                date: this.date
-            }
-            this.$store.dispatch('createPlanner', plannerData)
+
+            this.$store.dispatch('createPlanner', UserData)
             this.$router.push('/planners')
+            
+            } catch (error) {
+                 console.log(error);
+            }
         },
         formatDate (date) {
             if (!date) return null

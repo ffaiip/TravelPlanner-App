@@ -60,9 +60,9 @@
             <h1 class="headline mb-0">Account</h1>
           </div>
         </v-card-title>
-        <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
-          <h2> name: {{usname}} </h2>
-          <h2> email: {{email}}</h2>
+        <v-flex xs8 offset-xs3 offset-md2 offset-lg2>
+          <h3> name: {{usname}} </h3>
+          <h3> email: {{email}}</h3>
         </v-flex>  
         <v-card-actions >
           <v-layout row>

@@ -39,7 +39,7 @@ export const store = new Vuex.Store({
                  topic: payload.topic,
                  imageUrl: payload.imageUrl,
                  date: payload.date,
-                 id: 'vkgupn'
+                 id: payload.id
             }
 
             //Reach out to database and store it
