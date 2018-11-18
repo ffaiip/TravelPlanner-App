@@ -220,6 +220,7 @@ export default {
         addressName : '',
         placeData: '0',
         placeList: [],
+        saveList: [],
         //time data
         selectStartTimeHour: '00',
         selectStartTimeMin: '00',
@@ -394,6 +395,14 @@ export default {
                       spendtime: this.spendtime,
                       completed: false,
                     });
+          this.saveList.push({
+              email: this.$store.getters.getEmail,
+              location: this.addressName,
+              spendtime: this.spendtime,
+              times: this.timePicker,
+              date: '1/02/2560',
+              duration: this.placeData,
+          });   
         }else {
           this.numStartHour = this.selectStartTimeHour;
           this.numStartMin = this.selectStartTimeMin;
@@ -408,8 +417,18 @@ export default {
                spendtime: this.spendtime,
                completed: false });
           this.disabled = true;
+          this.saveList.push({
+              email: this.$store.getters.getEmail,
+              location: this.addressName,
+              spendtime: this.spendtime,
+              times: this.setStartTime,
+              date: '1/02/2560',
+              duration: '0',
+          });  
         }
+
           let size = this.list.length - 1;
+
           try {
            let bodyTime = {
               spendtime: this.list[size].spendtime,
@@ -427,9 +446,27 @@ export default {
           this.spendtime = '';
         },
 
+        async saveplan() {
+            try{
+                if(this.$store.getters.getEmail == ' '){
+                    alert('you should log in.')
+                } else { 
+                    this.saveList.forEach((plan) => {
+                        console.log(plan);
+                        axios.post('http://127.0.0.1:8000/savedata/', plan);
+                    })   
+                }
+                
+            } catch(error) { 
+                console.log(error);
+            }
+        },
+
         savePlanner () {
             alert('save planner')
+            this.saveplan()
         },
+
     },
 }
 </script>
