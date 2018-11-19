@@ -179,6 +179,10 @@
                         :disabled="!plannerIsValid"
                         >Save</v-btn>
                     </v-card-actions>
+                    <v-card-text right>
+                        <v-spacer></v-spacer>
+                        <div class="info--text">If you want to save this plan, please sign in.</div>
+                    </v-card-text>
                     <v-card-actions>
                         <v-alert
                         :value="alert"
@@ -261,7 +265,7 @@ export default {
             return this.$store.getters.loadedPlanner(this.id)
         },
         plannerIsValid () {
-            return this.list.length != 0
+            return this.list.length != 0  && this.$store.getters.getEmail != ' '
         },
         formIsValid () {
             return this.addressName != '' &&
@@ -455,6 +459,7 @@ export default {
                     this.saveList.forEach((plan) => {
                         console.log(plan);
                         axios.post('http://127.0.0.1:8000/savedata/', plan);
+                        alert('Save succesful!')
                     })   
                 }
                 
@@ -462,6 +467,7 @@ export default {
                 console.log(error);
             }
         },
+
     },
 }
 </script>
