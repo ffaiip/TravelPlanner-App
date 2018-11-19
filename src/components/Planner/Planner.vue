@@ -187,7 +187,7 @@
                         >
                             Do you want to save this planner?
                             <v-btn
-                            @click.once="savePlanner" 
+                            @click.native.once="saveplan" 
                             class="info"
                             >OK</v-btn>
                             <v-btn
@@ -251,6 +251,7 @@ export default {
         numStartHour:'',
         numStartMin:'',
         alert: false,
+        date: '',
       }
     },
     
@@ -400,7 +401,7 @@ export default {
               location: this.addressName,
               spendtime: this.spendtime,
               times: this.timePicker,
-              date: '1/02/2560',
+              date: this.$store.getters.loadedPlanner(this.id).date,
               duration: this.placeData,
           });   
         }else {
@@ -422,7 +423,7 @@ export default {
               location: this.addressName,
               spendtime: this.spendtime,
               times: this.setStartTime,
-              date: '1/02/2560',
+              date: this.$store.getters.loadedPlanner(this.id).date,
               duration: '0',
           });  
         }
@@ -461,12 +462,6 @@ export default {
                 console.log(error);
             }
         },
-
-        savePlanner () {
-            alert('save planner')
-            this.saveplan()
-        },
-
     },
 }
 </script>
