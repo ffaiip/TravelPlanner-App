@@ -9,7 +9,7 @@
             <v-space></v-space>
             <v-layout align-center justify-center row>
                 <v-flex xs12>
-                    <v-form @submit.prevent="onCreatePlanner">
+                    <v-form @submit.once="onCreatePlanner">
                         <v-layout row>
                             <v-flex xs12 sm6 offset-sm3>
                                 <v-text-field
@@ -65,14 +65,15 @@
                                     ></v-text-field>
                                     <v-date-picker v-model="date" no-title @input="menu = false"></v-date-picker>
                                 </v-menu>
-                                <p>Date in ISO format: <strong>{{ date }}</strong></p>
                             </v-flex>
                         </v-layout>
                         <v-layout align-center justify-center row>
                             <v-flex xs1 class="mb-6">
+
                                 <v-btn
                                 class="primary"
                                 :disabled="!formIsValid"
+
                                 type="submit">Create planner</v-btn>
                             </v-flex>
                         </v-layout>
@@ -84,7 +85,11 @@
 </template>
 
 <script>
+import axios from 'axios';  
+import { store } from '../../store';
+
 export default {
+
   data() {
     return {
       topic: '',
@@ -103,6 +108,7 @@ export default {
     },
     computedDateFormatted() {
       return this.formatDate(this.date);
+
     },
   },
   watch: {
@@ -110,6 +116,7 @@ export default {
       this.dateFormatted = this.formatDate(this.date);
     },
   },
+
 
 
   methods: {
@@ -127,6 +134,7 @@ export default {
     },
     formatDate(date) {
       if (!date) return null;
+
 
       const [year, month, day] = date.split('-');
       return `${month}/${day}/${year}`;
