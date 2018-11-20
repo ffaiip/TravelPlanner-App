@@ -69,9 +69,11 @@
                         </v-layout>
                         <v-layout align-center justify-center row>
                             <v-flex xs1 class="mb-6">
-                                <v-btn 
-                                class="primary" 
-                                
+
+                                <v-btn
+                                class="primary"
+                                :disabled="!formIsValid"
+
                                 type="submit">Create planner</v-btn>
                             </v-flex>
                         </v-layout>
@@ -87,81 +89,64 @@ import axios from 'axios';
 import { store } from '../../store';
 
 export default {
-    data() {
-        return {
-            topic: '',
-            imageUrl: '',
-            date: '',
-            dateFormatted: null,
-            menu: false,
-            picker: null,
-            landscape: false,
-        }
+
+  data() {
+    return {
+      topic: '',
+      imageUrl: '',
+      date: null,
+      dateFormatted: null,
+      menu: false,
+      picker: null,
+      landscape: false,
+    };
+  },
+  computed: {
+    formIsValid() {
+      return this.topic !== ''
+            && this.date !== null;
     },
-    computed: {
-        formIsValid () {
-            return this.topic !== '' &&
-            this.date !== null
-        },
-        computedDateFormatted () {
-            return this.formatDate(this.date)
-        },
+    computedDateFormatted() {
+      return this.formatDate(this.date);
+
     },
-    watch: {
-      date (val) {
-        this.dateFormatted = this.formatDate(this.date)
+  },
+  watch: {
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date);
+    },
+  },
+
+
+
+  methods: {
+    onCreatePlanner() {
+      if (!this.formIsValid) {
+        return;
       }
+      const plannerData = {
+        topic: this.topic,
+        imageUrl: this.imageUrl,
+        date: this.date,
+      };
+      this.$store.dispatch('createPlanner', plannerData);
+      this.$router.push('/planners');
     },
+    formatDate(date) {
+      if (!date) return null;
 
-  
-    methods: {
-        async onCreatePlanner () {
-            // if (!this.formIsValid){
-            //     return
-            // }
-            // const plannerData = {
-            //     topic: this.topic,
-            //     imageUrl: this.imageUrl,
-            //     date: this.date
-            // }
-            // this.$store.dispatch('createPlanner', plannerData)
-            // this.$router.push('/planners')
 
-            let bodyUser = {
-                email: "mmintttt@gmail.com"
-            };
-            try{
-                let userDate = await axios.post('http://127.0.0.1:8000/user_data/', bodyUser);
-                console.log(userDate.data[0])
-            const UserData = {
-                topic: 'Planner',
-                imageUrl: 'https://d3r8gwkgo0io6y.cloudfront.net/upload/New_York_City.jpg',
-                // date: userDate.data[0],
-                date: '01/12/2018',
-                id: '2'
-            }
+      const [year, month, day] = date.split('-');
+      return `${month}/${day}/${year}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
 
-            this.$store.dispatch('createPlanner', UserData)
-            this.$router.push('/planners')
-            
-            } catch (error) {
-                 console.log(error);
-            }
-        },
-        formatDate (date) {
-            if (!date) return null
-
-            const [year, month, day] = date.split('-')
-            return `${month}/${day}/${year}`
-        },
-        parseDate (date) {
-            if (!date) return null
-
-            const [month, day, year] = date.split('/')
-            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-        }
-    }
-}
+      const [month, day, year] = date.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    },
+  },
+};
 </script>
 
 

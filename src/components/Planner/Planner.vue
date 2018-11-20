@@ -71,13 +71,13 @@
                                 prepend-icon="place"
                                 required=true
                                 types="establishment"
-                                onfocus="value = ''" 
+                                onfocus="value = ''"
                                 v-on:placechanged="getAddressData"
                                 v-on:no-results-found="noResultsFound"
                                 ></vuetify-google-autocomplete>
-                                
+
                             </v-flex>
-                        </v-layout>    
+                        </v-layout>
                         <v-layout align-center row class="pb-6">
                             <v-flex xs3 offset-xs3 offset-md2>
                                 <h4>Spend time</h4>
@@ -108,7 +108,7 @@
                     </v-form>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn 
+                        <v-btn
                         class="primary"
                         :disabled="!formIsValid"
                         @click="addPlace"
@@ -131,7 +131,7 @@
                                 v-else-if="item.duration"
                                 :key="item.duration"
                                 avatar
-                            >   
+                            >
                                 <v-layout justify-center>
                                     <v-list-action>
                                         <v-icon>directions_car</v-icon>
@@ -140,7 +140,7 @@
                                         <v-list-tile-title>: {{ item.duration }}</v-list-tile-title>
                                     </v-list-tile-content>
                                 </v-layout>
-                                
+
                             </v-list-tile>
                             <v-list-tile
                                 v-else
@@ -157,7 +157,7 @@
                                 <v-list-tile-action>
                                     <v-list-tile-action-text>Time: {{ item.time }}</v-list-tile-action-text>
                                 </v-list-tile-action>
-                
+
                             </v-list-tile>
                         </template>
                     </v-list>
@@ -169,11 +169,11 @@
                 <v-card>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <h2>Time remaining: {{ this.totalTime }} hours</h2>
+                        <h2>Time remaining: {{ this.totalTime }} hours.minute</h2>
                     </v-card-actions>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn 
+                        <v-btn
                         class="primary"
                         @click="alert = !alert"
                         :disabled="!plannerIsValid"
@@ -191,7 +191,9 @@
                         >
                             Do you want to save this planner?
                             <v-btn
+
                             @click.native.once="saveplan" 
+
                             class="info"
                             >OK</v-btn>
                             <v-btn
@@ -207,9 +209,11 @@
 </template>
 
 <script>
-import axios from 'axios';  
+import axios from 'axios';
 import { store } from '../../store';
+
 export default {
+
     data () {
       return {
         //auto-complete
@@ -276,86 +280,115 @@ export default {
             return `
                 ${JSON.stringify(this.address)}
             `;
-        },
-        outputJsCallback() {
-            return `methods: {
-                ${this.callbackFunction}: function (addressData, placeResultData) {
+    },
+    outputJsCallback() {
+      return `methods: {
+                ${
+  this.callbackFunction
+}: function (addressData, placeResultData) {
                 this.address = addressData;
                 }
             }`;
-        },
-        outputJs() {
-            return `${this.outputJsData},
-            ${this.outputJsCallback}`;
-        },
     },
-    methods: {
-        /**
-        * Callback method when the location is found.
-        *
-        * @param {Object} addressData Data of the found location
-        */
-        getAddressData(addressData) {
-            this.address = addressData;
-            var addressStringify = JSON.stringify(this.address);
-            var addressObj= JSON.parse(addressStringify);
-            this.addressName = addressObj['name'];
-            // edok name tong nee
-            console.log(this.addressName);
-        },
-        
-        async addPlace() {
-            // set time table
-            this.setStartTime = this.selectStartTimeHour + ":" + this.selectStartTimeMin;
-            // collect first place list
-            this.placeList.push({ placeName: this.addressName });
-            /** Show real total minute */
-            let minDigit = function (totalmin) {
-             if(totalmin < 10) return '0' + totalmin;
-             else return totalmin;
-            }
-            let tenMin = function (totalmin) {
-             if (totalmin.length == 1) return totalmin + '0';
-             else return totalmin;
-            }
-            /** seperate hour and minute */
-            let splitTimeTable = function (totalTime) {
-             var splitTime  = totalTime.split('.');
-             return { hour: splitTime[0], min:splitTime[1] };
-            }
-            let plusTime = function (startHour,startMin,endHour,endMin) {
-              var min = 0;
-              var hour = 0;
-              if((startMin+endMin) > 60){
-                  min = (startMin + endMin) -60;
-                  hour = startHour + endHour + 1;
-              }else{
-                  min = (startMin + endMin);
-                  hour = startHour + endHour;
-              }
-             return { hour: minDigit(hour), min: minDigit(min) };
-          };
-            /** Compute time table */
-        let timeTable = function (selectEndTimeHour,selectEndTimeMin,selectStartTimeHour,selectStartTimeMin){
-            var startTimefirst = new Date( "Jan 1, 2018 "+selectStartTimeHour+":"+selectStartTimeMin+":00" );
-            var endTimefirst = new Date( "Jan 1, 2018 "+selectEndTimeHour+":"+selectEndTimeMin+":00" );
-            var date1, date2;  
-            if (selectStartTimeHour <= selectEndTimeHour ) {
-                date1 = startTimefirst;
-                date2 = endTimefirst;
-            }
-            else{
-                alert('Please select new Time')
-                return {totalhour: 0, totalmin: 0}
-            }
-            var res = Math.abs(date1 - date2) / 1000;       
-            // get hours        
-            var hours = Math.floor(res / 3600) % 24;        
-            // console.log(hours);
-            // get minutes
-            var minutes = Math.floor(res / 60) % 60;
-            return {totalhour: hours, totalmin: minDigit(minutes)}
-        };
+    outputJs() {
+      return `${this.outputJsData},
+            ${this.outputJsCallback}`;
+    },
+  },
+  methods: {
+    /**
+     * Callback method when the location is found.
+     *
+     * @param {Object} addressData Data of the found location
+     */
+    getAddressData(addressData) {
+      this.address = addressData;
+      const addressStringify = JSON.stringify(this.address);
+      const addressObj = JSON.parse(addressStringify);
+      this.addressName = addressObj.name;
+      // edok name tong nee
+      console.log(this.addressName);
+    },
+
+    async addPlace() {
+      // set time table
+      this.setStartTime = `${this.selectStartTimeHour}:${this.selectStartTimeMin}`;
+      // collect first place list
+      this.placeList.push({ placeName: this.addressName });
+      /** Show real total minute */
+      const minDigit = function (totalmin) {
+        if (totalmin < 10) return `0${totalmin}`;
+        return totalmin;
+      };
+
+      /** seperate hour and minute */
+      const splitTimeTable = function (totalTime) {
+        const splitTime = totalTime.split('.');
+        return { hour: splitTime[0], min: splitTime[1] };
+      };
+      const plusTime = function (startHour, startMin, endHour, endMin) {
+        let min = 0;
+        let hour = 0;
+        if (startMin + endMin > 60) {
+          min = startMin + endMin - 60;
+          hour = startHour + endHour + 1;
+        } else {
+          min = startMin + endMin;
+          hour = startHour + endHour;
+        }
+        return { hour: minDigit(hour), min: minDigit(min) };
+      };
+      /** Compute time table */
+      const timeTable = function (
+        selectEndTimeHour,
+        selectEndTimeMin,
+        selectStartTimeHour,
+        selectStartTimeMin,
+      ) {
+        const startTimefirst = new Date(
+          `Jan 1, 2018 ${
+            selectStartTimeHour
+          }:${
+            selectStartTimeMin
+          }:00`,
+        );
+        const endTimefirst = new Date(
+          `Jan 1, 2018 ${selectEndTimeHour}:${selectEndTimeMin}:00`,
+        );
+        const endTimenext = new Date(
+          `Jan 2, 2018 ${selectEndTimeHour}:${selectEndTimeMin}:00`,
+        );
+        let date1;
+
+
+        let date2;
+        if (
+          selectStartTimeHour == selectEndTimeHour
+          && selectStartTimeMin == selectEndTimeMin
+        ) {
+          return { totalhour: 24, totalmin: 0 };
+        }
+        if (selectStartTimeHour <= selectEndTimeHour) {
+          if (selectStartTimeMin < selectEndTimeMin) {
+            date1 = startTimefirst;
+            date2 = endTimefirst;
+          } else if (selectStartTimeMin > selectEndTimeMin) {
+            date1 = startTimefirst;
+            date2 = endTimenext;
+          }
+        } else {
+          date1 = startTimefirst;
+          date2 = endTimenext;
+        }
+        const res = Math.abs(date1 - date2) / 1000;
+        // get hours
+        const hours = Math.floor(res / 3600) % 24;
+        // console.log(hours);
+        // get minutes
+        const minutes = Math.floor(res / 60) % 60;
+        return { totalhour: hours, totalmin: minDigit(minutes) };
+      };
+      
          let splitTimeDuration = function (placeData) {
              var splitDuration = placeData.split(' ');
                 if (splitDuration[1] === 'hour' || splitDuration[1] === 'hours' && splitDuration[3] === 'mins' || splitDuration[3] === 'min') {
@@ -381,6 +414,13 @@ export default {
                  console.log(placeResponse.data);
               } catch (error) {
                  console.log(error);
+                 // dont forget to subtract time remain
+              alert("This two place maybe too far or don't have in the map. Please select new places.",);
+                this.placeList.splice(placeOrigin, 2);
+                this.list.splice(this.list.length - 3, 4);
+                console.log(this.placeList);
+                console.log(this.list);
+                return;
               }
                 // plus time table
           let num = plusTime(parseInt(this.numStartHour, 10), parseInt(this.numStartMin, 10), splitTimeDuration(this.placeData).hour, splitTimeDuration(this.placeData).min);
@@ -469,5 +509,6 @@ export default {
         },
 
     },
-}
+  },
+};
 </script>
