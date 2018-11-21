@@ -1,6 +1,6 @@
 <template>
 
- <div v-if="usname == ' ' || usname == ''">
+ <div v-if="usname == ' ' || usname == '' || usname == null">
   <v-container>
    <v-layout row>
     <v-flex xs12 sm6 offset-sm3>    
@@ -35,7 +35,7 @@
         <v-card-actions >
           <v-layout row>
             <v-flex s1 offset-xs3 >
-               <v-btn @click="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
+               <v-btn @click.once="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
             </v-flex>
           </v-layout>
         </v-card-actions> 
@@ -91,18 +91,11 @@ export default {
     return {
       isLoaded: false,
       user: {
-        username: " ",
-        email: " "
+        username: ' ',
+        email: ' '
+
       }
     };
-  },
-  computed: {
-    usname() {
-      return this.$store.getters.getCookie('name');
-    },
-    email() {
-      return this.$store.getters.getCookie('mail');
-    },
   },
   methods: {
     signIn() {
@@ -119,15 +112,15 @@ export default {
           this.$store.commit('setUsername', this.$store.getters.getCookie('name'));
           this.$store.commit('setEmail', this.$store.getters.getCookie('mail'));
 
-          console.log(this.$store.getters.getCookie('name'));
-          console.log(this.$store.getters.getCookie('mail'));
-
-
+          this.user.username = this.$store.getters.getCookie('name');
+          this.user.email = this.$store.getters.getCookie('mail');
+          
         })
         .catch(error => {
           console.log(error);
           console.log("cannot login");
         });
+
         
     },
     signOut() {
@@ -140,9 +133,9 @@ export default {
 
           this.$store.commit('setUsername', this.$store.getters.getCookie('name'));
           this.$store.commit('setEmail', this.$store.getters.getCookie('mail'));
-
-          console.log(this.$store.getters.getCookie('name'));
-          console.log(this.$store.getters.getCookie('mail'));
+          
+          this.user.username = this.$store.getters.getCookie('name');
+          this.user.email = this.$store.getters.getCookie('mail');
 
           console.log("sign out");
         })
@@ -152,12 +145,27 @@ export default {
 
     }
   },
+  computed: {
+    usname() {
+      // console.log(this.$store.getters.getCookie('name'))
+      this.user.username = this.$store.getters.getCookie('name');
+      return this.user.username;
+    },
+    email() {
+      // console.log(this.$store.getters.getCookie('mail'))
+      this.user.email = this.$store.getters.getCookie('mail');
+      return this.user.email;
+    },
+  },
   mounted() {
     const that = this;
     const checkGauthLoad = setInterval(() => {
       that.isLoaded = that.$gAuth.isLoaded();
       if (that.isLoaded) clearInterval(checkGauthLoad);
     }, 1000);
+
+    
+
   }
 };
 </script>
