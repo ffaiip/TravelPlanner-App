@@ -9,7 +9,7 @@
             <v-space></v-space>
             <v-layout align-center justify-center row>
                 <v-flex xs12>
-                    <v-form @submit.once="onCreatePlanner">
+                    <v-form @submit.prevent="onCreatePlanner">
                         <v-layout row>
                             <v-flex xs12 sm6 offset-sm3>
                                 <v-text-field
@@ -133,16 +133,19 @@ export default {
             try{
                 let userDate = await axios.post('http://127.0.0.1:8000/user_data/', bodyUser);
                 console.log(userDate.data[0])
+            
+            for(var i = 0 ; i < userDate.data.length ; i++){
             const UserData = {
                 topic: 'Planner',
                 imageUrl: 'https://d3r8gwkgo0io6y.cloudfront.net/upload/New_York_City.jpg',
-                // date: userDate.data[0],
-                date: '01/12/2018',
+                date: userDate.data[i],
+                // date: '01/12/2018',
                 id: '2'
-            }
-
+                }
             this.$store.dispatch('createPlanner', UserData)
             this.$router.push('/planners')
+            }
+
             
             } catch (error) {
                  console.log(error);

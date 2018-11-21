@@ -96,14 +96,6 @@
                                 ></v-combobox>
                             </v-flex>
                             <v-flex xs2><h4>Minute(s)</h4></v-flex>
-                            <!-- <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
-                                <v-text-field
-                                name="spendtime"
-                                label="Spend time"
-                                id="spendtime"
-                                v-model="spendtime"
-                                required></v-text-field>
-                            </v-flex> -->
                         </v-layout>
                     </v-form>
                     <v-card-actions>
@@ -179,7 +171,7 @@
                         :disabled="!plannerIsValid"
                         >Save</v-btn>
                     </v-card-actions>
-                    <v-card-text right>
+                    <v-card-text >
                         <v-spacer></v-spacer>
                         <div class="info--text">If you want to save this plan, please sign in.</div>
                     </v-card-text>
@@ -220,7 +212,6 @@ export default {
         clearable: true,
         enableGeolocation: false,
         //data of place
-        list: [],
         addressName : '',
         placeData: '0',
         placeList: [],
@@ -261,6 +252,9 @@ export default {
     
     props: ['id'],
     computed:{
+        list () {
+            return this.$store.getters.getPlan
+        },
         planner () {
             return this.$store.getters.loadedPlanner(this.id)
         },
@@ -305,6 +299,7 @@ export default {
         },
         
         async addPlace() {
+            // const planList = {}
             // set time table
             this.setStartTime = this.selectStartTimeHour + ":" + this.selectStartTimeMin;
             // collect first place list
@@ -391,15 +386,20 @@ export default {
           this.numSpendtimeMin = this.spendTimeMin;
           this.spendtime = parseInt(this.spendTimeHour, 10) + '.' + this.spendTimeMin;
           this.timePicker = this.numStartHour + ':' + this.numStartMin;
-          this.list.push({ divider: true, inset: true },
-                    { duration: this.placeData },
-                    { divider: true, inset: true }, {
+          const divide = { divider: true, inset: true };
+          this.$store.dispatch('addDivide', divide);
+          const placeDuration = { duration: this.placeData };
+          this.$store.dispatch('addDuration', placeDuration);
+          this.$store.dispatch('addDivide', divide)
+          const planL = ({
                       avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
                       time: this.timePicker,
                       name: this.addressName,
                       spendtime: this.spendtime,
                       completed: false,
                     });
+          this.$store.dispatch('addPlan', planL)
+
           this.saveList.push({
               email: this.$store.getters.getEmail,
               location: this.addressName,
@@ -415,13 +415,17 @@ export default {
           this.numSpendtimeMin = this.spendTimeMin;
           this.spendtime = parseInt(this.spendTimeHour, 10) + '.' + this.spendTimeMin;
           this.totalTime = timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalhour + "." + timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalmin;
-          this.list.push ({
+          
+          const planList = {
                avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
                time: this.setStartTime,
                name: this.addressName,
                spendtime: this.spendtime,
-               completed: false });
+               completed: false };
+          this.$store.dispatch('addPlan', planList)
+          
           this.disabled = true;
+          
           this.saveList.push({
               email: this.$store.getters.getEmail,
               location: this.addressName,
@@ -431,7 +435,6 @@ export default {
               duration: '0',
           });  
         }
-
           let size = this.list.length - 1;
 
           try {
@@ -446,6 +449,8 @@ export default {
          } catch (error) {
            console.log(error);
          }
+         
+         console.log(this.list)
           this.addressName = '';
           this.address = '';
           this.spendtime = '';
@@ -453,15 +458,12 @@ export default {
 
         async saveplan() {
             try{
-                if(this.$store.getters.getEmail == ' '){
-                    alert('you should log in.')
-                } else { 
-                    this.saveList.forEach((plan) => {
-                        console.log(plan);
-                        axios.post('http://127.0.0.1:8000/savedata/', plan);
-                        alert('Save succesful!')
-                    })   
-                }
+                this.saveList.forEach((plan) => {
+                    console.log(plan);
+                    axios.post('http://127.0.0.1:8000/savedata/', plan);
+                    alert('Save succesful!')
+                })   
+                
                 
             } catch(error) { 
                 console.log(error);
