@@ -137,10 +137,11 @@ export default {
           this.user.username = this.$store.getters.getCookie('name');
           this.user.email = this.$store.getters.getCookie('mail');
 
-          console.log("sign out");
         })
         .catch(error => {
           // things to do when sign-out fails
+          console.log("cannot sign out");
+
         });
 
     }
@@ -163,9 +164,6 @@ export default {
       that.isLoaded = that.$gAuth.isLoaded();
       if (that.isLoaded) clearInterval(checkGauthLoad);
     }, 1000);
-
-    
-
   }
 };
 </script>
