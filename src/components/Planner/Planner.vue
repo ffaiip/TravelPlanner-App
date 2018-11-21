@@ -56,7 +56,7 @@
                             </v-flex>
                         </v-layout>
 
-                        <v-layout row class="mb-6">
+                        <v-layout align-center justify-center row class="pb-6">
 
                             <v-flex xs4 offset-xs2 offset-md2 offset-lg2>
                                 <vuetify-google-autocomplete
@@ -77,14 +77,33 @@
                                 ></vuetify-google-autocomplete>
                                 
                             </v-flex>
-                            <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
+                        </v-layout>    
+                        <v-layout align-center row class="pb-6">
+                            <v-flex xs3 offset-xs3 offset-md2>
+                                <h4>Spend time</h4>
+                            </v-flex>
+                            <v-flex xs1>
+                                <v-combobox
+                                    v-model="spendTimeHour"
+                                    :items="hourList"
+                                ></v-combobox>
+                            </v-flex>
+                            <v-flex xs2><h4>Hour(s)</h4></v-flex>
+                            <v-flex xs1 offset-xs3 offset-md1>
+                                <v-combobox
+                                    v-model="spendTimeMin"
+                                    :items="minList"
+                                ></v-combobox>
+                            </v-flex>
+                            <v-flex xs2><h4>Minute(s)</h4></v-flex>
+                            <!-- <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
                                 <v-text-field
                                 name="spendtime"
                                 label="Spend time"
                                 id="spendtime"
                                 v-model="spendtime"
                                 required></v-text-field>
-                            </v-flex>
+                            </v-flex> -->
                         </v-layout>
                     </v-form>
                     <v-card-actions>
@@ -145,12 +164,41 @@
                 </v-card>
             </v-flex>
         </v-layout>
-        <v-layout row>
+        <v-layout row wrap>
             <v-flex xs12>
                 <v-card>
                     <v-card-actions>
+                        <v-spacer></v-spacer>saveplan
+                        <h2>Time remaining: {{ this.totalTime }} hours</h2>
+                    </v-card-actions>
+                    <v-card-actions>
                         <v-spacer></v-spacer>
-                        <div>Time remaining: {{ this.totalTime }}</div>
+                        <v-btn 
+                        class="primary"
+                        @click="alert = !alert"
+                        :disabled="!plannerIsValid"
+                        >Save</v-btn>
+                    </v-card-actions>
+                    <v-card-text right>
+                        <v-spacer></v-spacer>
+                        <div class="info--text">If you want to save this plan, please sign in.</div>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-alert
+                        :value="alert"
+                        type="success"
+                        transition="scale-transition"
+                        >
+                            Do you want to save this planner?
+                            <v-btn
+                            @click.native.once="saveplan" 
+                            class="info"
+                            >OK</v-btn>
+                            <v-btn
+                            @click="alert = !alert"
+                            class="error"
+                            >Close</v-btn>
+                        </v-alert>
                     </v-card-actions>
                 </v-card>
             </v-flex>
@@ -159,12 +207,9 @@
 </template>
 
 <script>
-
 import axios from 'axios';  
 import { store } from '../../store';
-
 export default {
-
     data () {
       return {
         //auto-complete
@@ -174,20 +219,17 @@ export default {
         address: {},
         clearable: true,
         enableGeolocation: false,
-
         //data of place
         list: [],
         addressName : '',
         placeData: '0',
         placeList: [],
-
+        saveList: [],
         //time data
         selectStartTimeHour: '00',
         selectStartTimeMin: '00',
-
         selectEndTimeHour: '00',
         selectEndTimeMin: '00',
-
         hourList: [
           '00', '01', '02', '03', '04',
           '05', '06', '07', '08', '09',
@@ -204,36 +246,37 @@ export default {
         
         timePicker: '',
         totalTime : '',
-        spendtime: '',
+        spendTimeHour: '00',
+        spendTimeMin: '00',
         numSpendtime: '',
         totalmin: '',
         totalhour: '',
         disabled: false,
         numStartHour:'',
         numStartMin:'',
-
-
+        alert: false,
+        date: '',
       }
     },
     
     props: ['id'],
-
     computed:{
         planner () {
             return this.$store.getters.loadedPlanner(this.id)
         },
-
+        plannerIsValid () {
+            return this.list.length != 0  && this.$store.getters.getEmail != ' '
+        },
         formIsValid () {
             return this.addressName != '' &&
-            this.spendtime != ''
+            (this.spendTimeHour != '00' || this.spendTimeMin != '00')
+            
         },
-
         outputJsData() {
             return `
                 ${JSON.stringify(this.address)}
             `;
         },
-
         outputJsCallback() {
             return `methods: {
                 ${this.callbackFunction}: function (addressData, placeResultData) {
@@ -241,16 +284,12 @@ export default {
                 }
             }`;
         },
-
         outputJs() {
             return `${this.outputJsData},
             ${this.outputJsCallback}`;
         },
     },
-
     methods: {
-
-
         /**
         * Callback method when the location is found.
         *
@@ -265,31 +304,25 @@ export default {
             console.log(this.addressName);
         },
         
-
         async addPlace() {
-
             // set time table
             this.setStartTime = this.selectStartTimeHour + ":" + this.selectStartTimeMin;
             // collect first place list
             this.placeList.push({ placeName: this.addressName });
-
             /** Show real total minute */
             let minDigit = function (totalmin) {
              if(totalmin < 10) return '0' + totalmin;
              else return totalmin;
             }
-
             let tenMin = function (totalmin) {
              if (totalmin.length == 1) return totalmin + '0';
              else return totalmin;
             }
-
             /** seperate hour and minute */
             let splitTimeTable = function (totalTime) {
              var splitTime  = totalTime.split('.');
              return { hour: splitTime[0], min:splitTime[1] };
             }
-
             let plusTime = function (startHour,startMin,endHour,endMin) {
               var min = 0;
               var hour = 0;
@@ -302,19 +335,17 @@ export default {
               }
              return { hour: minDigit(hour), min: minDigit(min) };
           };
-
             /** Compute time table */
         let timeTable = function (selectEndTimeHour,selectEndTimeMin,selectStartTimeHour,selectStartTimeMin){
             var startTimefirst = new Date( "Jan 1, 2018 "+selectStartTimeHour+":"+selectStartTimeMin+":00" );
             var endTimefirst = new Date( "Jan 1, 2018 "+selectEndTimeHour+":"+selectEndTimeMin+":00" );
-
             var date1, date2;  
             if (selectStartTimeHour <= selectEndTimeHour ) {
                 date1 = startTimefirst;
                 date2 = endTimefirst;
             }
             else{
-                // alert น้าา
+                alert('Please select new Time')
                 return {totalhour: 0, totalmin: 0}
             }
             var res = Math.abs(date1 - date2) / 1000;       
@@ -323,10 +354,8 @@ export default {
             // console.log(hours);
             // get minutes
             var minutes = Math.floor(res / 60) % 60;
-
             return {totalhour: hours, totalmin: minDigit(minutes)}
         };
-
          let splitTimeDuration = function (placeData) {
              var splitDuration = placeData.split(' ');
                 if (splitDuration[1] === 'hour' || splitDuration[1] === 'hours' && splitDuration[3] === 'mins' || splitDuration[3] === 'min') {
@@ -338,10 +367,7 @@ export default {
                 }
           return { hour: 0, min: 0 };
         };
-
-
          if (this.list.length >= 1) {
-
           let placeOrigin = this.placeList.length - 2;
           let placeDestination = this.placeList.length - 1;
                 
@@ -350,20 +376,20 @@ export default {
                   place: this.placeList[placeDestination].placeName,
                   origin: this.placeList[placeOrigin].placeName,
                 };
-
-                 let placeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/place/', bodyPlace);
+                 let placeResponse = await axios.post('http://127.0.0.1:8000/place/', bodyPlace);
                  this.placeData = placeResponse.data;
-
                  console.log(placeResponse.data);
               } catch (error) {
                  console.log(error);
               }
                 // plus time table
           let num = plusTime(parseInt(this.numStartHour, 10), parseInt(this.numStartMin, 10), splitTimeDuration(this.placeData).hour, splitTimeDuration(this.placeData).min);
-          let num1 = plusTime(parseInt(num.hour, 10), parseInt(num.min, 10), parseInt(this.numSpendtime, 10), 0);
+          let num1 = plusTime(parseInt(num.hour, 10), parseInt(num.min, 10), parseInt(this.numSpendtimeHour, 10),parseInt(this.numSpendtimeMin, 10));
           this.numStartHour = num1.hour;
           this.numStartMin = num1.min;
-          this.numSpendtime = this.spendtime;
+          this.numSpendtimeHour = this.spendTimeHour;
+          this.numSpendtimeMin = this.spendTimeMin;
+          this.spendtime = parseInt(this.spendTimeHour, 10) + '.' + this.spendTimeMin;
           this.timePicker = this.numStartHour + ':' + this.numStartMin;
           this.list.push({ divider: true, inset: true },
                     { duration: this.placeData },
@@ -374,11 +400,20 @@ export default {
                       spendtime: this.spendtime,
                       completed: false,
                     });
+          this.saveList.push({
+              email: this.$store.getters.getEmail,
+              location: this.addressName,
+              spendtime: this.spendtime,
+              times: this.timePicker,
+              date: this.$store.getters.loadedPlanner(this.id).date,
+              duration: this.placeData,
+          });   
         }else {
           this.numStartHour = this.selectStartTimeHour;
           this.numStartMin = this.selectStartTimeMin;
-          this.numSpendtime = this.spendtime;
-
+          this.numSpendtimeHour = this.spendTimeHour;
+          this.numSpendtimeMin = this.spendTimeMin;
+          this.spendtime = parseInt(this.spendTimeHour, 10) + '.' + this.spendTimeMin;
           this.totalTime = timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalhour + "." + timeTable(this.selectEndTimeHour, this.selectEndTimeMin, this.selectStartTimeHour, this.selectStartTimeMin).totalmin;
           this.list.push ({
                avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
@@ -387,16 +422,25 @@ export default {
                spendtime: this.spendtime,
                completed: false });
           this.disabled = true;
+          this.saveList.push({
+              email: this.$store.getters.getEmail,
+              location: this.addressName,
+              spendtime: this.spendtime,
+              times: this.setStartTime,
+              date: this.$store.getters.loadedPlanner(this.id).date,
+              duration: '0',
+          });  
         }
 
           let size = this.list.length - 1;
+
           try {
            let bodyTime = {
               spendtime: this.list[size].spendtime,
               remaining: this.totalTime,
               road: this.placeData,
             };
-           let timeResponse = await axios.post('https://travel-planner-develop.herokuapp.com/time-remain/', bodyTime);
+           let timeResponse = await axios.post('http://127.0.0.1:8000/time-remain/', bodyTime);
            this.totalTime = timeResponse.data;
            console.log(timeResponse.data);
          } catch (error) {
@@ -406,8 +450,21 @@ export default {
           this.address = '';
           this.spendtime = '';
         },
-    },
-  },
-};
-</script>
 
+        async saveplan() {
+            try{
+                    this.saveList.forEach((plan) => {
+                        console.log(plan);
+                        axios.post('http://127.0.0.1:8000/savedata/', plan);
+                        alert('Save succesful!')
+                    })   
+                
+                
+            } catch(error) { 
+                console.log(error);
+            }
+        },
+
+    }
+}
+</script>

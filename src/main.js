@@ -1,13 +1,14 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
 import App from './App';
 import router from './router/index';
-import { store } from './store'
+import VueCookie from 'vue-cookie';
+import { store } from './store';
 
 import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 import GSignInButton from 'vue-google-signin-button';
 import FBSignInButton from 'vue-facebook-signin-button';
 import GAuth from 'vue-google-oauth2';
-import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 
 import {
   Vuetify,
@@ -46,7 +47,9 @@ Vue.use(VuetifyGoogleAutocomplete, {
   apiKey: 'AIzaSyBENVTYtp6UnlTVs8gmLomS1NNlJqK7-ww', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
 });
 
-Vue.use(Vuex)
+Vue.use(Vuex);
+
+Vue.use(VueCookie);
 
 Vue.use(Vuetify, {
   components: {

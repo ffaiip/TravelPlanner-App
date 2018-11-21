@@ -1,6 +1,6 @@
 <template>
 
- <div v-if="usname == ' '">
+ <div v-if="usname == ' ' || usname == ''">
   <v-container>
    <v-layout row>
     <v-flex xs12 sm6 offset-sm3>    
@@ -98,38 +98,58 @@ export default {
   },
   computed: {
     usname() {
-      return this.$store.getters.getUsername;
+      return this.$store.getters.getCookie('name');
     },
     email() {
-      return this.$store.getters.getEmail;
-    }
+      return this.$store.getters.getCookie('mail');
+    },
   },
   methods: {
     signIn() {
       this.$gAuth
         .signIn()
         .then(user => {
-          this.$store.commit('setUsername', user["w3"]["ig"]);
-          this.$store.commit('setEmail', user["w3"]["U3"]);
 
-          console.log("user", user);
-          console.log("usname", usname);
+          let us = user["w3"]["ig"];
+          let ml = user["w3"]["U3"];
+
+          this.$store.getters.Cookie('name', us);
+          this.$store.getters.Cookie('mail', ml);
+
+          this.$store.commit('setUsername', this.$store.getters.getCookie('name'));
+          this.$store.commit('setEmail', this.$store.getters.getCookie('mail'));
+
+          console.log(this.$store.getters.getCookie('name'));
+          console.log(this.$store.getters.getCookie('mail'));
+
+
         })
         .catch(error => {
+          console.log(error);
           console.log("cannot login");
         });
+        
     },
     signOut() {
       this.$gAuth
         .signOut()
         .then(user => {
-          this.$store.commit("setUsername", " ");
-          this.$store.commit("setEmail", " ");
+
+          this.$store.getters.Cookie('name', " ");
+          this.$store.getters.Cookie('mail', " ");
+
+          this.$store.commit('setUsername', this.$store.getters.getCookie('name'));
+          this.$store.commit('setEmail', this.$store.getters.getCookie('mail'));
+
+          console.log(this.$store.getters.getCookie('name'));
+          console.log(this.$store.getters.getCookie('mail'));
+
           console.log("sign out");
         })
         .catch(error => {
           // things to do when sign-out fails
         });
+
     }
   },
   mounted() {

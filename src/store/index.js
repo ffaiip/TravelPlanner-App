@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VueCookie from 'vue-cookies';
 
 Vue.use(Vuex);
-  
+Vue.use(VueCookie);
+
 export const store = new Vuex.Store({
     state: {
         loadedPlanners: [
@@ -31,7 +33,13 @@ export const store = new Vuex.Store({
         },
         setEmail(state, email){
             state.user.email = email
-        }
+        },
+        // setCookie(key, value){
+        //     var k = key;
+        //     var v = value;
+        //     Vue.cookie.set(k, v, '1h');
+        // }
+
     },
     actions: {
         createPlanner ({commit}, payload) {
@@ -50,7 +58,12 @@ export const store = new Vuex.Store({
         },
         email(state, email){
             state.commit('setEmail', email)
-        }
+        },
+        // cookie(state, key, value){
+        //     var k = key
+        //     var v = value
+        //     state.commit('setCookie', k, v)
+        // }
     },
     getters: {
         loadedPlanners (state) {
@@ -69,7 +82,12 @@ export const store = new Vuex.Store({
             }
         },
         getUsername: state => state.user.username,
-        getEmail: state => state.user.email
+        getEmail: state => state.user.email,
+        // getCookie(state, key){
+        //    return Vue.cookie.get(key);
+        // }
+        getCookie: state => key => Vue.cookie.get(key),
+        Cookie: state => (key, value) => Vue.cookie.set(key, value)
     }
 
 });
