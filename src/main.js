@@ -1,10 +1,15 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
+import App from './App';
+import router from './router/index';
+import VueCookie from 'vue-cookie';
+import { store } from './store';
+
 
 import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 import GSignInButton from 'vue-google-signin-button';
 import FBSignInButton from 'vue-facebook-signin-button';
 import GAuth from 'vue-google-oauth2';
-import Vuex from 'vuex';
 
 import {
   Vuetify,
@@ -48,6 +53,8 @@ Vue.use(VuetifyGoogleAutocomplete, {
 });
 
 Vue.use(Vuex);
+Vue.use(VueCookie);
+
 
 Vue.use(Vuetify, {
   components: {

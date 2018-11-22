@@ -170,6 +170,7 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <h2>Time remaining: {{ this.totalTime }} hours.minute</h2>
+
                     </v-card-actions>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -191,7 +192,6 @@
                         >
                             Do you want to save this planner?
                             <v-btn
-
                             @click.native.once="saveplan" 
 
                             class="info"
@@ -213,6 +213,7 @@ import axios from "axios";
 import { store } from "../../store";
 
 export default {
+
   data() {
     return {
       //auto-complete
@@ -356,6 +357,7 @@ export default {
     },
     outputJsData() {
       return `
+
                 ${JSON.stringify(this.address)}
             `;
     },
@@ -475,6 +477,7 @@ export default {
             hour: parseInt(splitDuration[0], 10),
             min: parseInt(splitDuration[2], 10)
           };
+
         } else if (
           splitDuration[1] === "hour" ||
           splitDuration[1] === "hours"
@@ -637,3 +640,4 @@ export default {
   }
 };
 </script>
+

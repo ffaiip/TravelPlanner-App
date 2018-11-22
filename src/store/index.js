@@ -2,8 +2,10 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import { stat } from 'fs';
+import VueCookie from 'vue-cookies';
 
 Vue.use(Vuex);
+Vue.use(VueCookie);
 
 export const store = new Vuex.Store({
     state: {
@@ -27,12 +29,14 @@ export const store = new Vuex.Store({
         setEmail(state, email) {
             state.user.email = email;
         },
+
         clearCreatePlanner(state) {
             state.loadedPlanners = [];
         },
         setIdPlan(state) {
             state.idPlan = Math.random().toString(36).substr(2, 9);
         }
+
     },
     actions: {
 
@@ -83,6 +87,7 @@ export const store = new Vuex.Store({
         clearCreatePlanner(state) {
             state.commit('clearCreatePlanner');
         },
+
     },
     getters: {
         loadedPlanners(state) {
@@ -96,7 +101,12 @@ export const store = new Vuex.Store({
         },
         getUsername: state => state.user.username,
         getEmail: state => state.user.email,
+
         getId: state => state.idPlan,
-    },
+
+        getCookie: state => key => Vue.cookie.get(key),
+        Cookie: state => (key, value) => Vue.cookie.set(key, value)
+    }
+
 
 });
