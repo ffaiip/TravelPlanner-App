@@ -34,14 +34,21 @@
 </template>
 
 <script>
-
-import { store } from '../../store';
+import axios from "axios";
+import { store } from "../../store";
 
 export default {
-    computed: {
-        planners () {
-            return this.$store.getters.loadedPlanners
-        }
+  computed: {
+    planners() {
+      return this.$store.getters.loadedPlanners;
     }
-}
+  },
+
+  mounted() {
+    if (this.$store.getters.getCount == 0) {
+      this.$store.dispatch("fetchUserData");
+    }
+    this.$store.commit("activeLoadedPlan", 1);
+  }
+};
 </script>

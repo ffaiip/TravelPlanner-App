@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import axios from 'axios';
+import { stat } from 'fs';
 import VueCookie from 'vue-cookies';
 
 Vue.use(Vuex);
@@ -8,75 +10,108 @@ Vue.use(VueCookie);
 export const store = new Vuex.Store({
     state: {
         loadedPlanners: [
-            { imageUrl: 'https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg', 
-                id: '1', 
-                topic:"Planner in Bangkok",
-                date: '2018-10-31'
-            },
-            { imageUrl: 'https://www.viagemegastronomia.com.br/wp-content/uploads/2015/12/chiang-mai.jpg', 
-                id: '1234', 
-                topic:"Planner in Chiang mai",
-                date: '2018-11-10'
-            },
+
+
         ],
         user: {
-           username: ' ',
-           email: ' ',
+            username: ' ',
+            email: ' ',
         },
+        idPlan: '01',
+        count: 0,
     },
     mutations: {
-        createPlanner (state , payload) {
-            state.loadedPlanners.push(payload)
+        createPlanner(state, payload) {
+            state.loadedPlanners.push(payload);
         },
-        setUsername(state, name){
-            state.user.username = name
+        setUsername(state, name) {
+            state.user.username = name;
         },
-        setEmail(state, email){
-            state.user.email = email
+        setEmail(state, email) {
+            state.user.email = email;
         },
+
+        clearCreatePlanner(state) {
+            state.loadedPlanners = [];
+        },
+        setIdPlan(state) {
+            state.idPlan = Math.random().toString(36).substr(2, 9);
+        },
+        activeLoadedPlan(state, numcount) {
+            state.count = numcount
+        }
 
     },
     actions: {
-        createPlanner ({commit}, payload) {
-            const planner = {
-                 topic: payload.topic,
-                 imageUrl: payload.imageUrl,
-                 date: payload.date,
-                 id: 'vkgupn'
-            }
 
-            //Reach out to database and store it
-            commit('createPlanner', planner)
+        async fetchUserData({ commit, getters }) {
+            console.log(getters.getCookie("mail"));
+            const bodyUser = {
+                email: getters.getCookie("mail"),
+            };
+            try {
+                const userDate = await axios.post(
+                    'http://127.0.0.1:8000/user_data/',
+                    bodyUser,
+                );
+                console.log(userDate.data[0]);
+
+                for (let i = 0; i < userDate.data.length; i++) {
+                    const UserData = {
+                        topic: userDate.data[i]['name'],
+                        imageUrl:
+                            'https://d3r8gwkgo0io6y.cloudfront.net/upload/New_York_City.jpg',
+                        date: userDate.data[i]['date'],
+                        id: userDate.data[i]['id'],
+                    };
+                    commit('createPlanner', UserData);
+
+                }
+            } catch (error) {
+                console.log(error);
+            }
         },
-        username(state, name){
-            state.commit('setUsername', name)
+
+        createPlanner({ commit }, payload) {
+            const planner = {
+                imageUrl: payload.imageUrl,
+                id: payload.id,
+                topic: payload.topic,
+                date: payload.date,
+            };
+            // Reach out to database and store it
+            commit('createPlanner', planner);
         },
-        email(state, email){
-            state.commit('setEmail', email)
+        username(state, name) {
+            state.commit('setUsername', name);
+        },
+        email(state, email) {
+            state.commit('setEmail', email);
+        },
+        clearCreatePlanner(state) {
+            state.commit('clearCreatePlanner');
         },
 
     },
     getters: {
-        loadedPlanners (state) {
-            return state.loadedPlanners.sort((plannerA, plannerB) => {
-                return plannerA.date > plannerB.date 
-            }) 
+        loadedPlanners(state) {
+            return state.loadedPlanners.sort((plannerA, plannerB) => plannerA.date > plannerB.date);
         },
-        featuredPlanners (state, getters) {
-            return getters.loadedPlanners.slice(0, 5 )
+        featuredPlanners(state, getters) {
+            return getters.loadedPlanners.slice(0, 5);
         },
-        loadedPlanner (state) {
-            return (plannerId) => {
-                return state.loadedPlanners.find((planner) => {
-                    return planner.id === plannerId
-                })
-            }
+        loadedPlanner(state) {
+            return plannerId => state.loadedPlanners.find(planner => planner.id === plannerId);
         },
         getUsername: state => state.user.username,
         getEmail: state => state.user.email,
 
+        getId: state => state.idPlan,
+
         getCookie: state => key => Vue.cookie.get(key),
-        Cookie: state => (key, value) => Vue.cookie.set(key, value)
+        Cookie: state => (key, value) => Vue.cookie.set(key, value),
+        getCount: state => state.count
     }
+
 
 });
