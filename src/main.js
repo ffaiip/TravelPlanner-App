@@ -33,6 +33,7 @@ import {
   VAutocomplete,
   VDivider,
   VCombobox,
+  VAlert,
 
 } from 'vuetify';
 
@@ -74,6 +75,7 @@ Vue.use(Vuetify, {
     VAutocomplete,
     VDivider,
     VCombobox,
+    VAlert,
   },
   theme: {
     primary: '#FFAB00',
@@ -91,7 +93,6 @@ Vue.config.productionTip = false;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  store,
   router,
   store,
   render: h => h(App),

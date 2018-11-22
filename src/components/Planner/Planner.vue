@@ -225,6 +225,7 @@ export default {
         placeData: '0',
         placeList: [],
         saveList: [],
+        
         //time data
         selectStartTimeHour: '00',
         selectStartTimeMin: '00',
@@ -256,6 +257,7 @@ export default {
         numStartMin:'',
         alert: false,
         date: '',
+
       }
     },
     
@@ -265,7 +267,9 @@ export default {
             return this.$store.getters.loadedPlanner(this.id)
         },
         plannerIsValid () {
+
             return this.list.length != 0  && this.$store.getters.getEmail != ' '
+
         },
         formIsValid () {
             return this.addressName != '' &&
@@ -431,7 +435,6 @@ export default {
               duration: '0',
           });  
         }
-
           let size = this.list.length - 1;
 
           try {
@@ -466,5 +469,6 @@ export default {
         },
 
     }
+
 }
 </script>

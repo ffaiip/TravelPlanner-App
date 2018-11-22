@@ -99,7 +99,7 @@ export default {
     computed: {
         formIsValid () {
             return this.topic !== '' &&
-            this.imageUrl !== ''
+            this.date !== null
         },
         computedDateFormatted () {
             return this.formatDate(this.date)
@@ -110,7 +110,6 @@ export default {
         this.dateFormatted = this.formatDate(this.date)
       }
     },
-  
     methods: {
         onCreatePlanner () {
             if (!this.formIsValid){
