@@ -3,7 +3,7 @@
  <div v-if="usname == ' ' || usname == '' || usname == null">
   <v-container>
    <v-layout row>
-    <v-flex xs12 sm6 offset-sm3>    
+    <v-flex xs12 sm6 offset-sm3>
        <!-- layout for signin -->
       <v-card>
          <v-card-media
@@ -38,7 +38,7 @@
                <v-btn @click.once="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
             </v-flex>
           </v-layout>
-        </v-card-actions> 
+        </v-card-actions>
       </v-card>
     </v-flex>
    </v-layout>
@@ -48,7 +48,7 @@
 <div v-else>
  <v-container>
   <v-layout row>
-    <v-flex xs12 sm6 offset-sm3>   
+    <v-flex xs12 sm6 offset-sm3>
  <!-- sign out -->
       <v-card>
         <v-card-media
@@ -63,14 +63,14 @@
         <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
           <h2> name: {{usname}} </h2>
           <h2> email: {{email}}</h2>
-        </v-flex>  
+        </v-flex>
         <v-card-actions >
           <v-layout row>
             <v-flex s1 offset-xs3 >
                <v-btn @click="signOut" :disabled="!isLoaded" class="secondary">sign out</v-btn>
             </v-flex>
           </v-layout>
-        </v-card-actions> 
+        </v-card-actions>
       </v-card>
      </v-flex>
    </v-layout>
@@ -80,8 +80,7 @@
 
 
 <script>
-
-import { store } from '../../store';
+import { store } from "../../store";
 
 export default {
   name: "SignIn",
@@ -102,6 +101,11 @@ export default {
       this.$gAuth
         .signIn()
         .then(user => {
+
+          this.$store.commit("setUsername", user.w3.ig);
+          this.$store.commit("setEmail", user.w3.U3);
+          this.$store.dispatch("fetchUserData");
+
 
           let us = user["w3"]["ig"];
           let ml = user["w3"]["U3"];
@@ -136,9 +140,9 @@ export default {
           
           this.user.username = this.$store.getters.getCookie('name');
           this.user.email = this.$store.getters.getCookie('mail');
-
         })
         .catch(error => {
+          console.log(error);
           // things to do when sign-out fails
           console.log("cannot sign out");
 
@@ -187,5 +191,3 @@ export default {
   color: #fff;
 }
 </style>
-
-
