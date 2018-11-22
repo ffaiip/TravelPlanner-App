@@ -37,9 +37,7 @@ import {
   VAlert,
 
 } from 'vuetify';
-import { store } from './store';
-import router from './router/index';
-import App from './App';
+
 
 
 Vue.use(GAuth, { clientId: '464916650517-c62c52q1j7jhvbuksr8a16i48d62au4t.apps.googleusercontent.com', scope: 'profile email https://www.googleapis.com/auth/plus.login' });

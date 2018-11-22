@@ -90,9 +90,8 @@ export default {
     return {
       isLoaded: false,
       user: {
-        username: ' ',
-        email: ' '
-
+        username: " ",
+        email: " "
       }
     };
   },
@@ -101,66 +100,65 @@ export default {
       this.$gAuth
         .signIn()
         .then(user => {
-
           this.$store.commit("setUsername", user.w3.ig);
           this.$store.commit("setEmail", user.w3.U3);
           this.$store.dispatch("fetchUserData");
 
-
           let us = user["w3"]["ig"];
           let ml = user["w3"]["U3"];
 
-          this.$store.getters.Cookie('name', us);
-          this.$store.getters.Cookie('mail', ml);
+          this.$store.getters.Cookie("name", us);
+          this.$store.getters.Cookie("mail", ml);
 
-          this.$store.commit('setUsername', this.$store.getters.getCookie('name'));
-          this.$store.commit('setEmail', this.$store.getters.getCookie('mail'));
+          this.$store.commit(
+            "setUsername",
+            this.$store.getters.getCookie("name")
+          );
+          this.$store.commit("setEmail", this.$store.getters.getCookie("mail"));
 
-          this.user.username = this.$store.getters.getCookie('name');
-          this.user.email = this.$store.getters.getCookie('mail');
-          
+          this.user.username = this.$store.getters.getCookie("name");
+          this.user.email = this.$store.getters.getCookie("mail");
         })
         .catch(error => {
           console.log(error);
           console.log("cannot login");
         });
-
-        
     },
     signOut() {
       this.$gAuth
         .signOut()
         .then(user => {
+          this.$store.getters.Cookie("name", " ");
+          this.$store.getters.Cookie("mail", " ");
 
-          this.$store.getters.Cookie('name', " ");
-          this.$store.getters.Cookie('mail', " ");
+          this.$store.commit(
+            "setUsername",
+            this.$store.getters.getCookie("name")
+          );
+          this.$store.commit("setEmail", this.$store.getters.getCookie("mail"));
 
-          this.$store.commit('setUsername', this.$store.getters.getCookie('name'));
-          this.$store.commit('setEmail', this.$store.getters.getCookie('mail'));
-          
-          this.user.username = this.$store.getters.getCookie('name');
-          this.user.email = this.$store.getters.getCookie('mail');
+          this.user.username = this.$store.getters.getCookie("name");
+          this.user.email = this.$store.getters.getCookie("mail");
+          this.$store.dispatch("clearCreatePlanner");
         })
         .catch(error => {
           console.log(error);
           // things to do when sign-out fails
           console.log("cannot sign out");
-
         });
-
     }
   },
   computed: {
     usname() {
       // console.log(this.$store.getters.getCookie('name'))
-      this.user.username = this.$store.getters.getCookie('name');
+      this.user.username = this.$store.getters.getCookie("name");
       return this.user.username;
     },
     email() {
       // console.log(this.$store.getters.getCookie('mail'))
-      this.user.email = this.$store.getters.getCookie('mail');
+      this.user.email = this.$store.getters.getCookie("mail");
       return this.user.email;
-    },
+    }
   },
   mounted() {
     const that = this;
