@@ -10,14 +10,27 @@ Vue.use(VueCookie);
 export const store = new Vuex.Store({
     state: {
         loadedPlanners: [
-
-
+            { imageUrl: 'https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg', 
+                id: '1',  
+                topic:"Planner in Bangkok",
+                date: '2018-10-31'
+            },
+            { imageUrl: 'https://www.viagemegastronomia.com.br/wp-content/uploads/2015/12/chiang-mai.jpg', 
+                id: '1234', 
+                topic:"Planner in Chiang mai",
+                date: '2018-11-10'
+            },
         ],
         user: {
             username: ' ',
             email: ' ',
         },
         idPlan: '01',
+        plan: {
+            planner: [],
+            planID: ' ',
+        },
+        
     },
     mutations: {
         createPlanner(state, payload) {
@@ -33,6 +46,17 @@ export const store = new Vuex.Store({
         clearCreatePlanner(state) {
             state.loadedPlanners = [];
         },
+        addPlan (state, payload, plannerId) {
+            state.plan.planner.push(payload)
+            state.plan.planID = plannerId
+        },
+        addDivide (state, payload) {
+            state.planner.push(payload)
+        },
+        addDuration (state, payload) {
+            state.planner.push(payload)
+        },
+        
         setIdPlan(state) {
             state.idPlan = Math.random().toString(36).substr(2, 9);
         }
@@ -41,7 +65,7 @@ export const store = new Vuex.Store({
     actions: {
 
         async fetchUserData({ commit, getters }, payload) {
-            console.log(getters.getEmail);
+            console.log("เข้า");
             const bodyUser = {
                 email: getters.getEmail,
             };
@@ -78,8 +102,30 @@ export const store = new Vuex.Store({
             // Reach out to database and store it
             commit('createPlanner', planner);
         },
-        username(state, name) {
-            state.commit('setUsername', name);
+        addDuration ({ commit }, payload) {
+            const placeDuration = { duration: payload.duration }
+            commit('addDuration', placeDuration);
+        },
+        addDivide ({ commit }, payload) {
+            const divide = { divider: true, inset: true };
+            commit('addDivide', divide);
+        },
+        addPlan ({ commit, getters }, payload) {
+            const placeList = ( {
+                avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+                time: payload.time,
+                name: payload.name,
+                spendtime: payload.spendtime,
+                completed: false,
+            })
+
+            const planID = getters.loadedPlanner
+
+            commit('addPlan', placeList, planID)
+
+        },
+        username(state, name){
+            state.commit('setUsername', name)
         },
         email(state, email) {
             state.commit('setEmail', email);
@@ -90,8 +136,13 @@ export const store = new Vuex.Store({
 
     },
     getters: {
-        loadedPlanners(state) {
-            return state.loadedPlanners.sort((plannerA, plannerB) => plannerA.date > plannerB.date);
+        getPlan (state) {
+            return state.planner
+        },
+        loadedPlanners (state) {
+            return state.loadedPlanners.sort((plannerA, plannerB) => {
+                return plannerA.date > plannerB.date 
+            }) 
         },
         featuredPlanners(state, getters) {
             return getters.loadedPlanners.slice(0, 5);
