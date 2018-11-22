@@ -5,6 +5,7 @@ import router from './router/index';
 import VueCookie from 'vue-cookie';
 import { store } from './store';
 
+
 import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 import GSignInButton from 'vue-google-signin-button';
 import FBSignInButton from 'vue-facebook-signin-button';
@@ -38,6 +39,7 @@ import {
 } from 'vuetify';
 
 
+
 Vue.use(GAuth, { clientId: '464916650517-c62c52q1j7jhvbuksr8a16i48d62au4t.apps.googleusercontent.com', scope: 'profile email https://www.googleapis.com/auth/plus.login' });
 
 Vue.use(FBSignInButton);
@@ -49,8 +51,8 @@ Vue.use(VuetifyGoogleAutocomplete, {
 });
 
 Vue.use(Vuex);
-
 Vue.use(VueCookie);
+
 
 Vue.use(Vuetify, {
   components: {
@@ -97,4 +99,3 @@ new Vue({
   store,
   render: h => h(App),
 });
-

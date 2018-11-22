@@ -65,14 +65,15 @@
                                     ></v-text-field>
                                     <v-date-picker v-model="date" no-title @input="menu = false"></v-date-picker>
                                 </v-menu>
-                                <p>Date in ISO format: <strong>{{ date }}</strong></p>
                             </v-flex>
                         </v-layout>
                         <v-layout align-center justify-center row>
                             <v-flex xs1 class="mb-6">
-                                <v-btn 
-                                class="primary" 
+
+                                <v-btn
+                                class="primary"
                                 :disabled="!formIsValid"
+
                                 type="submit">Create planner</v-btn>
                             </v-flex>
                         </v-layout>
@@ -84,59 +85,65 @@
 </template>
 
 <script>
+import axios from "axios";
+import { store } from "../../store";
+
 export default {
-    data() {
-        return {
-            topic: '',
-            imageUrl: '',
-            date: null,
-            dateFormatted: null,
-            menu: false,
-            picker: null,
-            landscape: false,
-        }
+  data() {
+    return {
+      topic: "",
+      imageUrl: "",
+      date: null,
+      dateFormatted: null,
+      menu: false,
+      picker: null,
+      landscape: false
+    };
+  },
+  computed: {
+    formIsValid() {
+      return this.topic !== "" && this.date !== null;
     },
-    computed: {
-        formIsValid () {
-            return this.topic !== '' &&
-            this.date !== null
-        },
-        computedDateFormatted () {
-            return this.formatDate(this.date)
-        }
-    },
-    watch: {
-      date (val) {
-        this.dateFormatted = this.formatDate(this.date)
-      }
-    },
-    methods: {
-        onCreatePlanner () {
-            if (!this.formIsValid){
-                return
-            }
-            const plannerData = {
-                topic: this.topic,
-                imageUrl: this.imageUrl,
-                date: this.date
-            }
-            this.$store.dispatch('createPlanner', plannerData)
-            this.$router.push('/planners')
-        },
-        formatDate (date) {
-            if (!date) return null
-
-            const [year, month, day] = date.split('-')
-            return `${month}/${day}/${year}`
-        },
-        parseDate (date) {
-            if (!date) return null
-
-            const [month, day, year] = date.split('/')
-            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-        }
+    computedDateFormatted() {
+      return this.formatDate(this.date);
     }
-}
+  },
+  watch: {
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date);
+    }
+  },
+
+  methods: {
+    onCreatePlanner() {
+      if (!this.formIsValid) {
+        return;
+      }
+      this.$store.commit("setIdPlan");
+      const plannerData = {
+        imageUrl: this.imageUrl,
+        topic: this.topic,
+        date: this.date,
+        id: this.$store.getters.getId
+      };
+      this.$store.dispatch("createPlanner", plannerData);
+      this.$router.push("/planners");
+    },
+
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${month}/${day}/${year}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
+
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    }
+  }
+};
 </script>
 
 

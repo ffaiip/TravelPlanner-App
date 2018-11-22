@@ -47,6 +47,6 @@ export default new Router({
     
   ],
 
-  mode: 'hash'
+  mode: 'hash',
 
 });
