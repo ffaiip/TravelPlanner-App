@@ -38,25 +38,13 @@ import axios from "axios";
 import { store } from "../../store";
 
 export default {
-  data() {
-    return {
-      topic: "",
-      imageUrl: "",
-      date: null,
-      dateFormatted: null,
-      menu: false,
-      picker: null,
-      landscape: false
-    };
-  },
-
   computed: {
     planners() {
       return this.$store.getters.loadedPlanners;
     }
   }
-  //   mounted() {
-  //     this.$store.dispatch("fetchUserData");
-  //   }
+  // mounted() {
+  //   this.$store.dispatch("fetchUserData");
+  // }
 };
 </script>

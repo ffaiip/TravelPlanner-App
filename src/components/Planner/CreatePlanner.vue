@@ -9,7 +9,7 @@
             <v-space></v-space>
             <v-layout align-center justify-center row>
                 <v-flex xs12>
-                    <v-form @submit.once="onCreatePlanner">
+                    <v-form @submit.prevent="onCreatePlanner">
                         <v-layout row>
                             <v-flex xs12 sm6 offset-sm3>
                                 <v-text-field
@@ -85,67 +85,63 @@
 </template>
 
 <script>
-import axios from 'axios';  
-import { store } from '../../store';
+import axios from "axios";
+import { store } from "../../store";
 
 export default {
-
   data() {
     return {
-      topic: '',
-      imageUrl: '',
+      topic: "",
+      imageUrl: "",
       date: null,
       dateFormatted: null,
       menu: false,
       picker: null,
-      landscape: false,
+      landscape: false
     };
   },
   computed: {
     formIsValid() {
-      return this.topic !== ''
-            && this.date !== null;
+      return this.topic !== "" && this.date !== null;
     },
     computedDateFormatted() {
       return this.formatDate(this.date);
-
-    },
+    }
   },
   watch: {
     date(val) {
       this.dateFormatted = this.formatDate(this.date);
-    },
+    }
   },
-
-
 
   methods: {
     onCreatePlanner() {
       if (!this.formIsValid) {
         return;
       }
+      this.$store.commit("setIdPlan");
       const plannerData = {
-        topic: this.topic,
         imageUrl: this.imageUrl,
+        topic: this.topic,
         date: this.date,
+        id: this.$store.getters.getId
       };
-      this.$store.dispatch('createPlanner', plannerData);
-      this.$router.push('/planners');
+      this.$store.dispatch("createPlanner", plannerData);
+      this.$router.push("/planners");
     },
     formatDate(date) {
       if (!date) return null;
 
-
-      const [year, month, day] = date.split('-');
+      const [year, month, day] = date.split("-");
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
 
-      const [month, day, year] = date.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    },
-  },
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    }
+  }
 };
 </script>
 

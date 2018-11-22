@@ -8,23 +8,14 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
     state: {
         loadedPlanners: [
-            {
-                imageUrl: 'https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg',
-                id: '1',
-                topic: 'Planner in Bangkok',
-                date: '2018-10-31',
-            },
-            {
-                imageUrl: 'https://www.viagemegastronomia.com.br/wp-content/uploads/2015/12/chiang-mai.jpg',
-                id: '1234',
-                topic: 'Planner in Chiang mai',
-                date: '2018-11-10',
-            },
+
+
         ],
         user: {
             username: ' ',
             email: ' ',
         },
+        idPlan: '01',
     },
     mutations: {
         createPlanner(state, payload) {
@@ -38,6 +29,9 @@ export const store = new Vuex.Store({
         },
         clearCreatePlanner(state) {
             state.loadedPlanners = [];
+        },
+        setIdPlan(state) {
+            state.idPlan = Math.random().toString(36).substr(2, 9);
         }
     },
     actions: {
@@ -72,12 +66,11 @@ export const store = new Vuex.Store({
 
         createPlanner({ commit }, payload) {
             const planner = {
-                topic: payload.topic,
                 imageUrl: payload.imageUrl,
+                id: payload.id,
+                topic: payload.topic,
                 date: payload.date,
-                id: 'vkgupn',
             };
-
             // Reach out to database and store it
             commit('createPlanner', planner);
         },
@@ -89,7 +82,6 @@ export const store = new Vuex.Store({
         },
         clearCreatePlanner(state) {
             state.commit('clearCreatePlanner');
-            console.log("เข้าเด้อ");
         },
     },
     getters: {
@@ -104,6 +96,7 @@ export const store = new Vuex.Store({
         },
         getUsername: state => state.user.username,
         getEmail: state => state.user.email,
+        getId: state => state.idPlan,
     },
 
 });

@@ -29,13 +29,13 @@ export default {
   computed: {
     planners() {
       return this.$store.getters.featuredPlanners;
-    },
+    }
   },
 
   methods: {
     onLoadPlanner(id) {
-      this.$router.push(`/planners/${id}`);
-    },
-  },
+      this.$router.push(/planners/ + id);
+    }
+  }
 };
 </script>

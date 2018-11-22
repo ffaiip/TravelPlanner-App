@@ -129,6 +129,7 @@ export default {
           console.log("sign out");
         })
         .catch(error => {
+          console.log(error);
           // things to do when sign-out fails
         });
     }
