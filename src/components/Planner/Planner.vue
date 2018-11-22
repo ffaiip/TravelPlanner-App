@@ -168,7 +168,7 @@
             <v-flex xs12>
                 <v-card>
                     <v-card-actions>
-                        <v-spacer></v-spacer>saveplan
+                        <v-spacer></v-spacer>
                         <h2>Time remaining: {{ this.totalTime }} hours</h2>
                     </v-card-actions>
                     <v-card-actions>
@@ -266,9 +266,8 @@ export default {
         planner () {
             return this.$store.getters.loadedPlanner(this.id)
         },
-        plannerIsValid () {
-
-            return this.list.length != 0  && this.$store.getters.getEmail != ' '
+        plannerIsValid () { 
+            return this.list.length != 0  && this.$store.getters.getUsername != ' '
 
         },
         formIsValid () {
@@ -459,9 +458,9 @@ export default {
                     this.saveList.forEach((plan) => {
                         console.log(plan);
                         axios.post('http://127.0.0.1:8000/savedata/', plan);
-                        alert('Save succesful!')
+                        
                     })   
-                
+                alert('Save succesful!')
                 
             } catch(error) { 
                 console.log(error);

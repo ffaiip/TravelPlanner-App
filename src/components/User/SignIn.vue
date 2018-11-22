@@ -35,7 +35,7 @@
         <v-card-actions >
           <v-layout row>
             <v-flex s1 offset-xs3 >
-               <v-btn @click.once="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
+               <v-btn @click="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
             </v-flex>
           </v-layout>
         </v-card-actions> 
@@ -148,12 +148,10 @@ export default {
   },
   computed: {
     usname() {
-      // console.log(this.$store.getters.getCookie('name'))
       this.user.username = this.$store.getters.getCookie('name');
       return this.user.username;
     },
     email() {
-      // console.log(this.$store.getters.getCookie('mail'))
       this.user.email = this.$store.getters.getCookie('mail');
       return this.user.email;
     },
