@@ -110,8 +110,6 @@ export default {
         this.dateFormatted = this.formatDate(this.date)
       }
     },
-
-  
     methods: {
         onCreatePlanner () {
             if (!this.formIsValid){

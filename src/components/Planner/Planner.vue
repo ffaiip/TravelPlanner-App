@@ -168,7 +168,7 @@
             <v-flex xs12>
                 <v-card>
                     <v-card-actions>
-                        <v-spacer></v-spacer>
+                        <v-spacer></v-spacer>saveplan
                         <h2>Time remaining: {{ this.totalTime }} hours</h2>
                     </v-card-actions>
                     <v-card-actions>
@@ -179,6 +179,10 @@
                         :disabled="!plannerIsValid"
                         >Save</v-btn>
                     </v-card-actions>
+                    <v-card-text right>
+                        <v-spacer></v-spacer>
+                        <div class="info--text">If you want to save this plan, please sign in.</div>
+                    </v-card-text>
                     <v-card-actions>
                         <v-alert
                         :value="alert"
@@ -187,7 +191,7 @@
                         >
                             Do you want to save this planner?
                             <v-btn
-                            @click.once="savePlanner" 
+                            @click.native.once="saveplan" 
                             class="info"
                             >OK</v-btn>
                             <v-btn
@@ -220,6 +224,8 @@ export default {
         addressName : '',
         placeData: '0',
         placeList: [],
+        saveList: [],
+        
         //time data
         selectStartTimeHour: '00',
         selectStartTimeMin: '00',
@@ -250,6 +256,8 @@ export default {
         numStartHour:'',
         numStartMin:'',
         alert: false,
+        date: '',
+
       }
     },
     
@@ -259,7 +267,9 @@ export default {
             return this.$store.getters.loadedPlanner(this.id)
         },
         plannerIsValid () {
-            return this.list.length != 0
+
+            return this.list.length != 0  && this.$store.getters.getEmail != ' '
+
         },
         formIsValid () {
             return this.addressName != '' &&
@@ -394,6 +404,14 @@ export default {
                       spendtime: this.spendtime,
                       completed: false,
                     });
+          this.saveList.push({
+              email: this.$store.getters.getEmail,
+              location: this.addressName,
+              spendtime: this.spendtime,
+              times: this.timePicker,
+              date: this.$store.getters.loadedPlanner(this.id).date,
+              duration: this.placeData,
+          });   
         }else {
           this.numStartHour = this.selectStartTimeHour;
           this.numStartMin = this.selectStartTimeMin;
@@ -408,8 +426,17 @@ export default {
                spendtime: this.spendtime,
                completed: false });
           this.disabled = true;
+          this.saveList.push({
+              email: this.$store.getters.getEmail,
+              location: this.addressName,
+              spendtime: this.spendtime,
+              times: this.setStartTime,
+              date: this.$store.getters.loadedPlanner(this.id).date,
+              duration: '0',
+          });  
         }
           let size = this.list.length - 1;
+
           try {
            let bodyTime = {
               spendtime: this.list[size].spendtime,
@@ -427,9 +454,21 @@ export default {
           this.spendtime = '';
         },
 
-        savePlanner () {
-            alert('save planner')
+        async saveplan() {
+            try{
+                    this.saveList.forEach((plan) => {
+                        console.log(plan);
+                        axios.post('http://127.0.0.1:8000/savedata/', plan);
+                        alert('Save succesful!')
+                    })   
+                
+                
+            } catch(error) { 
+                console.log(error);
+            }
         },
-    },
+
+    }
+
 }
 </script>
