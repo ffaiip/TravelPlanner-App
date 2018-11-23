@@ -349,7 +349,7 @@ export default {
     plannerIsValid() {
       console.log(this.$store.getters.getCookie("mail"));
       return (
-        this.list.length != 1 && this.$store.getters.getCookie("mail") != " "
+        this.list.length > 1 && this.$store.getters.getCookie("mail") != " "
       );
     },
     formIsValid() {
