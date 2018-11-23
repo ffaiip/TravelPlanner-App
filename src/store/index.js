@@ -51,7 +51,7 @@ export const store = new Vuex.Store({
             };
             try {
                 const userDate = await axios.post(
-                    'http://127.0.0.1:8000/user_data/',
+                    'https://travel-planner-develop.herokuapp.com/user_data/',
                     bodyUser,
                 );
                 console.log(userDate.data[0]);

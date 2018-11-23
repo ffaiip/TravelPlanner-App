@@ -499,7 +499,7 @@ export default {
             origin: this.placeList[placeOrigin].placeName
           };
           let placeResponse = await axios.post(
-            "http://127.0.0.1:8000/place/",
+            "https://travel-planner-develop.herokuapp.com/place/",
             bodyPlace
           );
           this.placeData = placeResponse.data;
@@ -609,7 +609,7 @@ export default {
           road: this.placeData
         };
         let timeResponse = await axios.post(
-          "http://127.0.0.1:8000/time-remain/",
+          "https://travel-planner-develop.herokuapp.com/time-remain/",
           bodyTime
         );
 
@@ -635,7 +635,10 @@ export default {
       try {
         this.saveList.forEach(plan => {
           console.log(plan);
-          axios.post("http://127.0.0.1:8000/savedata/", plan);
+          axios.post(
+            "https://travel-planner-develop.herokuapp.com/savedata/",
+            plan
+          );
         });
         alert("Save succesful!");
       } catch (error) {
