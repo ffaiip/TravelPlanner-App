@@ -9,15 +9,15 @@ Vue.use(VueCookie);
 
 export const store = new Vuex.Store({
     state: {
-        loadedPlanners: [
-
-
-        ],
+        loadedPlanners: [],
+        listId: [],
         user: {
             username: ' ',
             email: ' ',
         },
+        planUser: [],
         idPlan: '01',
+        dataId: ' ',
         count: 0,
     },
     mutations: {
@@ -31,7 +31,7 @@ export const store = new Vuex.Store({
             state.user.email = email;
         },
 
-        clearCreatePlanner(state) {
+        clearPlanner(state) {
             state.loadedPlanners = [];
         },
         setIdPlan(state) {
@@ -39,36 +39,70 @@ export const store = new Vuex.Store({
         },
         activeLoadedPlan(state, numcount) {
             state.count = numcount
+        },
+        dataPlan(state, plan) {
+            state.planUser = plan;
+        },
+        setDataId(state, id) {
+            state.dataId = id;
         }
 
     },
     actions: {
 
+        async dataPlanner({ commit, getters }, idplan) {
+            if (getters.getCookie("mail") != " ") {
+                const bodyUser = {
+                    email: getters.getCookie("mail"),
+                    id: idplan
+                }
+
+                try {
+
+                    const planData = await axios.post('https://travel-planner-develop.herokuapp.com/plan_data/', bodyUser);
+                    console.log(planData.data)
+                    console.log(planData.data[0]['id'])
+                    commit('setDataId', planData.data[0]['id'])
+                    commit('dataPlan', planData.data);
+
+
+                } catch (error) {
+                    console.log(error);
+                    return;
+                }
+            }
+        },
+
         async fetchUserData({ commit, getters }) {
             console.log(getters.getCookie("mail"));
-            const bodyUser = {
-                email: getters.getCookie("mail"),
-            };
-            try {
-                const userDate = await axios.post(
-                    'https://travel-planner-develop.herokuapp.com/user_data/',
-                    bodyUser,
-                );
-                console.log(userDate.data[0]);
+            if (getters.getCookie("mail") != " ") {
 
-                for (let i = 0; i < userDate.data.length; i++) {
-                    const UserData = {
-                        topic: userDate.data[i]['name'],
-                        imageUrl:
-                            'https://d3r8gwkgo0io6y.cloudfront.net/upload/New_York_City.jpg',
-                        date: userDate.data[i]['date'],
-                        id: userDate.data[i]['id'],
-                    };
-                    commit('createPlanner', UserData);
+                const bodyUser = {
+                    email: getters.getCookie("mail"),
+                };
+                try {
+                    const userDate = await axios.post(
+                        'https://travel-planner-develop.herokuapp.com/user_data/',
+                        bodyUser,
+                    );
+                    console.log(userDate.data);
 
+                    for (let i = 0; i < userDate.data.length; i++) {
+                        const UserData = {
+                            topic: userDate.data[i]['name'],
+                            imageUrl:
+                                'https://d3r8gwkgo0io6y.cloudfront.net/upload/New_York_City.jpg',
+                            date: userDate.data[i]['date'],
+                            id: userDate.data[i]['id'],
+                        };
+                        // commit('setDataId', userDate.data[i]['id']);
+                        commit('createPlanner', UserData);
+
+                    }
+                } catch (error) {
+                    console.log(error);
+                    return;
                 }
-            } catch (error) {
-                console.log(error);
             }
         },
 
@@ -105,8 +139,11 @@ export const store = new Vuex.Store({
         },
         getUsername: state => state.user.username,
         getEmail: state => state.user.email,
-
+        //genarate id
         getId: state => state.idPlan,
+        //Id from database
+        getDataId: state => state.dataId,
+        getDataPlan: state => state.planUser,
 
         getCookie: state => key => Vue.cookie.get(key),
         Cookie: state => (key, value) => Vue.cookie.set(key, value),

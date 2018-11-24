@@ -7,7 +7,7 @@
        <!-- layout for signin -->
       <v-card>
          <v-card-media
-          src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
+          src="http://www.dream-wallpaper.com/free-wallpaper/travel-wallpaper/santorini-wallpaper/1680x1050/free-wallpaper-18.jpg"
           aspect-ratio="2.75"
         ></v-card-media>
         <v-card-title primary-title>
@@ -52,7 +52,7 @@
  <!-- sign out -->
       <v-card>
         <v-card-media
-          src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
+          src="http://www.dream-wallpaper.com/free-wallpaper/travel-wallpaper/santorini-wallpaper/1680x1050/free-wallpaper-18.jpg"
           aspect-ratio="2.75"
         ></v-card-media>
          <v-card-title primary-title>
@@ -117,6 +117,7 @@ export default {
 
           this.user.username = this.$store.getters.getCookie("name");
           this.user.email = this.$store.getters.getCookie("mail");
+          this.$store.commit("clearPlanner");
           this.$store.dispatch("fetchUserData");
         })
         .catch(error => {
@@ -139,7 +140,7 @@ export default {
 
           this.user.username = this.$store.getters.getCookie("name");
           this.user.email = this.$store.getters.getCookie("mail");
-          this.$store.dispatch("clearCreatePlanner");
+          this.$store.commit("clearPlanner");
         })
         .catch(error => {
           console.log(error);

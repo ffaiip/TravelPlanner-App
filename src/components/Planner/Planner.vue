@@ -65,7 +65,7 @@
                                 ref="address"
                                 :clearable="clearable"
                                 :country="country"
-                                :disabled=false
+                                :disabled="!dataIsValid"
                                 :enable-="enableGeolocation"
                                 label="Search Place"
                                 prepend-icon="place"
@@ -96,14 +96,6 @@
                                 ></v-combobox>
                             </v-flex>
                             <v-flex xs2><h4>Minute(s)</h4></v-flex>
-                            <!-- <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
-                                <v-text-field
-                                name="spendtime"
-                                label="Spend time"
-                                id="spendtime"
-                                v-model="spendtime"
-                                required></v-text-field>
-                            </v-flex> -->
                         </v-layout>
                     </v-form>
                     <v-card-actions>
@@ -339,23 +331,76 @@ export default {
   },
 
   props: ["id"],
+  created() {
+    this.$store.dispatch(
+      "dataPlanner",
+      this.$store.getters.loadedPlanner(this.id).id
+    );
+  },
   computed: {
     planner() {
+      console.log("mawaaa");
+      console.log(this.$store.getters.getDataId);
       console.log(this.$store.getters.loadedPlanner(this.id).id);
-      console.log(this.$store.state.loadedPlanners[0].id);
-      console.log(this.$store.getters.loadedPlanner(this.id).topic);
+      if (
+        this.$store.getters.getDataId ==
+        this.$store.getters.loadedPlanner(this.id).id
+      ) {
+        console.log(this.$store.getters.getDataPlan);
+        this.list = [];
+        var count = 0;
+        var size = this.$store.getters.getDataPlan.length;
+        var data = this.$store.getters.getDataPlan;
+        console.log(data[size - 1]["times"]);
+        for (var i = 0; i < size; i++) {
+          if (i == 0) {
+            this.list.push({
+              avatar:
+                "https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising",
+              time: data[i]["times"],
+              name: data[i]["location"],
+              spendtime: data[i]["spendtime"],
+              completed: false
+            });
+          } else {
+            this.list.push(
+              { divider: true, inset: true },
+              { duration: data[i]["duration"] },
+              { divider: true, inset: true },
+              {
+                avatar:
+                  "https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising",
+                time: data[i]["times"],
+                name: data[i]["location"],
+                spendtime: data[i]["spendtime"],
+                completed: false
+              }
+            );
+          }
+        }
+      }
       return this.$store.getters.loadedPlanner(this.id);
     },
     plannerIsValid() {
-      console.log(this.$store.getters.getCookie("mail"));
       return (
-        this.list.length > 1 && this.$store.getters.getCookie("mail") != " "
+        this.list.length > 1 &&
+        this.$store.getters.getCookie("mail") != " " &&
+        this.$store.getters.getDataId !=
+          this.$store.getters.loadedPlanner(this.id).id
+      );
+    },
+    dataIsValid() {
+      return (
+        this.$store.getters.getDataId !=
+        this.$store.getters.loadedPlanner(this.id).id
       );
     },
     formIsValid() {
       return (
         this.addressName != "" &&
-        (this.spendTimeHour != "00" || this.spendTimeMin != "00")
+        (this.spendTimeHour != "00" || this.spendTimeMin != "00") &&
+        this.$store.getters.getDataId !=
+          this.$store.getters.loadedPlanner(this.id).id
       );
     },
     outputJsData() {
@@ -402,7 +447,7 @@ export default {
       this.placeList.push({ placeName: this.addressName });
       /** Show real total minute */
       const minDigit = function(totalmin) {
-        if (totalmin < 10) return `0${totalmin}`;
+        if (totalmin < 10) return "0" + totalmin;
         return totalmin;
       };
 
@@ -446,11 +491,11 @@ export default {
           date1 = startTimefirst;
           date2 = endTimefirst;
         } else if (selectStartTimeHour == selectEndTimeHour) {
-          if (selectStartTimeMin < selectEndTimeMin) {
+          if (selectStartTimeMin == selectEndTimeMin) {
+            return { totalhour: 24, totalmin: 0 };
+          } else if (selectStartTimeMin < selectEndTimeMin) {
             date1 = startTimefirst;
             date2 = endTimefirst;
-          } else if (selectStartTimeMin == selectEndTimeMin) {
-            return { hour: "24", min: "00" };
           } else {
             date1 = startTimefirst;
             date2 = endtTimenext;
@@ -462,7 +507,6 @@ export default {
         const res = Math.abs(date1 - date2) / 1000;
         // get hours
         const hours = Math.floor(res / 3600) % 24;
-        // console.log(hours);
         // get minutes
         const minutes = Math.floor(res / 60) % 60;
         return { totalhour: hours, totalmin: minDigit(minutes) };
@@ -633,13 +677,14 @@ export default {
 
     async saveplan() {
       try {
-        this.saveList.forEach(plan => {
-          console.log(plan);
-          axios.post(
+        for (const i of this.saveList) {
+          console.log(i);
+          let save = await axios.post(
             "https://travel-planner-develop.herokuapp.com/savedata/",
-            plan
+            i
           );
-        });
+          console.log(save.data);
+        }
         alert("Save succesful!");
       } catch (error) {
         console.log(error);
