@@ -69,12 +69,18 @@
                         </v-layout>
                         <v-layout align-center justify-center row>
                             <v-flex xs1 class="mb-6">
-
                                 <v-btn
                                 class="primary"
                                 :disabled="!formIsValid"
 
                                 type="submit">Create planner</v-btn>
+                            </v-flex>
+                        </v-layout>
+                        <v-layout align-center justify-center row wrap>
+                            <v-flex xs5 class="mb-6">
+                                <v-card-text right>
+                                    <div class="info--text">If you want to create many plan, please sign in.</div>
+                                </v-card-text>
                             </v-flex>
                         </v-layout>
                     </v-form>
@@ -102,11 +108,14 @@ export default {
   },
   computed: {
     formIsValid() {
+        if(this.$store.getters.getUsername == ' ' || this.$store.getters.getUsername == ''){
+            return this.$store.getters.loadedPlanners.length == 0 && this.topic !== "" && this.date !== null;
+        }
       return this.topic !== "" && this.date !== null;
     },
     computedDateFormatted() {
       return this.formatDate(this.date);
-    }
+    },
   },
   watch: {
     date(val) {
