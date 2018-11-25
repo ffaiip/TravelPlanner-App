@@ -158,6 +158,9 @@ export const store = new Vuex.Store({
 
     },
     getters: {
+        getPlan (state) {
+            return state.planner
+        },
         loadedPlanners(state) {
             return state.loadedPlanners.sort((plannerA, plannerB) => plannerA.date > plannerB.date);
         },
@@ -165,7 +168,11 @@ export const store = new Vuex.Store({
             return getters.loadedPlanners.slice(0, 5);
         },
         loadedPlanner(state) {
-            return plannerId => state.loadedPlanners.find(planner => planner.id === plannerId);
+            return (plannerId) => {
+                return state.loadedPlanners.find((planner) => {
+                    return planner.id === plannerId
+                })
+            }
         },
         getUsername: state => state.user.username,
         getEmail: state => state.user.email,

@@ -4,7 +4,7 @@
             <v-flex xs12>
                 <v-card>
                     <v-card-title>
-                        <h1 class="primary--text">{{ planner.title }}</h1>
+                        <h1 class="primary--text">{{ planner.topic }}</h1>
                     </v-card-title>
                     <v-card-media
                                 :src="planner.imageUrl"
@@ -672,6 +672,7 @@ export default {
       } catch (error) {
         console.log(error);
       }
+      console.log(this.list)
       this.addressName = "";
       this.address = "";
       this.spendtime = "";
