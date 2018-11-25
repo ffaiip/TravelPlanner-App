@@ -60,7 +60,7 @@
             <h1 class="headline mb-0">Account</h1>
           </div>
         </v-card-title>
-        <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+        <v-flex offset-xs3 offset-md2 offset-lg2>
           <h2> name: {{usname}} </h2>
           <h2> email: {{email}}</h2>
         </v-flex>

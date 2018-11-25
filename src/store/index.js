@@ -109,7 +109,7 @@ export const store = new Vuex.Store({
         getId: state => state.idPlan,
 
         getCookie: state => key => Vue.cookie.get(key),
-        Cookie: state => (key, value) => Vue.cookie.set(key, value),
+        Cookie: state => (key, value) => Vue.cookie.set(key, value, '1h'),
         getCount: state => state.count
     }
 
