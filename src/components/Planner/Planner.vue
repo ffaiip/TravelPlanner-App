@@ -381,6 +381,9 @@ export default {
       }
       return this.$store.getters.loadedPlanner(this.id);
     },
+    list() {
+        return this.$store.getters.getPlan
+    },
     plannerIsValid() {
       return (
         this.list.length > 1 &&
@@ -580,19 +583,19 @@ export default {
         this.spendtime =
           parseInt(this.spendTimeHour, 10) + "." + this.spendTimeMin;
         this.timePicker = this.numStartHour + ":" + this.numStartMin;
-        this.list.push(
-          { divider: true, inset: true },
-          { duration: this.placeData },
-          { divider: true, inset: true },
-          {
-            avatar:
-              "https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising",
-            time: this.timePicker,
-            name: this.addressName,
-            spendtime: this.spendtime,
-            completed: false
-          }
-        );
+        const divide = { divider: true, inset: true };
+          this.$store.dispatch('addDivide', divide);
+          const placeDuration = { duration: this.placeData };
+          this.$store.dispatch('addDuration', placeDuration);
+          this.$store.dispatch('addDivide', divide)
+          const planL = ({
+                      avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+                      time: this.timePicker,
+                      name: this.addressName,
+                      spendtime: this.spendtime,
+                      completed: false,
+                    });
+          this.$store.dispatch('addPlan', planL)
         this.saveList.push({
           email: this.$store.getters.getCookie("mail"),
           location: this.addressName,
@@ -624,14 +627,13 @@ export default {
             this.selectStartTimeHour,
             this.selectStartTimeMin
           ).totalmin;
-        this.list.push({
-          avatar:
-            "https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising",
-          time: this.setStartTime,
-          name: this.addressName,
-          spendtime: this.spendtime,
-          completed: false
-        });
+        const planList = {
+               avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+               time: this.setStartTime,
+               name: this.addressName,
+               spendtime: this.spendtime,
+               completed: false };
+          this.$store.dispatch('addPlan', planList)
         this.disabled = true;
         this.saveList.push({
           email: this.$store.getters.getCookie("mail"),
