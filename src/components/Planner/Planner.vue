@@ -71,13 +71,13 @@
                                 prepend-icon="place"
                                 required=true
                                 types="establishment"
-                                onfocus="value = ''"
+                                onfocus="value = ''" 
                                 v-on:placechanged="getAddressData"
                                 v-on:no-results-found="noResultsFound"
                                 ></vuetify-google-autocomplete>
-
+                                
                             </v-flex>
-                        </v-layout>
+                        </v-layout>    
                         <v-layout align-center row class="pb-6">
                             <v-flex xs3 offset-xs3 offset-md2>
                                 <h4>Spend time</h4>
@@ -100,7 +100,7 @@
                     </v-form>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn
+                        <v-btn 
                         class="primary"
                         :disabled="!formIsValid"
                         @click="addPlace"
@@ -123,7 +123,7 @@
                                 v-else-if="item.duration"
                                 :key="item.duration"
                                 avatar
-                            >
+                            >   
                                 <v-layout justify-center>
                                     <v-list-action>
                                         <v-icon>directions_car</v-icon>
@@ -132,7 +132,7 @@
                                         <v-list-tile-title>: {{ item.duration }}</v-list-tile-title>
                                     </v-list-tile-content>
                                 </v-layout>
-
+                                
                             </v-list-tile>
                             <v-list-tile
                                 v-else
@@ -149,7 +149,7 @@
                                 <v-list-tile-action>
                                     <v-list-tile-action-text>Time: {{ item.time }}</v-list-tile-action-text>
                                 </v-list-tile-action>
-
+                
                             </v-list-tile>
                         </template>
                     </v-list>
@@ -161,12 +161,11 @@
                 <v-card>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <h2>Time remaining: {{ this.totalTime }} hours.minute</h2>
-
+                        <h2>Time remaining: {{ this.totalTime }} hours</h2>
                     </v-card-actions>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn
+                        <v-btn 
                         class="primary"
                         @click="alert = !alert"
                         :disabled="!plannerIsValid"
@@ -185,7 +184,6 @@
                             Do you want to save this planner?
                             <v-btn
                             @click.native.once="saveplan" 
-
                             class="info"
                             >OK</v-btn>
                             <v-btn
@@ -201,185 +199,89 @@
 </template>
 
 <script>
-import axios from "axios";
-import { store } from "../../store";
-
+import axios from 'axios';  
+import { store } from '../../store';
 export default {
-
-  data() {
-    return {
-      //auto-complete
-      autocompleteModel: "Some Default Location...",
-      vueGoogleAutocompleteLink:
-        "https://github.com/olefirenko/vue-google-autocomplete",
-      autocomplete: "",
-      address: {},
-      clearable: true,
-      enableGeolocation: false,
-      //data of place
-      list: [],
-      addressName: "",
-      placeData: "0",
-      placeList: [],
-      saveList: [],
-      //time data
-      selectStartTimeHour: "00",
-      selectStartTimeMin: "00",
-      selectEndTimeHour: "00",
-      selectEndTimeMin: "00",
-      hourList: [
-        "00",
-        "01",
-        "02",
-        "03",
-        "04",
-        "05",
-        "06",
-        "07",
-        "08",
-        "09",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20",
-        "21",
-        "22",
-        "23"
-      ],
-      minList: [
-        "00",
-        "01",
-        "02",
-        "03",
-        "04",
-        "05",
-        "06",
-        "07",
-        "08",
-        "09",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20",
-        "21",
-        "22",
-        "23",
-        "24",
-        "25",
-        "26",
-        "27",
-        "28",
-        "29",
-        "30",
-        "31",
-        "32",
-        "33",
-        "34",
-        "35",
-        "36",
-        "37",
-        "38",
-        "39",
-        "40",
-        "41",
-        "42",
-        "43",
-        "44",
-        "45",
-        "46",
-        "47",
-        "48",
-        "49",
-        "50",
-        "51",
-        "52",
-        "53",
-        "54",
-        "55",
-        "56",
-        "57",
-        "58",
-        "59"
-      ],
-
-      timePicker: "",
-      totalTime: "",
-      spendTimeHour: "00",
-      spendTimeMin: "00",
-      numSpendtime: "",
-      totalmin: "",
-      totalhour: "",
-      disabled: false,
-      numStartHour: "",
-      numStartMin: "",
-      alert: false,
-      date: ""
-    };
-  },
-
-  props: ["id"],
-  computed: {
-    planner() {
-      console.log(this.$store.getters.loadedPlanner(this.id).id);
-      console.log(this.$store.getters.loadedPlanner(this.id).topic);
-      return this.$store.getters.loadedPlanner(this.id);
+    data () {
+      return {
+        //auto-complete
+        autocompleteModel: 'Some Default Location...',
+        vueGoogleAutocompleteLink: 'https://github.com/olefirenko/vue-google-autocomplete',
+        autocomplete: '',
+        address: {},
+        clearable: true,
+        enableGeolocation: false,
+        //data of place
+        addressName : '',
+        placeData: '0',
+        placeList: [],
+        saveList: [],
+        //time data
+        selectStartTimeHour: '00',
+        selectStartTimeMin: '00',
+        selectEndTimeHour: '00',
+        selectEndTimeMin: '00',
+        hourList: [
+          '00', '01', '02', '03', '04',
+          '05', '06', '07', '08', '09',
+          '10', '11', '12', '13', '14',
+          '15', '16', '17', '18', '19',
+          '20', '21', '22', '23'],
+        minList: [
+          '00', '01', '02', '03', '04', '05', '06', '07', '08', '09',
+          '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
+          '20', '21', '22', '23', '24', '25', '26', '27', '28', '29',
+          '30', '31', '32', '33', '34', '35', '36', '37', '38', '39',
+          '40', '41', '42', '43', '44', '45', '46', '47', '48', '49',
+          '50', '51', '52', '53', '54', '55', '56', '57', '58', '59'],
+        
+        timePicker: '',
+        totalTime : '',
+        spendTimeHour: '00',
+        spendTimeMin: '00',
+        numSpendtime: '',
+        totalmin: '',
+        totalhour: '',
+        disabled: false,
+        numStartHour:'',
+        numStartMin:'',
+        alert: false,
+        date: '',
+      }
     },
-    plannerIsValid() {
-      return this.list.length != 0 && this.$store.getters.getEmail != " ";
-    },
-    formIsValid() {
-      return (
-        this.addressName != "" &&
-        (this.spendTimeHour != "00" || this.spendTimeMin != "00")
-      );
-    },
-    outputJsData() {
-      return `
-
+    
+    props: ['id'],
+    computed:{
+        list () {
+            return this.$store.getters.getPlan
+        },
+        planner () {
+            return this.$store.getters.loadedPlanner(this.id)
+        },
+        plannerIsValid () {
+            return this.list.length != 0  && this.$store.getters.getEmail != ' '
+        },
+        formIsValid () {
+            return this.addressName != '' &&
+            (this.spendTimeHour != '00' || this.spendTimeMin != '00')
+            
+        },
+        outputJsData() {
+            return `
                 ${JSON.stringify(this.address)}
             `;
-    },
-    outputJsCallback() {
-      return `methods: {
-                ${
-                  this.callbackFunction
-                }: function (addressData, placeResultData) {
+        },
+        outputJsCallback() {
+            return `methods: {
+                ${this.callbackFunction}: function (addressData, placeResultData) {
                 this.address = addressData;
                 }
             }`;
-    },
-    outputJs() {
-      return `${this.outputJsData},
+        },
+        outputJs() {
+            return `${this.outputJsData},
             ${this.outputJsCallback}`;
-    }
-  },
-  methods: {
-    /**
-     * Callback method when the location is found.
-     *
-     * @param {Object} addressData Data of the found location
-     */
-    getAddressData(addressData) {
-      this.address = addressData;
-      const addressStringify = JSON.stringify(this.address);
-      const addressObj = JSON.parse(addressStringify);
-      this.addressName = addressObj.name;
-      // edok name tong nee
-      console.log(this.addressName);
+        },
     },
     methods: {
         /**
@@ -429,51 +331,26 @@ export default {
              return { hour: minDigit(hour), min: minDigit(min) };
           };
             /** Compute time table */
-        const timeTable = function(
-        selectEndTimeHour,
-        selectEndTimeMin,
-        selectStartTimeHour,
-        selectStartTimeMin
-      ) {
-        const startTimefirst = new Date(
-          `Jan 1, 2018 ${selectStartTimeHour}:${selectStartTimeMin}:00`
-        );
-        const endTimefirst = new Date(
-          `Jan 1, 2018 ${selectEndTimeHour}:${selectEndTimeMin}:00`
-        );
-        const endTimenext = new Date(
-          `Jan 2, 2018 ${selectEndTimeHour}:${selectEndTimeMin}:00`
-        );
-        let date1;
-
-        let date2;
-        if (
-          selectStartTimeHour == selectEndTimeHour &&
-          selectStartTimeMin == selectEndTimeMin
-        ) {
-          return { totalhour: 24, totalmin: 0 };
-        }
-        if (selectStartTimeHour <= selectEndTimeHour) {
-          if (selectStartTimeMin < selectEndTimeMin) {
-            date1 = startTimefirst;
-            date2 = endTimefirst;
-          } else if (selectStartTimeMin > selectEndTimeMin) {
-            date1 = startTimefirst;
-            date2 = endTimenext;
-          }
-        } else {
-          date1 = startTimefirst;
-          date2 = endTimenext;
-        }
-        const res = Math.abs(date1 - date2) / 1000;
-        // get hours
-        const hours = Math.floor(res / 3600) % 24;
-        // console.log(hours);
-        // get minutes
-        const minutes = Math.floor(res / 60) % 60;
-        return { totalhour: hours, totalmin: minDigit(minutes) };
-      };
-
+        let timeTable = function (selectEndTimeHour,selectEndTimeMin,selectStartTimeHour,selectStartTimeMin){
+            var startTimefirst = new Date( "Jan 1, 2018 "+selectStartTimeHour+":"+selectStartTimeMin+":00" );
+            var endTimefirst = new Date( "Jan 1, 2018 "+selectEndTimeHour+":"+selectEndTimeMin+":00" );
+            var date1, date2;  
+            if (selectStartTimeHour <= selectEndTimeHour ) {
+                date1 = startTimefirst;
+                date2 = endTimefirst;
+            }
+            else{
+                alert('Please select new Time')
+                return {totalhour: 0, totalmin: 0}
+            }
+            var res = Math.abs(date1 - date2) / 1000;       
+            // get hours        
+            var hours = Math.floor(res / 3600) % 24;        
+            // console.log(hours);
+            // get minutes
+            var minutes = Math.floor(res / 60) % 60;
+            return {totalhour: hours, totalmin: minDigit(minutes)}
+        };
          let splitTimeDuration = function (placeData) {
              var splitDuration = placeData.split(' ');
                 if (splitDuration[1] === 'hour' || splitDuration[1] === 'hours' && splitDuration[3] === 'mins' || splitDuration[3] === 'min') {
@@ -522,7 +399,6 @@ export default {
                       completed: false,
                     });
           this.$store.dispatch('addPlan', planL)
-
           this.saveList.push({
               email: this.$store.getters.getEmail,
               location: this.addressName,
@@ -530,8 +406,6 @@ export default {
               times: this.timePicker,
               date: this.$store.getters.loadedPlanner(this.id).date,
               duration: this.placeData,
-              id: this.$store.getters.loadedPlanner(this.id).id,
-              name: this.$store.getters.loadedPlanner(this.id).topic,
           });   
         }else {
           this.numStartHour = this.selectStartTimeHour;
@@ -558,12 +432,9 @@ export default {
               times: this.setStartTime,
               date: this.$store.getters.loadedPlanner(this.id).date,
               duration: '0',
-              id: this.$store.getters.loadedPlanner(this.id).id,
-              name: this.$store.getters.loadedPlanner(this.id).topic,
           });  
         }
           let size = this.list.length - 1;
-
           try {
            let bodyTime = {
               spendtime: this.list[size].spendtime,
@@ -582,20 +453,20 @@ export default {
           this.address = '';
           this.spendtime = '';
         },
-
         async saveplan() {
             try{
                 this.saveList.forEach((plan) => {
                     console.log(plan);
                     axios.post('http://127.0.0.1:8000/savedata/', plan);
+                    alert('Save succesful!')
                 })   
-                alert('Save succesful!') 
+                
+                
             } catch(error) { 
                 console.log(error);
             }
         },
-    }
-  }
-};
+    },
+}
 </script>
 

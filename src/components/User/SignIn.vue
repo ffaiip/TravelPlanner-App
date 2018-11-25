@@ -1,9 +1,9 @@
 <template>
 
- <div v-if="usname == ' ' || usname == '' || usname == null">
+ <div v-if="usname == ' '">
   <v-container>
    <v-layout row>
-    <v-flex xs12 sm6 offset-sm3>
+    <v-flex xs12 sm6 offset-sm3>    
        <!-- layout for signin -->
       <v-card>
          <v-card-media
@@ -35,10 +35,10 @@
         <v-card-actions >
           <v-layout row>
             <v-flex s1 offset-xs3 >
-               <v-btn @click.once="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
+               <v-btn @click="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
             </v-flex>
           </v-layout>
-        </v-card-actions>
+        </v-card-actions> 
       </v-card>
     </v-flex>
    </v-layout>
@@ -48,7 +48,7 @@
 <div v-else>
  <v-container>
   <v-layout row>
-    <v-flex xs12 sm6 offset-sm3>
+    <v-flex xs12 sm6 offset-sm3>   
  <!-- sign out -->
       <v-card>
         <v-card-media
@@ -63,14 +63,14 @@
         <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
           <h2> name: {{usname}} </h2>
           <h2> email: {{email}}</h2>
-        </v-flex>
+        </v-flex>  
         <v-card-actions >
           <v-layout row>
             <v-flex s1 offset-xs3 >
                <v-btn @click="signOut" :disabled="!isLoaded" class="secondary">sign out</v-btn>
             </v-flex>
           </v-layout>
-        </v-card-actions>
+        </v-card-actions> 
       </v-card>
      </v-flex>
    </v-layout>
@@ -80,8 +80,7 @@
 
 
 <script>
-import { store } from "../../store";
-
+import { store } from '../../store';
 export default {
   name: "SignIn",
   nameUser: true,
@@ -95,32 +94,25 @@ export default {
       }
     };
   },
+  computed: {
+    usname() {
+      return this.$store.getters.getUsername;
+    },
+    email() {
+      return this.$store.getters.getEmail;
+    }
+  },
   methods: {
     signIn() {
       this.$gAuth
         .signIn()
         .then(user => {
-          this.$store.commit("setUsername", user.w3.ig);
-          this.$store.commit("setEmail", user.w3.U3);
-          this.$store.dispatch("fetchUserData");
-
-          let us = user["w3"]["ig"];
-          let ml = user["w3"]["U3"];
-
-          this.$store.getters.Cookie("name", us);
-          this.$store.getters.Cookie("mail", ml);
-
-          this.$store.commit(
-            "setUsername",
-            this.$store.getters.getCookie("name")
-          );
-          this.$store.commit("setEmail", this.$store.getters.getCookie("mail"));
-
-          this.user.username = this.$store.getters.getCookie("name");
-          this.user.email = this.$store.getters.getCookie("mail");
+          this.$store.commit('setUsername', user["w3"]["ig"]);
+          this.$store.commit('setEmail', user["w3"]["U3"]);
+          console.log("user", user);
+          console.log("usname", usname);
         })
         .catch(error => {
-          console.log(error);
           console.log("cannot login");
         });
     },
@@ -128,36 +120,13 @@ export default {
       this.$gAuth
         .signOut()
         .then(user => {
-          this.$store.getters.Cookie("name", " ");
-          this.$store.getters.Cookie("mail", " ");
-
-          this.$store.commit(
-            "setUsername",
-            this.$store.getters.getCookie("name")
-          );
-          this.$store.commit("setEmail", this.$store.getters.getCookie("mail"));
-
-          this.user.username = this.$store.getters.getCookie("name");
-          this.user.email = this.$store.getters.getCookie("mail");
-          this.$store.dispatch("clearCreatePlanner");
+          this.$store.commit("setUsername", " ");
+          this.$store.commit("setEmail", " ");
+          console.log("sign out");
         })
         .catch(error => {
-          console.log(error);
           // things to do when sign-out fails
-          console.log("cannot sign out");
         });
-    }
-  },
-  computed: {
-    usname() {
-      // console.log(this.$store.getters.getCookie('name'))
-      this.user.username = this.$store.getters.getCookie("name");
-      return this.user.username;
-    },
-    email() {
-      // console.log(this.$store.getters.getCookie('mail'))
-      this.user.email = this.$store.getters.getCookie("mail");
-      return this.user.email;
     }
   },
   mounted() {
