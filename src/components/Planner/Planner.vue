@@ -170,7 +170,14 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <h2>Time remaining: {{ this.totalTime }} hours.minute</h2>
-
+                    </v-card-actions>    
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                        <v-btn
+                        class="primary"
+                        @click="deletePlace"
+                        :disabled="!haveDATA"
+                        >delete</v-btn>
                     </v-card-actions>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -376,6 +383,9 @@ export default {
     outputJs() {
       return `${this.outputJsData},
             ${this.outputJsCallback}`;
+    },
+    haveDATA(){
+      return this.list.length != 0;
     }
   },
   methods: {
@@ -446,11 +456,11 @@ export default {
           date1 = startTimefirst;
           date2 = endTimefirst;
         } else if (selectStartTimeHour == selectEndTimeHour) {
-          if (selectStartTimeMin < selectEndTimeMin) {
+          if (selectStartTimeMin == selectEndTimeMin) {
+            return { totalhour: 24, totalmin: 0 };
+          } else if (selectStartTimeMin < selectEndTimeMin) {
             date1 = startTimefirst;
             date2 = endTimefirst;
-          } else if (selectStartTimeMin == selectEndTimeMin) {
-            return { hour: "24", min: "00" };
           } else {
             date1 = startTimefirst;
             date2 = endtTimenext;
@@ -462,7 +472,6 @@ export default {
         const res = Math.abs(date1 - date2) / 1000;
         // get hours
         const hours = Math.floor(res / 3600) % 24;
-        // console.log(hours);
         // get minutes
         const minutes = Math.floor(res / 60) % 60;
         return { totalhour: hours, totalmin: minDigit(minutes) };
@@ -510,10 +519,9 @@ export default {
           alert(
             "This two place maybe too far or don't have in the map. Please select new places."
           );
-          this.placeList.splice(placeOrigin, 2);
-          this.list.splice(this.list.length - 3, 4);
-          console.log(this.placeList);
-          console.log(this.list);
+          // this.deletePlace();
+          this.saveList.pop();
+          this.placeList.pop();
           return;
         }
         // plus time table
@@ -557,7 +565,8 @@ export default {
           date: this.$store.getters.loadedPlanner(this.id).date,
           id: this.$store.getters.loadedPlanner(this.id).id,
           name: this.$store.getters.loadedPlanner(this.id).topic,
-          duration: this.placeData
+          duration: this.placeData,
+          remaining: this.totalTime
         });
       } else {
         this.numStartHour = this.selectStartTimeHour;
@@ -597,7 +606,8 @@ export default {
           date: this.$store.getters.loadedPlanner(this.id).date,
           id: this.$store.getters.loadedPlanner(this.id).id,
           name: this.$store.getters.loadedPlanner(this.id).topic,
-          duration: "0"
+          duration: "0",
+          remaining: this.totalTime
         });
       }
 
@@ -629,6 +639,15 @@ export default {
       this.addressName = "";
       this.address = "";
       this.spendtime = "";
+    },
+
+    deletePlace(){
+      console.log("remove");
+      this.totalTime = this.saveList[this.saveList.length-1]['remaining'];
+      if(this.list.length == 1) this.list.splice(0, 3);
+      this.list.splice(this.list.length - 3, 4);
+      this.saveList.pop();
+      this.placeList.pop();
     },
 
     async saveplan() {
