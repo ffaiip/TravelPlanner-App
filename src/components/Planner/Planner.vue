@@ -337,6 +337,12 @@ export default {
       this.$store.getters.loadedPlanner(this.id).id
     );
   },
+  mounted() {
+    if (this.$store.getters.getCount == 0) {
+      this.$store.dispatch("fetchUserData");
+    }
+    this.$store.commit("activeLoadedPlan", 1);
+  },
   computed: {
     planner() {
       console.log("mawaaa");
@@ -352,7 +358,7 @@ export default {
         var size = this.$store.getters.getDataPlan.length;
         var data = this.$store.getters.getDataPlan;
         console.log(data[size - 1]["times"]);
-        for (var i = 0; i < size; i++) {
+        for (var i = 0; i < size - 1; i++) {
           if (i == 0) {
             this.list.push({
               avatar:
@@ -378,6 +384,7 @@ export default {
             );
           }
         }
+        this.totalTime = data[size - 1]["remaining"];
       }
       return this.$store.getters.loadedPlanner(this.id);
     },
@@ -498,11 +505,11 @@ export default {
             date2 = endTimefirst;
           } else {
             date1 = startTimefirst;
-            date2 = endtTimenext;
+            date2 = endTimenext;
           }
         } else {
           date1 = startTimefirst;
-          date2 = endtTimenext;
+          date2 = endTimenext;
         }
         const res = Math.abs(date1 - date2) / 1000;
         // get hours
@@ -543,7 +550,7 @@ export default {
             origin: this.placeList[placeOrigin].placeName
           };
           let placeResponse = await axios.post(
-            "https://travel-planner-develop.herokuapp.com/place/",
+            "http://127.0.0.1:8000/place/",
             bodyPlace
           );
           this.placeData = placeResponse.data;
@@ -554,10 +561,6 @@ export default {
           alert(
             "This two place maybe too far or don't have in the map. Please select new places."
           );
-          this.placeList.splice(placeOrigin, 2);
-          this.list.splice(this.list.length - 3, 4);
-          console.log(this.placeList);
-          console.log(this.list);
           return;
         }
         // plus time table
@@ -601,7 +604,8 @@ export default {
           date: this.$store.getters.loadedPlanner(this.id).date,
           id: this.$store.getters.loadedPlanner(this.id).id,
           name: this.$store.getters.loadedPlanner(this.id).topic,
-          duration: this.placeData
+          duration: this.placeData,
+          remaining: "0"
         });
       } else {
         this.numStartHour = this.selectStartTimeHour;
@@ -641,7 +645,8 @@ export default {
           date: this.$store.getters.loadedPlanner(this.id).date,
           id: this.$store.getters.loadedPlanner(this.id).id,
           name: this.$store.getters.loadedPlanner(this.id).topic,
-          duration: "0"
+          duration: "0",
+          remaining: "0"
         });
       }
 
@@ -653,7 +658,7 @@ export default {
           road: this.placeData
         };
         let timeResponse = await axios.post(
-          "https://travel-planner-develop.herokuapp.com/time-remain/",
+          "http://127.0.0.1:8000/time-remain/",
           bodyTime
         );
 
@@ -676,13 +681,21 @@ export default {
     },
 
     async saveplan() {
+      this.saveList.push({
+        email: this.$store.getters.getCookie("mail"),
+        location: this.addressName,
+        spendtime: this.spendtime,
+        times: this.setStartTime,
+        date: this.$store.getters.loadedPlanner(this.id).date,
+        id: this.$store.getters.loadedPlanner(this.id).id,
+        name: this.$store.getters.loadedPlanner(this.id).topic,
+        duration: this.placeData,
+        remaining: this.totalTime
+      });
       try {
         for (const i of this.saveList) {
           console.log(i);
-          let save = await axios.post(
-            "https://travel-planner-develop.herokuapp.com/savedata/",
-            i
-          );
+          let save = await axios.post("http://127.0.0.1:8000/savedata/", i);
           console.log(save.data);
         }
         alert("Save succesful!");

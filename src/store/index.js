@@ -9,7 +9,14 @@ Vue.use(VueCookie);
 
 export const store = new Vuex.Store({
     state: {
-        loadedPlanners: [],
+        loadedPlanners: [
+            {
+                topic: 'planBKK',
+                imageUrl: 'https://d3r8gwkgo0io6y.cloudfront.net/upload/New_York_City.jpg',
+                date: '2018-2-1',
+                id: '12345',
+            },
+        ],
         listId: [],
         user: {
             username: ' ',
@@ -59,7 +66,7 @@ export const store = new Vuex.Store({
 
                 try {
 
-                    const planData = await axios.post('https://travel-planner-develop.herokuapp.com/plan_data/', bodyUser);
+                    const planData = await axios.post('http://127.0.0.1:8000/plan_data/', bodyUser);
                     console.log(planData.data)
                     console.log(planData.data[0]['id'])
                     commit('setDataId', planData.data[0]['id'])
@@ -82,7 +89,7 @@ export const store = new Vuex.Store({
                 };
                 try {
                     const userDate = await axios.post(
-                        'https://travel-planner-develop.herokuapp.com/user_data/',
+                        'http://127.0.0.1:8000/user_data/',
                         bodyUser,
                     );
                     console.log(userDate.data);
