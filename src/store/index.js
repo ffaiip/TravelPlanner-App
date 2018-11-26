@@ -9,14 +9,7 @@ Vue.use(VueCookie);
 
 export const store = new Vuex.Store({
     state: {
-        loadedPlanners: [
-            {
-                topic: 'planBKK',
-                imageUrl: 'https://d3r8gwkgo0io6y.cloudfront.net/upload/New_York_City.jpg',
-                date: '2018-2-1',
-                id: '12345',
-            },
-        ],
+        loadedPlanners: [],
         listId: [],
         user: {
             username: ' ',
@@ -25,6 +18,7 @@ export const store = new Vuex.Store({
         planUser: [],
         idPlan: '01',
         dataId: ' ',
+        listData: [],
         count: 0,
     },
     mutations: {
@@ -52,6 +46,9 @@ export const store = new Vuex.Store({
         },
         setDataId(state, id) {
             state.dataId = id;
+        },
+        addListData(state, listdata) {
+            state.listData.push = listdata
         }
 
     },
@@ -88,10 +85,14 @@ export const store = new Vuex.Store({
                     email: getters.getCookie("mail"),
                 };
                 try {
+                    console.log("in try");
+
                     const userDate = await axios.post(
                         'http://127.0.0.1:8000/user_data/',
                         bodyUser,
                     );
+                    console.log("in out");
+
                     console.log(userDate.data);
 
                     for (let i = 0; i < userDate.data.length; i++) {
@@ -102,8 +103,9 @@ export const store = new Vuex.Store({
                             date: userDate.data[i]['date'],
                             id: userDate.data[i]['id'],
                         };
-                        // commit('setDataId', userDate.data[i]['id']);
+                        commit('addListData', userDate.data[i]['id']);
                         commit('createPlanner', UserData);
+                        // console.log(getters.loadedPlanners);
 
                     }
                 } catch (error) {
@@ -151,6 +153,7 @@ export const store = new Vuex.Store({
         //Id from database
         getDataId: state => state.dataId,
         getDataPlan: state => state.planUser,
+        getListData: state => state.listData,
 
         getCookie: state => key => Vue.cookie.get(key),
         Cookie: state => (key, value) => Vue.cookie.set(key, value),

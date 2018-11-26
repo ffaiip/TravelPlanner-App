@@ -331,23 +331,23 @@ export default {
   },
 
   props: ["id"],
+
   created() {
+    if (this.$store.getters.loadedPlanners.length == 0) {
+      this.$store.dispatch("fetchUserData");
+      console.log("เข้า");
+      this.$router.push("/planners");
+    }
+    this.$store.commit("activeLoadedPlan", 1);
+  },
+  mounted() {
     this.$store.dispatch(
       "dataPlanner",
       this.$store.getters.loadedPlanner(this.id).id
     );
   },
-  mounted() {
-    if (this.$store.getters.getCount == 0) {
-      this.$store.dispatch("fetchUserData");
-    }
-    this.$store.commit("activeLoadedPlan", 1);
-  },
   computed: {
     planner() {
-      console.log("mawaaa");
-      console.log(this.$store.getters.getDataId);
-      console.log(this.$store.getters.loadedPlanner(this.id).id);
       if (
         this.$store.getters.getDataId ==
         this.$store.getters.loadedPlanner(this.id).id

@@ -118,7 +118,9 @@ export default {
           this.user.username = this.$store.getters.getCookie("name");
           this.user.email = this.$store.getters.getCookie("mail");
           this.$store.commit("clearPlanner");
-          this.$store.dispatch("fetchUserData");
+          if (this.$store.getters.getCookie("mail") != " ") {
+            this.$store.dispatch("fetchUserData");
+          }
         })
         .catch(error => {
           console.log(error);
