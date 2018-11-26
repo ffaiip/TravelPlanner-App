@@ -162,7 +162,14 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <h2>Time remaining: {{ this.totalTime }} hours.minute</h2>
-
+                    </v-card-actions>    
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                        <v-btn
+                        class="primary"
+                        @click="deletePlace"
+                        :disabled="!haveDATA"
+                        >delete</v-btn>
                     </v-card-actions>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -428,6 +435,9 @@ export default {
     outputJs() {
       return `${this.outputJsData},
             ${this.outputJsCallback}`;
+    },
+    haveDATA(){
+      return this.list.length != 0;
     }
   },
   methods: {
@@ -561,6 +571,11 @@ export default {
           alert(
             "This two place maybe too far or don't have in the map. Please select new places."
           );
+
+          // this.deletePlace();
+          this.saveList.pop();
+          this.placeList.pop();
+
           return;
         }
         // plus time table
@@ -605,7 +620,8 @@ export default {
           id: this.$store.getters.loadedPlanner(this.id).id,
           name: this.$store.getters.loadedPlanner(this.id).topic,
           duration: this.placeData,
-          remaining: "0"
+          remaining: this.totalTime
+
         });
       } else {
         this.numStartHour = this.selectStartTimeHour;
@@ -646,7 +662,8 @@ export default {
           id: this.$store.getters.loadedPlanner(this.id).id,
           name: this.$store.getters.loadedPlanner(this.id).topic,
           duration: "0",
-          remaining: "0"
+          remaining: this.totalTime
+
         });
       }
 
@@ -678,6 +695,15 @@ export default {
       this.addressName = "";
       this.address = "";
       this.spendtime = "";
+    },
+
+    deletePlace(){
+      console.log("remove");
+      this.totalTime = this.saveList[this.saveList.length-1]['remaining'];
+      if(this.list.length == 1) this.list.splice(0, 3);
+      this.list.splice(this.list.length - 3, 4);
+      this.saveList.pop();
+      this.placeList.pop();
     },
 
     async saveplan() {
