@@ -16,10 +16,12 @@ export const store = new Vuex.Store({
             email: ' ',
         },
         planUser: [],
+
         idPlan: '01',
         dataId: ' ',
         listData: [],
         count: 0,
+        planner: [],
     },
     mutations: {
         createPlanner(state, payload) {
@@ -51,6 +53,17 @@ export const store = new Vuex.Store({
             state.listData.push = listdata
         }
 
+
+        addPlan (state, payload) {
+            state.planner.push(payload)
+        },
+        addDivide (state, payload) {
+            state.planner.push(payload)
+        },
+        addDuration (state, payload) {
+            state.planner.push(payload)
+        },
+       
     },
     actions: {
 
@@ -125,6 +138,26 @@ export const store = new Vuex.Store({
             // Reach out to database and store it
             commit('createPlanner', planner);
         },
+        addDuration ({ commit }, payload) {
+            const placeDuration = { duration: payload.duration }
+            commit('addDuration', placeDuration);
+        },
+        addDivide ({ commit }, payload) {
+            const divide = { divider: true, inset: true };
+            commit('addDivide', divide);
+        },
+        addPlan ({ commit }, payload) {
+            const placeList = ( {
+                avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+                time: payload.time,
+                name: payload.name,
+                spendtime: payload.spendtime,
+                completed: false,
+            })
+
+            commit('addPlan', placeList)
+        },
+
         username(state, name) {
             state.commit('setUsername', name);
         },
@@ -135,8 +168,12 @@ export const store = new Vuex.Store({
             state.commit('clearCreatePlanner');
         },
 
+
     },
     getters: {
+        getPlan (state) {
+            return state.planner
+        },
         loadedPlanners(state) {
             return state.loadedPlanners.sort((plannerA, plannerB) => plannerA.date > plannerB.date);
         },
@@ -144,11 +181,16 @@ export const store = new Vuex.Store({
             return getters.loadedPlanners.slice(0, 5);
         },
         loadedPlanner(state) {
-            return plannerId => state.loadedPlanners.find(planner => planner.id === plannerId);
+            return (plannerId) => {
+                return state.loadedPlanners.find((planner) => {
+                    return planner.id === plannerId
+                })
+            }
         },
+
         getUsername: state => state.user.username,
         getEmail: state => state.user.email,
-        //genarate id
+        // genarate id
         getId: state => state.idPlan,
         //Id from database
         getDataId: state => state.dataId,

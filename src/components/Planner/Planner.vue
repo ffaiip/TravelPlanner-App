@@ -4,7 +4,7 @@
             <v-flex xs12>
                 <v-card>
                     <v-card-title>
-                        <h1 class="primary--text">{{ planner.title }}</h1>
+                        <h1 class="primary--text">{{ planner.topic }}</h1>
                     </v-card-title>
                     <v-card-media
                                 :src="planner.imageUrl"
@@ -223,7 +223,6 @@ export default {
       clearable: true,
       enableGeolocation: false,
       //data of place
-      list: [],
       addressName: "",
       placeData: "0",
       placeList: [],
@@ -394,6 +393,9 @@ export default {
         this.totalTime = data[size - 1]["remaining"];
       }
       return this.$store.getters.loadedPlanner(this.id);
+    },
+    list() {
+        return this.$store.getters.getPlan
     },
     plannerIsValid() {
       return (
@@ -598,19 +600,19 @@ export default {
         this.spendtime =
           parseInt(this.spendTimeHour, 10) + "." + this.spendTimeMin;
         this.timePicker = this.numStartHour + ":" + this.numStartMin;
-        this.list.push(
-          { divider: true, inset: true },
-          { duration: this.placeData },
-          { divider: true, inset: true },
-          {
-            avatar:
-              "https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising",
-            time: this.timePicker,
-            name: this.addressName,
-            spendtime: this.spendtime,
-            completed: false
-          }
-        );
+        const divide = { divider: true, inset: true };
+          this.$store.dispatch('addDivide', divide);
+          const placeDuration = { duration: this.placeData };
+          this.$store.dispatch('addDuration', placeDuration);
+          this.$store.dispatch('addDivide', divide)
+          const planL = ({
+                      avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+                      time: this.timePicker,
+                      name: this.addressName,
+                      spendtime: this.spendtime,
+                      completed: false,
+                    });
+          this.$store.dispatch('addPlan', planL)
         this.saveList.push({
           email: this.$store.getters.getCookie("mail"),
           location: this.addressName,
@@ -644,14 +646,13 @@ export default {
             this.selectStartTimeHour,
             this.selectStartTimeMin
           ).totalmin;
-        this.list.push({
-          avatar:
-            "https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising",
-          time: this.setStartTime,
-          name: this.addressName,
-          spendtime: this.spendtime,
-          completed: false
-        });
+        const planList = {
+               avatar: 'https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising',
+               time: this.setStartTime,
+               name: this.addressName,
+               spendtime: this.spendtime,
+               completed: false };
+          this.$store.dispatch('addPlan', planList)
         this.disabled = true;
         this.saveList.push({
           email: this.$store.getters.getCookie("mail"),
@@ -667,10 +668,9 @@ export default {
         });
       }
 
-      let size = this.list.length - 1;
       try {
         let bodyTime = {
-          spendtime: this.list[size].spendtime,
+          spendtime: this.list[this.list.length - 1]['spendtime'],
           remaining: this.totalTime,
           road: this.placeData
         };
@@ -692,6 +692,7 @@ export default {
       } catch (error) {
         console.log(error);
       }
+      console.log(this.list)
       this.addressName = "";
       this.address = "";
       this.spendtime = "";

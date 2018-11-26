@@ -73,7 +73,6 @@
                                 <v-btn
                                 class="primary"
                                 :disabled="!formIsValid"
-
                                 type="submit">Create planner</v-btn>
                             </v-flex>
                         </v-layout>
@@ -102,11 +101,14 @@ export default {
   },
   computed: {
     formIsValid() {
+         if(this.$store.getters.getUsername == ' ' || this.$store.getters.getUsername == ''){
+            return this.$store.getters.loadedPlanners.length == 0 && this.topic !== "" && this.date !== null;
+        }
       return this.topic !== "" && this.date !== null;
     },
     computedDateFormatted() {
       return this.formatDate(this.date);
-    }
+    },
   },
   watch: {
     date(val) {
