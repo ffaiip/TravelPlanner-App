@@ -44,7 +44,7 @@ export default new Router({
       name: 'SignIn',
       component: SignIn,
     },
-    
+
   ],
 
   mode: 'hash',

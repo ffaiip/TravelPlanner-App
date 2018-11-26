@@ -65,7 +65,7 @@
                                 ref="address"
                                 :clearable="clearable"
                                 :country="country"
-                                :disabled=false
+                                :disabled="!dataIsValid"
                                 :enable-="enableGeolocation"
                                 label="Search Place"
                                 prepend-icon="place"
@@ -96,14 +96,6 @@
                                 ></v-combobox>
                             </v-flex>
                             <v-flex xs2><h4>Minute(s)</h4></v-flex>
-                            <!-- <v-flex xs2 offset-xs3 offset-md2 offset-lg2>
-                                <v-text-field
-                                name="spendtime"
-                                label="Spend time"
-                                id="spendtime"
-                                v-model="spendtime"
-                                required></v-text-field>
-                            </v-flex> -->
                         </v-layout>
                     </v-form>
                     <v-card-actions>
@@ -346,23 +338,83 @@ export default {
   },
 
   props: ["id"],
+
+  created() {
+    if (this.$store.getters.loadedPlanners.length == 0) {
+      this.$store.dispatch("fetchUserData");
+      console.log("เข้า");
+      this.$router.push("/planners");
+    }
+    this.$store.commit("activeLoadedPlan", 1);
+  },
+  mounted() {
+    this.$store.dispatch(
+      "dataPlanner",
+      this.$store.getters.loadedPlanner(this.id).id
+    );
+  },
   computed: {
     planner() {
-      console.log(this.$store.getters.loadedPlanner(this.id).id);
-      console.log(this.$store.state.loadedPlanners[0].id);
-      console.log(this.$store.getters.loadedPlanner(this.id).topic);
+      if (
+        this.$store.getters.getDataId ==
+        this.$store.getters.loadedPlanner(this.id).id
+      ) {
+        console.log(this.$store.getters.getDataPlan);
+        this.list = [];
+        var count = 0;
+        var size = this.$store.getters.getDataPlan.length;
+        var data = this.$store.getters.getDataPlan;
+        console.log(data[size - 1]["times"]);
+        for (var i = 0; i < size - 1; i++) {
+          if (i == 0) {
+            this.list.push({
+              avatar:
+                "https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising",
+              time: data[i]["times"],
+              name: data[i]["location"],
+              spendtime: data[i]["spendtime"],
+              completed: false
+            });
+          } else {
+            this.list.push(
+              { divider: true, inset: true },
+              { duration: data[i]["duration"] },
+              { divider: true, inset: true },
+              {
+                avatar:
+                  "https://static1.squarespace.com/static/5572b7b4e4b0a20071d407d4/t/58a32d06d482e9d74eecebe4/1487751950104/Location+Based+Mobile-+Advertising",
+                time: data[i]["times"],
+                name: data[i]["location"],
+                spendtime: data[i]["spendtime"],
+                completed: false
+              }
+            );
+          }
+        }
+        this.totalTime = data[size - 1]["remaining"];
+      }
       return this.$store.getters.loadedPlanner(this.id);
     },
     plannerIsValid() {
-      console.log(this.$store.getters.getCookie("mail"));
       return (
-        this.list.length != 1 && this.$store.getters.getCookie("mail") != " "
+        this.list.length > 1 &&
+        this.$store.getters.getCookie("mail") != " " &&
+        this.$store.getters.getDataId !=
+          this.$store.getters.loadedPlanner(this.id).id
+      );
+    },
+    dataIsValid() {
+      return (
+        this.$store.getters.getDataId !=
+        this.$store.getters.loadedPlanner(this.id).id
       );
     },
     formIsValid() {
       return (
         this.addressName != "" &&
-        (this.spendTimeHour != "00" || this.spendTimeMin != "00")
+        (this.spendTimeHour != "00" || this.spendTimeMin != "00") &&
+        this.$store.getters.getDataId !=
+          this.$store.getters.loadedPlanner(this.id).id
       );
     },
     outputJsData() {
@@ -412,7 +464,7 @@ export default {
       this.placeList.push({ placeName: this.addressName });
       /** Show real total minute */
       const minDigit = function(totalmin) {
-        if (totalmin < 10) return `0${totalmin}`;
+        if (totalmin < 10) return "0" + totalmin;
         return totalmin;
       };
 
@@ -463,11 +515,11 @@ export default {
             date2 = endTimefirst;
           } else {
             date1 = startTimefirst;
-            date2 = endtTimenext;
+            date2 = endTimenext;
           }
         } else {
           date1 = startTimefirst;
-          date2 = endtTimenext;
+          date2 = endTimenext;
         }
         const res = Math.abs(date1 - date2) / 1000;
         // get hours
@@ -519,9 +571,11 @@ export default {
           alert(
             "This two place maybe too far or don't have in the map. Please select new places."
           );
+
           // this.deletePlace();
           this.saveList.pop();
           this.placeList.pop();
+
           return;
         }
         // plus time table
@@ -567,6 +621,7 @@ export default {
           name: this.$store.getters.loadedPlanner(this.id).topic,
           duration: this.placeData,
           remaining: this.totalTime
+
         });
       } else {
         this.numStartHour = this.selectStartTimeHour;
@@ -608,6 +663,7 @@ export default {
           name: this.$store.getters.loadedPlanner(this.id).topic,
           duration: "0",
           remaining: this.totalTime
+
         });
       }
 
@@ -651,11 +707,23 @@ export default {
     },
 
     async saveplan() {
+      this.saveList.push({
+        email: this.$store.getters.getCookie("mail"),
+        location: this.addressName,
+        spendtime: this.spendtime,
+        times: this.setStartTime,
+        date: this.$store.getters.loadedPlanner(this.id).date,
+        id: this.$store.getters.loadedPlanner(this.id).id,
+        name: this.$store.getters.loadedPlanner(this.id).topic,
+        duration: this.placeData,
+        remaining: this.totalTime
+      });
       try {
-        this.saveList.forEach(plan => {
-          console.log(plan);
-          axios.post("http://127.0.0.1:8000/savedata/", plan);
-        });
+        for (const i of this.saveList) {
+          console.log(i);
+          let save = await axios.post("http://127.0.0.1:8000/savedata/", i);
+          console.log(save.data);
+        }
         alert("Save succesful!");
       } catch (error) {
         console.log(error);

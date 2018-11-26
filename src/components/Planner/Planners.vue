@@ -20,7 +20,11 @@
                                     </div>
                                 </v-card-title>
                                 <v-card-action>
-                                    <v-btn flat :to="'/planners/' + planner.id">
+                                    <v-btn 
+                                    @click="viewPlan"
+                                    idlink = "planner.id"
+                                    flat :to="'/planners/' + planner.id"
+                                    >
                                         <v-icon left light>arrow_forward</v-icon>
                                         View planner</v-btn>
                                 </v-card-action>
