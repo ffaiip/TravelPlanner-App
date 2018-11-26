@@ -216,7 +216,6 @@ export default {
       clearable: true,
       enableGeolocation: false,
       //data of place
-      list: [],
       addressName: "",
       placeData: "0",
       placeList: [],
@@ -647,10 +646,9 @@ export default {
         });
       }
 
-      let size = this.list.length - 1;
       try {
         let bodyTime = {
-          spendtime: this.list[size].spendtime,
+          spendtime: this.list[this.list.length - 1]['spendtime'],
           remaining: this.totalTime,
           road: this.placeData
         };

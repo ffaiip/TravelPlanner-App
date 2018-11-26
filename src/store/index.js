@@ -16,6 +16,7 @@ export const store = new Vuex.Store({
             email: ' ',
         },
         planUser: [],
+
         idPlan: '01',
         dataId: ' ',
         count: 0,
@@ -47,6 +48,7 @@ export const store = new Vuex.Store({
         setDataId(state, id) {
             state.dataId = id;
         },
+
         addPlan (state, payload) {
             state.planner.push(payload)
         },
@@ -56,7 +58,7 @@ export const store = new Vuex.Store({
         addDuration (state, payload) {
             state.planner.push(payload)
         },
-
+       
     },
     actions: {
 
@@ -144,8 +146,8 @@ export const store = new Vuex.Store({
             })
 
             commit('addPlan', placeList)
-
         },
+
         username(state, name) {
             state.commit('setUsername', name);
         },
@@ -155,6 +157,7 @@ export const store = new Vuex.Store({
         clearCreatePlanner(state) {
             state.commit('clearCreatePlanner');
         },
+
 
     },
     getters: {
@@ -174,9 +177,10 @@ export const store = new Vuex.Store({
                 })
             }
         },
+
         getUsername: state => state.user.username,
         getEmail: state => state.user.email,
-        //genarate id
+        // genarate id
         getId: state => state.idPlan,
         //Id from database
         getDataId: state => state.dataId,
