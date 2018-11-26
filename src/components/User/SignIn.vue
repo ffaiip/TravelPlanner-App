@@ -60,7 +60,7 @@
             <h1 class="headline mb-0">Account</h1>
           </div>
         </v-card-title>
-        <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+        <v-flex offset-xs3 offset-md2 offset-lg2>
           <h2> name: {{usname}} </h2>
           <h2> email: {{email}}</h2>
         </v-flex>
@@ -118,7 +118,9 @@ export default {
           this.user.username = this.$store.getters.getCookie("name");
           this.user.email = this.$store.getters.getCookie("mail");
           this.$store.commit("clearPlanner");
-          this.$store.dispatch("fetchUserData");
+          if (this.$store.getters.getCookie("mail") != " ") {
+            this.$store.dispatch("fetchUserData");
+          }
         })
         .catch(error => {
           console.log(error);

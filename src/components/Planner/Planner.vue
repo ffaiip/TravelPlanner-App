@@ -162,7 +162,14 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <h2>Time remaining: {{ this.totalTime }} hours.minute</h2>
-
+                    </v-card-actions>    
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                        <v-btn
+                        class="primary"
+                        @click="deletePlace"
+                        :disabled="!haveDATA"
+                        >delete</v-btn>
                     </v-card-actions>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -330,7 +337,16 @@ export default {
   },
 
   props: ["id"],
+
   created() {
+    if (this.$store.getters.loadedPlanners.length == 0) {
+      this.$store.dispatch("fetchUserData");
+      console.log("เข้า");
+      this.$router.push("/planners");
+    }
+    this.$store.commit("activeLoadedPlan", 1);
+  },
+  mounted() {
     this.$store.dispatch(
       "dataPlanner",
       this.$store.getters.loadedPlanner(this.id).id
@@ -338,9 +354,6 @@ export default {
   },
   computed: {
     planner() {
-      console.log("mawaaa");
-      console.log(this.$store.getters.getDataId);
-      console.log(this.$store.getters.loadedPlanner(this.id).id);
       if (
         this.$store.getters.getDataId ==
         this.$store.getters.loadedPlanner(this.id).id
@@ -351,7 +364,7 @@ export default {
         var size = this.$store.getters.getDataPlan.length;
         var data = this.$store.getters.getDataPlan;
         console.log(data[size - 1]["times"]);
-        for (var i = 0; i < size; i++) {
+        for (var i = 0; i < size - 1; i++) {
           if (i == 0) {
             this.list.push({
               avatar:
@@ -377,6 +390,7 @@ export default {
             );
           }
         }
+        this.totalTime = data[size - 1]["remaining"];
       }
       return this.$store.getters.loadedPlanner(this.id);
     },
@@ -423,6 +437,9 @@ export default {
     outputJs() {
       return `${this.outputJsData},
             ${this.outputJsCallback}`;
+    },
+    haveDATA(){
+      return this.list.length != 0;
     }
   },
   methods: {
@@ -500,11 +517,11 @@ export default {
             date2 = endTimefirst;
           } else {
             date1 = startTimefirst;
-            date2 = endtTimenext;
+            date2 = endTimenext;
           }
         } else {
           date1 = startTimefirst;
-          date2 = endtTimenext;
+          date2 = endTimenext;
         }
         const res = Math.abs(date1 - date2) / 1000;
         // get hours
@@ -545,7 +562,7 @@ export default {
             origin: this.placeList[placeOrigin].placeName
           };
           let placeResponse = await axios.post(
-            "https://travel-planner-develop.herokuapp.com/place/",
+            "http://127.0.0.1:8000/place/",
             bodyPlace
           );
           this.placeData = placeResponse.data;
@@ -556,10 +573,11 @@ export default {
           alert(
             "This two place maybe too far or don't have in the map. Please select new places."
           );
-          this.placeList.splice(placeOrigin, 2);
-          this.list.splice(this.list.length - 3, 4);
-          console.log(this.placeList);
-          console.log(this.list);
+
+          // this.deletePlace();
+          this.saveList.pop();
+          this.placeList.pop();
+
           return;
         }
         // plus time table
@@ -603,7 +621,9 @@ export default {
           date: this.$store.getters.loadedPlanner(this.id).date,
           id: this.$store.getters.loadedPlanner(this.id).id,
           name: this.$store.getters.loadedPlanner(this.id).topic,
-          duration: this.placeData
+          duration: this.placeData,
+          remaining: this.totalTime
+
         });
       } else {
         this.numStartHour = this.selectStartTimeHour;
@@ -642,7 +662,9 @@ export default {
           date: this.$store.getters.loadedPlanner(this.id).date,
           id: this.$store.getters.loadedPlanner(this.id).id,
           name: this.$store.getters.loadedPlanner(this.id).topic,
-          duration: "0"
+          duration: "0",
+          remaining: this.totalTime
+
         });
       }
 
@@ -653,7 +675,7 @@ export default {
           road: this.placeData
         };
         let timeResponse = await axios.post(
-          "https://travel-planner-develop.herokuapp.com/time-remain/",
+          "http://127.0.0.1:8000/time-remain/",
           bodyTime
         );
 
@@ -676,14 +698,31 @@ export default {
       this.spendtime = "";
     },
 
+    deletePlace(){
+      console.log("remove");
+      this.totalTime = this.saveList[this.saveList.length-1]['remaining'];
+      if(this.list.length == 1) this.list.splice(0, 3);
+      this.list.splice(this.list.length - 3, 4);
+      this.saveList.pop();
+      this.placeList.pop();
+    },
+
     async saveplan() {
+      this.saveList.push({
+        email: this.$store.getters.getCookie("mail"),
+        location: this.addressName,
+        spendtime: this.spendtime,
+        times: this.setStartTime,
+        date: this.$store.getters.loadedPlanner(this.id).date,
+        id: this.$store.getters.loadedPlanner(this.id).id,
+        name: this.$store.getters.loadedPlanner(this.id).topic,
+        duration: this.placeData,
+        remaining: this.totalTime
+      });
       try {
         for (const i of this.saveList) {
           console.log(i);
-          let save = await axios.post(
-            "https://travel-planner-develop.herokuapp.com/savedata/",
-            i
-          );
+          let save = await axios.post("http://127.0.0.1:8000/savedata/", i);
           console.log(save.data);
         }
         alert("Save succesful!");

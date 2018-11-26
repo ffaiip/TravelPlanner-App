@@ -19,6 +19,7 @@ export const store = new Vuex.Store({
 
         idPlan: '01',
         dataId: ' ',
+        listData: [],
         count: 0,
         planner: [],
     },
@@ -48,6 +49,10 @@ export const store = new Vuex.Store({
         setDataId(state, id) {
             state.dataId = id;
         },
+        addListData(state, listdata) {
+            state.listData.push = listdata
+        }
+
 
         addPlan (state, payload) {
             state.planner.push(payload)
@@ -71,7 +76,7 @@ export const store = new Vuex.Store({
 
                 try {
 
-                    const planData = await axios.post('https://travel-planner-develop.herokuapp.com/plan_data/', bodyUser);
+                    const planData = await axios.post('http://127.0.0.1:8000/plan_data/', bodyUser);
                     console.log(planData.data)
                     console.log(planData.data[0]['id'])
                     commit('setDataId', planData.data[0]['id'])
@@ -93,10 +98,14 @@ export const store = new Vuex.Store({
                     email: getters.getCookie("mail"),
                 };
                 try {
+                    console.log("in try");
+
                     const userDate = await axios.post(
-                        'https://travel-planner-develop.herokuapp.com/user_data/',
+                        'http://127.0.0.1:8000/user_data/',
                         bodyUser,
                     );
+                    console.log("in out");
+
                     console.log(userDate.data);
 
                     for (let i = 0; i < userDate.data.length; i++) {
@@ -107,8 +116,9 @@ export const store = new Vuex.Store({
                             date: userDate.data[i]['date'],
                             id: userDate.data[i]['id'],
                         };
-                        // commit('setDataId', userDate.data[i]['id']);
+                        commit('addListData', userDate.data[i]['id']);
                         commit('createPlanner', UserData);
+                        // console.log(getters.loadedPlanners);
 
                     }
                 } catch (error) {
@@ -185,9 +195,10 @@ export const store = new Vuex.Store({
         //Id from database
         getDataId: state => state.dataId,
         getDataPlan: state => state.planUser,
+        getListData: state => state.listData,
 
         getCookie: state => key => Vue.cookie.get(key),
-        Cookie: state => (key, value) => Vue.cookie.set(key, value),
+        Cookie: state => (key, value) => Vue.cookie.set(key, value, '1h'),
         getCount: state => state.count
     }
 
