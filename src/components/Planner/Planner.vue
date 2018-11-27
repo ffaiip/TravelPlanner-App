@@ -562,10 +562,11 @@ export default {
           console.log(error);
           // dont forget to subtract time remain
           alert(
-            "This two place maybe too far or don't have in the map. Please select new places."
+            "These two places maybe too far or don't have in the map. Please select new places."
           );
 
           this.placeList.pop();
+          this.$refs.address.clear();
           return;
         }
         // plus time table
@@ -613,6 +614,22 @@ export default {
           remaining: this.totalTime
         });
       } else {
+        try {
+          let bodyAddress = {
+            place: this.addressName
+          };
+          let addressResponse = await axios.post(
+            "https://travel-planner-develop.herokuapp.com/search/",
+            bodyAddress
+          );
+        } catch (error) {
+          console.log(error);
+          alert(
+            "This place maybe doesn't have in the map. Please select new places."
+          );
+          this.$refs.address.clear();
+          return;
+        }
         this.numStartHour = this.selectStartTimeHour;
         this.numStartMin = this.selectStartTimeMin;
         this.numSpendtimeHour = this.spendTimeHour;
