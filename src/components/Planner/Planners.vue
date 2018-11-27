@@ -37,6 +37,19 @@
         </v-layout>
         <v-layout row wrap>
             <v-flex xs3 sm10 md8 offset-sm1 offset-md2>
+                <v-card
+                    v-if="plannersIsValid"
+                >
+                    <v-card-title primary-title>
+                        <div>
+                            <h3 class="headline mb-0">No planner</h3>
+                        </div>
+                    </v-card-title>
+                </v-card>
+            </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+            <v-flex xs3 sm10 md8 offset-sm1 offset-md2>
                 <v-spacer></v-spacer>
                 <v-btn
                 class="error"
@@ -59,8 +72,14 @@ export default {
     planners() {
       return this.$store.getters.loadedPlanners;
     },
-    userIsValid () {
-        return this.$store.getters.getCookie("mail") == " " && this.$store.getters.loadedPlanners.length > 0 ;
+    userIsValid() {
+      return (
+        this.$store.getters.getCookie("mail") == " " &&
+        this.$store.getters.loadedPlanners.length > 0
+      );
+    },
+    plannersIsValid() {
+      return this.$store.getters.loadedPlanners.length == 0;
     }
   },
 
@@ -69,13 +88,12 @@ export default {
       this.$store.dispatch("fetchUserData");
     }
     this.$store.commit("activeLoadedPlan", 1);
-
   },
 
   methods: {
-      deletePlan () {
-          this.$store.commit("clearPlanner");
-      },
-  },
+    deletePlan() {
+      this.$store.commit("clearPlanner");
+    }
+  }
 };
 </script>

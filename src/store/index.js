@@ -73,7 +73,7 @@ export const store = new Vuex.Store({
 
                 try {
 
-                    const planData = await axios.post('http://127.0.0.1:8000/plan_data/', bodyUser);
+                    const planData = await axios.post('https://travel-planner-develop.herokuapp.com/plan_data/', bodyUser);
                     console.log(planData.data)
                     console.log(planData.data[0]['id'])
                     commit('setDataId', planData.data[0]['id'])
@@ -98,7 +98,7 @@ export const store = new Vuex.Store({
                     console.log("in try");
 
                     const userDate = await axios.post(
-                        'http://127.0.0.1:8000/user_data/',
+                        'https://travel-planner-develop.herokuapp.com/user_data/',
                         bodyUser,
                     );
                     console.log("in out");
@@ -109,7 +109,7 @@ export const store = new Vuex.Store({
                         const UserData = {
                             topic: userDate.data[i]['name'],
                             imageUrl:
-                                'https://d3r8gwkgo0io6y.cloudfront.net/upload/New_York_City.jpg',
+                                'https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg',
                             date: userDate.data[i]['date'],
                             id: userDate.data[i]['id'],
                         };

@@ -2,7 +2,7 @@
   <v-app>
     <v-toolbar dark class="primary">
       <v-toolbar-side-icon
-        @click.stop="sideNav = !sideNav"
+        @click="sideNav = !sideNav"
         class="hidden-sm-and-up "></v-toolbar-side-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">Travel planner</router-link>
@@ -22,7 +22,7 @@
     <main>
       <router-view></router-view>
     </main>
-    <v-navigation-drawer v-model="sideNav">
+    <v-navigation-drawer v-model="sideNav" class="side">
       <v-list>
         <v-list-tile
           v-for="item in menuItems"
@@ -44,15 +44,19 @@ export default {
     return {
       sideNav: false,
       menuItems: [
-        { icon: 'supervisor_account', title: 'View Planners', link: '/planners' },
-        { icon: 'room', title: 'Organize Planner', link: '/planner/new' },
-        { icon: 'lock_open', title: 'Account', link: '/account' },
-      ],
+        {
+          icon: "supervisor_account",
+          title: "View Planners",
+          link: "/planners"
+        },
+        { icon: "room", title: "Organize Planner", link: "/planner/new" },
+        { icon: "lock_open", title: "Account", link: "/account" }
+      ]
     };
-  },
+  }
 };
 </script>
 
 <style lang="stylus">
-  @import './stylus/main'
+@import './stylus/main';
 </style>

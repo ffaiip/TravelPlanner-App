@@ -4,7 +4,7 @@
             <v-flex xs12>
                 <v-card>
                     <v-card-title>
-                        <h1 class="primary--text">{{ planner.title }}</h1>
+                        <h1 class="primary--text">{{ planner.topic }}</h1>
                     </v-card-title>
                     <v-card-media
                                 :src="planner.imageUrl"
@@ -166,10 +166,10 @@
                     <v-card-actions>
                       <v-spacer></v-spacer>
                         <v-btn
-                        class="primary"
+                        class="error"
                         @click="deletePlace"
                         :disabled="!haveDATA"
-                        >delete</v-btn>
+                        >Delete</v-btn>
                     </v-card-actions>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -338,7 +338,6 @@ export default {
   created() {
     if (this.$store.getters.loadedPlanners.length == 0) {
       this.$store.dispatch("fetchUserData");
-      console.log("เข้า");
       this.$router.push("/planners");
     }
     this.$store.commit("activeLoadedPlan", 1);
@@ -554,7 +553,7 @@ export default {
             origin: this.placeList[placeOrigin].placeName
           };
           let placeResponse = await axios.post(
-            "http://127.0.0.1:8000/place/",
+            "https://travel-planner-develop.herokuapp.com/place/",
             bodyPlace
           );
           this.placeData = placeResponse.data;
@@ -663,7 +662,7 @@ export default {
           road: this.placeData
         };
         let timeResponse = await axios.post(
-          "http://127.0.0.1:8000/time-remain/",
+          "https://travel-planner-develop.herokuapp.com/time-remain/",
           bodyTime
         );
         if (timeResponse.data < 0) {
@@ -709,7 +708,10 @@ export default {
       try {
         for (const i of this.saveList) {
           console.log(i);
-          let save = await axios.post("http://127.0.0.1:8000/savedata/", i);
+          let save = await axios.post(
+            "https://travel-planner-develop.herokuapp.com/savedata/",
+            i
+          );
           console.log(save.data);
         }
         alert("Save succesful!");

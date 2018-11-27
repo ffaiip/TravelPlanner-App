@@ -20,24 +20,9 @@
                                     required></v-text-field>
                             </v-flex>
                         </v-layout>
-                        <v-layout row>
-                            <v-flex xs12 sm6 offset-sm3>
-                                <v-text-field
-                                    name="imageUrl"
-                                    label="imageURL"
-                                    id="image-url"
-                                    v-model="imageUrl"
-                                    required></v-text-field>
-                            </v-flex>
-                        </v-layout>
-                        <v-layout row>
-                            <v-flex xs12 sm6 offset-sm3>
-                                <img :src="imageUrl" height="150">
-                            </v-flex>
-                        </v-layout>
                         <v-layout row class="mb-6">
                             <v-flex xs12 sm6 offset-sm3>
-                                <h2 class="grey--text">Choose a date and time</h2>
+                                <h2 class="grey--text">Choose a date</h2>
                             </v-flex>
                         </v-layout>
                         <v-layout align-center justify-center row >
@@ -91,7 +76,8 @@ export default {
   data() {
     return {
       topic: "",
-      imageUrl: "",
+      imageUrl:
+        "https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/14/2016/10/28150318/Fotolia_116473721_Subscription_Monthly_M.jpg",
       date: null,
       dateFormatted: null,
       menu: false,
