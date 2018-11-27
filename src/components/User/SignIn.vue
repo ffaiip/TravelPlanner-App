@@ -24,21 +24,14 @@
               width="50px"
               ></v-card-media>
           </v-flex>
-          <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
-            <v-card-media
-                src="https://i0.wp.com/www.inferencelab.com/wp-content/uploads/github-bb449e0ffbacbcb7f9c703db85b1cf0b.png?fit=1125%2C417"
-                height="50px"
-                width="150px"
-              ></v-card-media>
-          </v-flex>
-        </v-layout>
-        <v-card-actions >
+          <v-card-actions >
           <v-layout row>
             <v-flex s1 offset-xs3 >
                <v-btn @click="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
             </v-flex>
           </v-layout>
         </v-card-actions>
+        </v-layout>
       </v-card>
     </v-flex>
    </v-layout>

@@ -23,6 +23,7 @@
                                     <v-btn 
                                     @click="viewPlan"
                                     idlink = "planner.id"
+      
                                     flat :to="'/planners/' + planner.id"
                                     >
                                         <v-icon left light>arrow_forward</v-icon>
@@ -32,6 +33,18 @@
                         </v-layout>
                     </v-container>
                 </v-card>
+            </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+            <v-flex xs3 sm10 md8 offset-sm1 offset-md2>
+                <v-spacer></v-spacer>
+                <v-btn
+                class="error"
+                v-if="userIsValid"
+                @click="deletePlan"
+                >
+                    Delete
+                </v-btn>
             </v-flex>
         </v-layout>
     </v-container>
@@ -45,6 +58,9 @@ export default {
   computed: {
     planners() {
       return this.$store.getters.loadedPlanners;
+    },
+    userIsValid () {
+        return this.$store.getters.getCookie("mail") == " " && this.$store.getters.loadedPlanners.length > 0 ;
     }
   },
 
@@ -53,6 +69,13 @@ export default {
       this.$store.dispatch("fetchUserData");
     }
     this.$store.commit("activeLoadedPlan", 1);
-  }
+
+  },
+
+  methods: {
+      deletePlan () {
+          this.$store.commit("clearPlanner");
+      },
+  },
 };
 </script>

@@ -25,9 +25,18 @@
 </template>
 
 <script>
+import { store } from "../store";
 export default {
+
   computed: {
     planners() {
+        if (this.$store.getters.loadedPlanners.length == 0) {
+            console.log("in")
+            return [{
+                topic: "Welcome to Travel planner",
+                imageUrl: require('../assets/travel-planner.png'),
+            }]
+        }
       return this.$store.getters.featuredPlanners;
     }
   },

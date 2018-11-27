@@ -58,7 +58,7 @@
 
                         <v-layout align-center justify-center row class="pb-6">
 
-                            <v-flex xs4 offset-xs2 offset-md2 offset-lg2>
+                            <v-flex xs6 offset-xs2 offset-md2 offset-lg2>
                                 <vuetify-google-autocomplete
                                 id="address"
                                 append-icon="search"
@@ -210,7 +210,6 @@
 <script>
 import axios from "axios";
 import { store } from "../../store";
-
 export default {
   data() {
     return {
@@ -321,7 +320,6 @@ export default {
         "58",
         "59"
       ],
-
       timePicker: "",
       totalTime: "",
       spendTimeHour: "00",
@@ -336,9 +334,7 @@ export default {
       date: ""
     };
   },
-
   props: ["id"],
-
   created() {
     if (this.$store.getters.loadedPlanners.length == 0) {
       this.$store.dispatch("fetchUserData");
@@ -419,7 +415,6 @@ export default {
     },
     outputJsData() {
       return `
-
                 ${JSON.stringify(this.address)}
             `;
     },
@@ -436,8 +431,12 @@ export default {
       return `${this.outputJsData},
             ${this.outputJsCallback}`;
     },
-    haveDATA(){
-      return this.list.length != 0;
+    haveDATA() {
+      return (
+        this.list.length != 0 &&
+        this.$store.getters.getDataId !=
+          this.$store.getters.loadedPlanner(this.id).id
+      );
     }
   },
   methods: {
@@ -454,7 +453,6 @@ export default {
       // edok name tong nee
       console.log(this.addressName);
     },
-
     async addPlace() {
       // set time table
       this.setStartTime = `${this.selectStartTimeHour}:${
@@ -467,7 +465,6 @@ export default {
         if (totalmin < 10) return "0" + totalmin;
         return totalmin;
       };
-
       /** seperate hour and minute */
       const splitTimeTable = function(totalTime) {
         const splitTime = totalTime.split(".");
@@ -502,7 +499,6 @@ export default {
           `Jan 2, 2018 ${selectEndTimeHour}:${selectEndTimeMin}:00`
         );
         let date1;
-
         let date2;
         if (selectStartTimeHour < selectEndTimeHour) {
           date1 = startTimefirst;
@@ -528,7 +524,6 @@ export default {
         const minutes = Math.floor(res / 60) % 60;
         return { totalhour: hours, totalmin: minDigit(minutes) };
       };
-
       let splitTimeDuration = function(placeData) {
         var splitDuration = placeData.split(" ");
         if (
@@ -553,7 +548,6 @@ export default {
       if (this.list.length >= 1) {
         let placeOrigin = this.placeList.length - 2;
         let placeDestination = this.placeList.length - 1;
-
         try {
           let bodyPlace = {
             place: this.placeList[placeDestination].placeName,
@@ -572,10 +566,7 @@ export default {
             "This two place maybe too far or don't have in the map. Please select new places."
           );
 
-          // this.deletePlace();
-          this.saveList.pop();
           this.placeList.pop();
-
           return;
         }
         // plus time table
@@ -621,7 +612,6 @@ export default {
           name: this.$store.getters.loadedPlanner(this.id).topic,
           duration: this.placeData,
           remaining: this.totalTime
-
         });
       } else {
         this.numStartHour = this.selectStartTimeHour;
@@ -663,10 +653,8 @@ export default {
           name: this.$store.getters.loadedPlanner(this.id).topic,
           duration: "0",
           remaining: this.totalTime
-
         });
       }
-
       let size = this.list.length - 1;
       try {
         let bodyTime = {
@@ -678,7 +666,6 @@ export default {
           "http://127.0.0.1:8000/time-remain/",
           bodyTime
         );
-
         if (timeResponse.data < 0) {
           alert("Your time is over date");
           this.list.splice(this.list.length - 3, 4);
@@ -686,7 +673,6 @@ export default {
           this.saveList.pop();
           timeResponse.data = this.totalTime;
         }
-
         this.totalTime = timeResponse.data;
         console.log(timeResponse.data);
       } catch (error) {
@@ -696,16 +682,17 @@ export default {
       this.address = "";
       this.spendtime = "";
     },
-
-    deletePlace(){
+    deletePlace() {
       console.log("remove");
-      this.totalTime = this.saveList[this.saveList.length-1]['remaining'];
-      if(this.list.length == 1) this.list.splice(0, 3);
-      this.list.splice(this.list.length - 3, 4);
+      console.log(this.list.length);
+      console.log(this.saveList);
+      this.totalTime = this.saveList[this.saveList.length - 1]["remaining"];
+
+      if (this.list.length <= 4) this.list.splice(0, 4);
+      else this.list.splice(this.list.length - 3, 4);
       this.saveList.pop();
       this.placeList.pop();
     },
-
     async saveplan() {
       this.saveList.push({
         email: this.$store.getters.getCookie("mail"),
