@@ -679,6 +679,7 @@ export default {
         console.log(error);
       }
       this.addressName = "";
+      this.$refs.address.clear();
       this.address = "";
       this.spendtime = "";
     },
