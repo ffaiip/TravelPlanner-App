@@ -93,6 +93,7 @@ export default {
   methods: {
     deletePlan() {
       this.$store.commit("clearPlanner");
+      this.$log.info(`delete plan.`)
     }
   }
 };

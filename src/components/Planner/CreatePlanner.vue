@@ -127,12 +127,14 @@ export default {
       };
       this.$store.dispatch("createPlanner", plannerData);
       this.$router.push("/planners");
+      this.$log.info(`create planner name: ${this.topic}, date: ${this.date}`)
     },
 
     formatDate(date) {
       if (!date) return null;
 
       const [year, month, day] = date.split("-");
+
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {

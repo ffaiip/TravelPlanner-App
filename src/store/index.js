@@ -84,7 +84,7 @@ export const store = new Vuex.Store({
 
 
                 } catch (error) {
-                    console.log(error);
+                    this.$log.error(error);
                     return 0;
                 }
             }
@@ -98,13 +98,11 @@ export const store = new Vuex.Store({
                     email: getters.getCookie("mail"),
                 };
                 try {
-                    console.log("in try");
 
                     const userDate = await axios.post(
                         'https://travel-planner-develop.herokuapp.com/user_data/',
                         bodyUser,
                     );
-                    console.log("in out");
 
                     console.log(userDate.data);
 
@@ -122,7 +120,7 @@ export const store = new Vuex.Store({
 
                     }
                 } catch (error) {
-                    console.log(error);
+                    this.$log.error(error);
                     return;
                 }
             }

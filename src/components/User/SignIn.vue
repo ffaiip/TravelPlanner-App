@@ -114,10 +114,11 @@ export default {
           if (this.$store.getters.getCookie("mail") != " ") {
             this.$store.dispatch("fetchUserData");
           }
+          this.$log.info(this.user.username);
+          this.$log.info(this.user.email);
         })
         .catch(error => {
-          console.log(error);
-          console.log("cannot login");
+          this.$log.error(error);
         });
     },
     signOut() {
@@ -136,11 +137,11 @@ export default {
           this.user.username = this.$store.getters.getCookie("name");
           this.user.email = this.$store.getters.getCookie("mail");
           this.$store.commit("clearPlanner");
+          
+          this.$log.info(`${this.user.username} sign out.`);
         })
         .catch(error => {
-          console.log(error);
-          // things to do when sign-out fails
-          console.log("cannot sign out");
+          this.$log.error(error);
         });
     }
   },

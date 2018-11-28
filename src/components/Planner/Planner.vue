@@ -558,8 +558,9 @@ export default {
           );
           this.placeData = placeResponse.data;
           console.log(placeResponse.data);
+          
         } catch (error) {
-          console.log(error);
+          this.$log.error(error);
           // dont forget to subtract time remain
           alert(
             "These two places maybe too far or don't have in the map. Please select new places."
@@ -623,7 +624,7 @@ export default {
             bodyAddress
           );
         } catch (error) {
-          console.log(error);
+          this.$log.error(error);
           alert(
             "This place maybe doesn't have in the map. Please select new places."
           );
@@ -692,7 +693,7 @@ export default {
         this.totalTime = timeResponse.data;
         console.log(timeResponse.data);
       } catch (error) {
-        console.log(error);
+        this.$log.error(error);
       }
       this.addressName = "";
       this.$refs.address.clear();
@@ -703,6 +704,8 @@ export default {
       console.log("remove");
       console.log(this.list.length);
       console.log(this.saveList);
+      var removeP = this.saveList[this.saveList.length-1]['location'];
+      this.$log.info(`remove ${removeP}`);
       this.totalTime = this.saveList[this.saveList.length - 1]["remaining"];
 
       if (this.list.length <= 4) this.list.splice(0, 4);
@@ -730,10 +733,11 @@ export default {
             i
           );
           console.log(save.data);
+          this.$log.info(`${i} saved!`);
         }
         alert("Save succesful!");
       } catch (error) {
-        console.log(error);
+        this.$log.error(error);
       }
     }
   }
