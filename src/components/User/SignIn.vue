@@ -7,7 +7,7 @@
        <!-- layout for signin -->
       <v-card>
          <v-card-media
-          src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
+          src="http://www.dream-wallpaper.com/free-wallpaper/travel-wallpaper/santorini-wallpaper/1680x1050/free-wallpaper-18.jpg"
           aspect-ratio="2.75"
         ></v-card-media>
         <v-card-title primary-title>
@@ -24,21 +24,14 @@
               width="50px"
               ></v-card-media>
           </v-flex>
-          <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
-            <v-card-media
-                src="https://i0.wp.com/www.inferencelab.com/wp-content/uploads/github-bb449e0ffbacbcb7f9c703db85b1cf0b.png?fit=1125%2C417"
-                height="50px"
-                width="150px"
-              ></v-card-media>
-          </v-flex>
-        </v-layout>
-        <v-card-actions >
+          <v-card-actions >
           <v-layout row>
             <v-flex s1 offset-xs3 >
                <v-btn @click="signIn" :disabled="!isLoaded" class="info">sign in</v-btn>
             </v-flex>
           </v-layout>
         </v-card-actions>
+        </v-layout>
       </v-card>
     </v-flex>
    </v-layout>
@@ -52,7 +45,7 @@
  <!-- sign out -->
       <v-card>
         <v-card-media
-          src="https://www.eaglecreek.com/sites/default/files/blog/10-great-travel-gifts-under-35-1509554666.jpg"
+          src="http://www.dream-wallpaper.com/free-wallpaper/travel-wallpaper/santorini-wallpaper/1680x1050/free-wallpaper-18.jpg"
           aspect-ratio="2.75"
         ></v-card-media>
          <v-card-title primary-title>
@@ -60,7 +53,7 @@
             <h1 class="headline mb-0">Account</h1>
           </div>
         </v-card-title>
-        <v-flex xs1 offset-xs3 offset-md2 offset-lg2>
+        <v-flex offset-xs3 offset-md2 offset-lg2>
           <h2> name: {{usname}} </h2>
           <h2> email: {{email}}</h2>
         </v-flex>
@@ -102,7 +95,6 @@ export default {
         .then(user => {
           this.$store.commit("setUsername", user.w3.ig);
           this.$store.commit("setEmail", user.w3.U3);
-          this.$store.dispatch("fetchUserData");
 
           let us = user["w3"]["ig"];
           let ml = user["w3"]["U3"];
@@ -118,6 +110,10 @@ export default {
 
           this.user.username = this.$store.getters.getCookie("name");
           this.user.email = this.$store.getters.getCookie("mail");
+          this.$store.commit("clearPlanner");
+          if (this.$store.getters.getCookie("mail") != " ") {
+            this.$store.dispatch("fetchUserData");
+          }
         })
         .catch(error => {
           console.log(error);
@@ -139,7 +135,7 @@ export default {
 
           this.user.username = this.$store.getters.getCookie("name");
           this.user.email = this.$store.getters.getCookie("mail");
-          this.$store.dispatch("clearCreatePlanner");
+          this.$store.commit("clearPlanner");
         })
         .catch(error => {
           console.log(error);
@@ -150,11 +146,13 @@ export default {
   },
   computed: {
     usname() {
-      this.user.username = this.$store.getters.getCookie('name');
+      // console.log(this.$store.getters.getCookie('name'))
+      this.user.username = this.$store.getters.getCookie("name");
       return this.user.username;
     },
     email() {
-      this.user.email = this.$store.getters.getCookie('mail');
+      // console.log(this.$store.getters.getCookie('mail'))
+      this.user.email = this.$store.getters.getCookie("mail");
       return this.user.email;
     }
   },

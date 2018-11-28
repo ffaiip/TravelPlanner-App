@@ -38,16 +38,16 @@ import {
 
 } from 'vuetify';
 
+// console.log(process.env.API_KEY)
 
-
-Vue.use(GAuth, { clientId: '464916650517-c62c52q1j7jhvbuksr8a16i48d62au4t.apps.googleusercontent.com', scope: 'profile email https://www.googleapis.com/auth/plus.login' });
+Vue.use(GAuth, { clientId: process.env.OAUTH_KEY, scope: 'profile email https://www.googleapis.com/auth/plus.login' });
 
 Vue.use(FBSignInButton);
 
 Vue.use(GSignInButton);
 
 Vue.use(VuetifyGoogleAutocomplete, {
-  apiKey: 'AIzaSyBENVTYtp6UnlTVs8gmLomS1NNlJqK7-ww', // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
+  apiKey: process.env.API_KEY, // Can also be an object. E.g, for Google Maps Premium API, pass `{ client: <YOUR-CLIENT-ID> }`
 });
 
 Vue.use(Vuex);
