@@ -1,210 +1,161 @@
 <template>
-    <v-container>
-        <v-layout row wrap>
-            <v-flex xs12>
-                <v-card>
-                    <v-card-title>
-                        <h1 class="primary--text">{{ planner.topic }}</h1>
-                    </v-card-title>
-                    <v-card-media
-                                :src="planner.imageUrl"
-                                height="400px"
-                    ></v-card-media>
-                    <v-card-text>
-                        <div class="info--text">{{ planner.date }}</div>
-                    </v-card-text>
-                    <v-form>
-                        <v-layout align-center justify-center row class="pb-6">
-                        <v-flex xs2><h4>Start Time</h4></v-flex>
-                            <v-flex xs1>
-                                <v-combobox
-                                    v-model="selectStartTimeHour"
-                                    :items="hourList"
-                                    :disabled = this.disabled
-                                ></v-combobox>
-                            </v-flex>
-                            <v-flex xs1>
-                                <h3>:</h3>
-                            </v-flex>
-                            <v-flex xs1>
-                                <v-combobox
-                                    v-model="selectStartTimeMin"
-                                    :items="minList"
-                                    :disabled = this.disabled
-                                ></v-combobox>
-                            </v-flex>
-                        </v-layout>
+  <v-container>
+    <v-layout row wrap>
+      <v-flex xs12>
+        <v-card>
+          <v-card-title>
+            <h1 class="primary--text">{{ planner.topic }}</h1>
+          </v-card-title>
+          <v-card-media :src="planner.imageUrl" height="400px"></v-card-media>
+          <v-card-text>
+            <div class="info--text">{{ planner.date }}</div>
+          </v-card-text>
+          <v-form>
+            <v-layout align-center justify-center row class="pb-6">
+              <v-flex xs2>
+                <h4>Start Time</h4>
+              </v-flex>
+              <v-flex xs1>
+                <v-combobox
+                  v-model="selectStartTimeHour"
+                  :items="hourList"
+                  :disabled="this.disabled"
+                ></v-combobox>
+              </v-flex>
+              <v-flex xs1>
+                <h3>:</h3>
+              </v-flex>
+              <v-flex xs1>
+                <v-combobox v-model="selectStartTimeMin" :items="minList" :disabled="this.disabled"></v-combobox>
+              </v-flex>
+            </v-layout>
 
-                        <v-layout align-center justify-center row class="pb-6">
-                        <v-flex xs2><h4>End Time </h4></v-flex>
-                            <v-flex xs1>
-                                <v-combobox
-                                    v-model="selectEndTimeHour"
-                                    :items="hourList"
-                                    :disabled = this.disabled
-                                ></v-combobox>
-                            </v-flex>
-                            <v-flex xs1>
-                                <h3>:</h3>
-                            </v-flex>
-                            <v-flex xs1>
-                                <v-combobox
-                                    v-model="selectEndTimeMin"
-                                    :items="minList"
-                                    :disabled = this.disabled
-                                ></v-combobox>
-                            </v-flex>
-                        </v-layout>
+            <v-layout align-center justify-center row class="pb-6">
+              <v-flex xs2>
+                <h4>End Time</h4>
+              </v-flex>
+              <v-flex xs1>
+                <v-combobox v-model="selectEndTimeHour" :items="hourList" :disabled="this.disabled"></v-combobox>
+              </v-flex>
+              <v-flex xs1>
+                <h3>:</h3>
+              </v-flex>
+              <v-flex xs1>
+                <v-combobox v-model="selectEndTimeMin" :items="minList" :disabled="this.disabled"></v-combobox>
+              </v-flex>
+            </v-layout>
 
-                        <v-layout align-center justify-center row class="pb-6">
-
-                            <v-flex xs6 offset-xs2 offset-md2 offset-lg2>
-                                <vuetify-google-autocomplete
-                                id="address"
-                                append-icon="search"
-                                ref="address"
-                                :clearable="clearable"
-                                :country="country"
-                                :disabled="!dataIsValid"
-                                :enable-="enableGeolocation"
-                                label="Search Place"
-                                prepend-icon="place"
-                                required=true
-                                types="establishment"
-                                onfocus="value = ''"
-                                v-on:placechanged="getAddressData"
-                                v-on:no-results-found="noResultsFound"
-                                ></vuetify-google-autocomplete>
-
-                            </v-flex>
-                        </v-layout>
-                        <v-layout align-center row class="pb-6">
-                            <v-flex xs3 offset-xs3 offset-md2>
-                                <h4>Spend time</h4>
-                            </v-flex>
-                            <v-flex xs1>
-                                <v-combobox
-                                    v-model="spendTimeHour"
-                                    :items="hourList"
-                                ></v-combobox>
-                            </v-flex>
-                            <v-flex xs2><h4>Hour(s)</h4></v-flex>
-                            <v-flex xs1 offset-xs3 offset-md1>
-                                <v-combobox
-                                    v-model="spendTimeMin"
-                                    :items="minList"
-                                ></v-combobox>
-                            </v-flex>
-                            <v-flex xs2><h4>Minute(s)</h4></v-flex>
-                        </v-layout>
-                    </v-form>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                        class="primary"
-                        :disabled="!formIsValid"
-                        @click="addPlace"
-                        >Add place</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-flex>
-        </v-layout>
-        <v-layout row>
-            <v-flex xs12>
-                <v-card>
-                    <v-list two-line>
-                        <template v-for="(item, index) in list">
-                            <v-divider
-                                v-if="item.divider"
-                                :inset="item.inset"
-                                :key="index"
-                            ></v-divider>
-                            <v-list-tile
-                                v-else-if="item.duration"
-                                :key="item.duration"
-                                avatar
-                            >
-                                <v-layout justify-center>
-                                    <v-list-action>
-                                        <v-icon>directions_car</v-icon>
-                                    </v-list-action>
-                                    <v-list-tile-content>
-                                        <v-list-tile-title>: {{ item.duration }}</v-list-tile-title>
-                                    </v-list-tile-content>
-                                </v-layout>
-
-                            </v-list-tile>
-                            <v-list-tile
-                                v-else
-                                :key="item.name"
-                                avatar
-                            >
-                                <v-list-tile-avatar>
-                                    <img :src="item.avatar">
-                                </v-list-tile-avatar>
-                                <v-list-tile-content>
-                                    <v-list-tile-title v-html="item.name"></v-list-tile-title>
-                                    <v-list-tile-sub-title>Spend time: {{ item.spendtime }} hours</v-list-tile-sub-title>
-                                </v-list-tile-content>
-                                <v-list-tile-action>
-                                    <v-list-tile-action-text>Time: {{ item.time }}</v-list-tile-action-text>
-                                </v-list-tile-action>
-
-                            </v-list-tile>
-                        </template>
-                    </v-list>
-                </v-card>
-            </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-            <v-flex xs12>
-                <v-card>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <h2>Time remaining: {{ this.totalTime }} hours.minute</h2>
-                    </v-card-actions>    
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                        <v-btn
-                        class="error"
-                        @click="deletePlace"
-                        :disabled="!haveDATA"
-                        >Delete</v-btn>
-                    </v-card-actions>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                        class="primary"
-                        @click="alert = !alert"
-                        :disabled="!plannerIsValid"
-                        >Save</v-btn>
-                    </v-card-actions>
-                    <v-card-text right>
-                        <v-spacer></v-spacer>
-                        <div class="info--text">If you want to save this plan, please sign in.</div>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-alert
-                        :value="alert"
-                        type="success"
-                        transition="scale-transition"
-                        >
-                            Do you want to save this planner?
-                            <v-btn
-                            @click.native.once="saveplan" 
-
-                            class="info"
-                            >OK</v-btn>
-                            <v-btn
-                            @click="alert = !alert"
-                            class="error"
-                            >Close</v-btn>
-                        </v-alert>
-                    </v-card-actions>
-                </v-card>
-            </v-flex>
-        </v-layout>
-    </v-container>
+            <v-layout align-center justify-center row class="pb-6">
+              <v-flex xs6 offset-xs2 offset-md2 offset-lg2>
+                <vuetify-google-autocomplete
+                  id="address"
+                  append-icon="search"
+                  ref="address"
+                  :clearable="clearable"
+                  :country="country"
+                  :disabled="!dataIsValid"
+                  :enable-="enableGeolocation"
+                  label="Search Place"
+                  prepend-icon="place"
+                  required="true"
+                  types="establishment"
+                  onfocus="value = ''"
+                  v-on:placechanged="getAddressData"
+                  v-on:no-results-found="noResultsFound"
+                ></vuetify-google-autocomplete>
+              </v-flex>
+            </v-layout>
+            <v-layout align-center row class="pb-6">
+              <v-flex xs3 offset-xs3 offset-md2>
+                <h4>Spend time</h4>
+              </v-flex>
+              <v-flex xs1>
+                <v-combobox v-model="spendTimeHour" :items="hourList"></v-combobox>
+              </v-flex>
+              <v-flex xs2>
+                <h4>Hour(s)</h4>
+              </v-flex>
+              <v-flex xs1 offset-xs3 offset-md1>
+                <v-combobox v-model="spendTimeMin" :items="minList"></v-combobox>
+              </v-flex>
+              <v-flex xs2>
+                <h4>Minute(s)</h4>
+              </v-flex>
+            </v-layout>
+          </v-form>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn class="primary" :disabled="!formIsValid" @click="addPlace">Add place</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12>
+        <v-card>
+          <v-list two-line>
+            <template v-for="(item, index) in list">
+              <v-divider v-if="item.divider" :inset="item.inset" :key="index"></v-divider>
+              <v-list-tile v-else-if="item.duration" :key="item.duration" avatar>
+                <v-layout justify-center>
+                  <v-list-action>
+                    <v-icon>directions_car</v-icon>
+                  </v-list-action>
+                  <v-list-tile-content>
+                    <v-list-tile-title>: {{ item.duration }}</v-list-tile-title>
+                  </v-list-tile-content>
+                </v-layout>
+              </v-list-tile>
+              <v-list-tile v-else :key="item.name" avatar>
+                <v-list-tile-avatar>
+                  <img :src="item.avatar">
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="item.name"></v-list-tile-title>
+                  <v-list-tile-sub-title>Spend time: {{ item.spendtime }} hours</v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-list-tile-action-text>Time: {{ item.time }}</v-list-tile-action-text>
+                </v-list-tile-action>
+              </v-list-tile>
+            </template>
+          </v-list>
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap>
+      <v-flex xs12>
+        <v-card>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <h2>Time remaining: {{ this.totalTime }} hours.minute</h2>
+          </v-card-actions>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn class="error" @click="deletePlace" :disabled="!haveDATA">Delete</v-btn>
+          </v-card-actions>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn class="primary" @click="alert = !alert" :disabled="!plannerIsValid">Save</v-btn>
+          </v-card-actions>
+          <v-card-text right>
+            <v-spacer></v-spacer>
+            <div class="info--text">If you want to save this plan, please sign in.</div>
+          </v-card-text>
+          <v-card-actions>
+            <v-alert
+              :value="alert"
+              type="success"
+              transition="scale-transition"
+            >Do you want to save this planner?
+              <v-btn @click.native.once="saveplan" class="info">OK</v-btn>
+              <v-btn @click="alert = !alert" class="error">Close</v-btn>
+            </v-alert>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -553,12 +504,11 @@ export default {
             origin: this.placeList[placeOrigin].placeName
           };
           let placeResponse = await axios.post(
-            "https://travel-planner-develop.herokuapp.com/place/",
+            process.env.PLACE_DURATION,
             bodyPlace
           );
           this.placeData = placeResponse.data;
           console.log(placeResponse.data);
-          
         } catch (error) {
           this.$log.error(error);
           // dont forget to subtract time remain
@@ -620,7 +570,7 @@ export default {
             place: this.addressName
           };
           let addressResponse = await axios.post(
-            "https://travel-planner-develop.herokuapp.com/search/",
+            process.env.SEARCH,
             bodyAddress
           );
         } catch (error) {
@@ -679,10 +629,7 @@ export default {
           remaining: this.totalTime,
           road: this.placeData
         };
-        let timeResponse = await axios.post(
-          "https://travel-planner-develop.herokuapp.com/time-remain/",
-          bodyTime
-        );
+        let timeResponse = await axios.post(process.env.TIME_REMAIN, bodyTime);
         if (timeResponse.data < 0) {
           alert("Your time is over date");
           this.list.splice(this.list.length - 3, 4);
@@ -704,7 +651,7 @@ export default {
       console.log("remove");
       console.log(this.list.length);
       console.log(this.saveList);
-      var removeP = this.saveList[this.saveList.length-1]['location'];
+      var removeP = this.saveList[this.saveList.length - 1]["location"];
       this.$log.info(`remove ${removeP}`);
       this.totalTime = this.saveList[this.saveList.length - 1]["remaining"];
 
@@ -728,10 +675,7 @@ export default {
       try {
         for (const i of this.saveList) {
           console.log(i);
-          let save = await axios.post(
-            "https://travel-planner-develop.herokuapp.com/savedata/",
-            i
-          );
+          let save = await axios.post(process.env.SAVE_DATA, i);
           console.log(save.data);
           this.$log.info(`${i} saved!`);
         }
