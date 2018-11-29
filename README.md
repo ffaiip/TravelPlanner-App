@@ -4,7 +4,7 @@
 
 ## [Back-end repository](https://github.com/narisasingngam/TravelPlanner)
 
-> A Vue.js project
+> A Travel planner project
 
 Travel planner is a web application where users can create a planner for their own trip. In a planner; the user can specify arrival and departure dates, select places to visit by searching from maps, and set time that they want to spend at each place. The planner will show time remaining in each day, and display the time that takes user to travel from one place to another.
 
