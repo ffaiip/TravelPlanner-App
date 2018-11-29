@@ -1,4 +1,4 @@
-![Alt text](src/assets/travel-plannerLOGO.png)
+![Alt text](src/assets/travel-planner.png)
 
 # Travel Planner
 
