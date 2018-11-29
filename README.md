@@ -1,29 +1,57 @@
-# planner-app
+![Alt text](src/assets/travel-plannerLOGO.png)
+
+# Travel Planner
 
 ## [Back-end repository](https://github.com/narisasingngam/TravelPlanner)
 
 > A Vue.js project
 
-## Build Setup
+Travel planner is a web application where users can create a planner for their own trip. In a planner; the user can specify arrival and departure dates, select places to visit by searching from maps, and set time that they want to spend at each place. The planner will show time remaining in each day, and display the time that takes user to travel from one place to another.
 
-``` bash
-# install dependencies
-npm install
+Traivis CI : [![Build Status](https://travis-ci.com/narisasingngam/TravelPlanner.svg?branch=master)](https://travis-ci.com/narisasingngam/TravelPlanner)
 
-# serve with hot reload at localhost:8080
-npm run dev
+Code Coverage : [![codecov](https://codecov.io/gh/narisasingngam/Travel-Planner/branch/master/graph/badge.svg)](https://codecov.io/gh/narisasingngam/Travel-Planner)
 
-# build for production with minification
-npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
+# Documents
 
-# run unit tests
-npm run unit
++ Task Board - [Task Management][task]
 
-# run all tests
-npm test
++ Iteration Plan - [Documentation][doc]
+
++ Issue tracking - [Issue Tracker](https://github.com/narisasingngam/TravelPlanner/issues)
+
+# Installation
+
++ Node.js - [download](https://nodejs.org/en/)
+
+# Step needed to configure the application for running
+
+1. Clone the [frontend repository]
+``` 
+$ git clone https://github.com/ffaiip/TravelPlanner-App.git
+ ``` 
+
+2. Install dependencies
+```
+$ npm install
+```
+3.  Compile
+```
+$ npm run start
+
+- Run serve with localhost:8080
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+ # Members
+| GitHub  | Name              | 
+|--------|-----------------------------|
+| @narisasingngam   | Narisa Singngam |
+| @ffaiip | Kavinthip Pattanaphaophan |
+| @jampttws | Tanasorn Tritawisup |
+
+
+
+[doc]:https://docs.google.com/document/d/17YU4U-z9ftI0GzMlQQTGfNDjZDice1K9bn1NK7oGFBY/edit#
+[task]:https://trello.com/b/wfRyjm44/work-plan
+[front]:https://github.com/ffaiip/TravelPlanner-App
