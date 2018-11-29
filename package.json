@@ -16,6 +16,7 @@
     "production": "export ENV=production && npm run start"
   },
   "dependencies": {
+    "avoriaz": "^6.3.0",
     "axios": "^0.18.0",
     "express": "^4.16.4",
     "vue": "^2.5.2",
