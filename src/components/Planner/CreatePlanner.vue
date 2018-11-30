@@ -48,7 +48,12 @@
                                         prepend-icon="event"
                                         @blur="date = parseDate(dateFormatted)"
                                     ></v-text-field>
-                                    <v-date-picker v-model="date" no-title @input="menu = false"></v-date-picker>
+                                    <v-date-picker 
+                                      v-model="date" 
+                                      no-title 
+                                      @input="menu = false"
+                                      min="2018-11-30"
+                                    ></v-date-picker>
                                 </v-menu>
                             </v-flex>
                         </v-layout>
@@ -89,10 +94,14 @@ export default {
       dateFormatted: null,
       menu: false,
       picker: null,
-      landscape: false
+      landscape: false,
     };
   },
   computed: {
+    disabledDates () {
+      let today = new Date().toISOString().slice(0, 10)
+      return today;
+    },
     formIsValid() {
       if (this.$store.getters.getCookie("mail") == " ") {
         return (
