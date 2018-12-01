@@ -137,6 +137,8 @@ export default {
       this.$store.dispatch("createPlanner", plannerData);
       this.$router.push("/planners");
       this.$log.info(`create planner name: ${this.topic}, date: ${this.date}`)
+      console.log(this.disabledDates);
+      
     },
 
     formatDate(date) {
