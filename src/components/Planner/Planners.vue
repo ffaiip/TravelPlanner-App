@@ -46,6 +46,7 @@
                         </div>
                     </v-card-title>
                 </v-card>
+                
             </v-flex>
         </v-layout>
         <v-layout row wrap>
@@ -74,7 +75,7 @@ export default {
     },
     userIsValid() {
       return (
-        this.$store.getters.getCookie("mail") == " " &&
+        (this.$store.getters.getCookie("mail") == " " || this.$store.getters.getCookie("mail") == "" )&&
         this.$store.getters.loadedPlanners.length > 0
       );
     },
@@ -93,7 +94,6 @@ export default {
   methods: {
     deletePlan() {
       this.$store.commit("clearPlanner");
-      this.$log.info(`delete plan.`)
     }
   }
 };

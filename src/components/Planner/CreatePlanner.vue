@@ -52,7 +52,7 @@
                                       v-model="date" 
                                       no-title 
                                       @input="menu = false"
-                                      min="2018-11-30"
+                                      :min = this.disabledDates
                                     ></v-date-picker>
                                 </v-menu>
                             </v-flex>
@@ -100,10 +100,10 @@ export default {
   computed: {
     disabledDates () {
       let today = new Date().toISOString().slice(0, 10)
-      return today;
+      return today
     },
     formIsValid() {
-      if (this.$store.getters.getCookie("mail") == " ") {
+      if (this.$store.getters.getCookie("mail") == " " || this.$store.getters.getCookie("mail") == "") {
         return (
           this.$store.getters.loadedPlanners.length == 0 &&
           this.topic !== "" &&
